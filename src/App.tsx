@@ -10,7 +10,7 @@ type Resource = {
   summary: string
   content?: string
   status: 'draft' | 'published'
-  links?: Array<{ kind: string; url: string; label: string }>
+  links?: Array<{ id?: string; kind: string; url: string; label: string }>
   tags?: Array<{ slug: string; label: string }>
 }
 
@@ -21,16 +21,19 @@ const sections = [
 ] as const
 
 function App() {
-  const [isAdmin, setIsAdmin] = useState(window.location.pathname === '/admin')
+  const [route, setRoute] = useState(window.location.pathname)
 
   useEffect(() => {
-    const onPopState = () => setIsAdmin(window.location.pathname === '/admin')
+    const onPopState = () => setRoute(window.location.pathname)
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
 
-  if (isAdmin) return <AdminPage onBack={() => { window.history.pushState({}, '', '/'); setIsAdmin(false) }} />
-  return <CollectionHome onAdmin={() => { window.history.pushState({}, '', '/admin'); setIsAdmin(true) }} />
+  if (route === '/admin') return <AdminPage onBack={() => { window.history.pushState({}, '', '/'); setRoute('/') }} />
+  if (route.startsWith('/resource/')) return <ResourceDetail slug={route.replace('/resource/', '')} onBack={() => { window.history.pushState({}, '', '/'); setRoute('/') }} />
+  const type = new URLSearchParams(window.location.search).get('type') as Resource['type'] | null
+  if (type) return <ResourceBrowser type={type} onBack={() => { window.history.pushState({}, '', '/'); setRoute('/') }} />
+  return <CollectionHome onAdmin={() => { window.history.pushState({}, '', '/admin'); setRoute('/admin') }} />
 }
 
 function CollectionHome({ onAdmin }: { onAdmin: () => void }) {
@@ -75,6 +78,39 @@ function CollectionHome({ onAdmin }: { onAdmin: () => void }) {
       </footer>
     </main>
   )
+}
+
+function ResourceBrowser({ type, onBack }: { type: Resource['type']; onBack: () => void }) {
+  const section = sections.find((item) => item.key === type) ?? sections[0]
+  const [query, setQuery] = useState('')
+  const [resources, setResources] = useState<Resource[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setLoading(true)
+    const search = query ? `&q=${encodeURIComponent(query)}` : ''
+    fetch(`/api/resources?type=${type}${search}`)
+      .then((response) => response.json() as Promise<{ data: Resource[] }>)
+      .then(({ data }) => setResources(data))
+      .finally(() => setLoading(false))
+  }, [query, type])
+
+  return (
+    <main className="browser-shell">
+      <header className="browser-header"><button className="text-button" type="button" onClick={onBack}>← Klasma</button><span className="eyebrow">{section.label}</span></header>
+      <div className="browser-intro"><p className="kicker">Collection / {section.key}</p><h1>{section.description}</h1><input className="search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索标题或说明" aria-label="搜索资源" /></div>
+      {loading ? <p className="empty-state">正在读取收藏…</p> : resources.length === 0 ? <p className="empty-state">这里还没有公开资源。</p> : <div className="resource-list">{resources.map((resource) => <a href={`/resource/${resource.slug}`} className="resource-row" key={resource.id}><span className="resource-type">{resource.type}</span><div><h2>{resource.title}</h2><p>{resource.summary || '暂无说明'}</p></div><span className="row-arrow">↗</span></a>)}</div>}
+    </main>
+  )
+}
+
+function ResourceDetail({ slug, onBack }: { slug: string; onBack: () => void }) {
+  const [resource, setResource] = useState<Resource | null>(null)
+  const [missing, setMissing] = useState(false)
+  useEffect(() => { fetch(`/api/resources/${slug}`).then((response) => { if (!response.ok) throw new Error('missing'); return response.json() as Promise<{ data: Resource }> }).then(({ data }) => setResource(data)).catch(() => setMissing(true)) }, [slug])
+  if (missing) return <main className="browser-shell"><button className="text-button" type="button" onClick={onBack}>← 返回</button><h1>没有找到这条资源。</h1></main>
+  if (!resource) return <main className="browser-shell"><p className="empty-state">正在读取资源…</p></main>
+  return <main className="detail-shell"><button className="text-button" type="button" onClick={onBack}>← 返回收藏</button><p className="kicker">{resource.type} / {resource.status}</p><h1>{resource.title}</h1><p className="detail-summary">{resource.summary}</p><div className="detail-content">{resource.content || '这条资源还没有补充详细内容。'}</div>{resource.links?.length ? <div className="detail-links">{resource.links.map((link) => <a href={link.url} target="_blank" rel="noreferrer" key={link.id ?? link.url}>{link.label || link.url} ↗</a>)}</div> : null}</main>
 }
 
 function AdminPage({ onBack }: { onBack: () => void }) {
