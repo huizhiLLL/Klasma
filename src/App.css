@@ -1,32 +1,65 @@
 :root {
   color: #f4efe7;
   background: #171716;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; }
-.shell { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 64px 0 32px; }
-.eyebrow { color: #a5a097; font-size: 0.72rem; letter-spacing: 0.18em; margin: 0 0 88px; }
-.intro { max-width: 760px; margin-bottom: 72px; }
-.intro h1 { font-family: Georgia, serif; font-size: clamp(3.5rem, 9vw, 7.4rem); font-weight: 400; letter-spacing: -0.07em; line-height: 0.92; margin: 0 0 28px; }
-.intro p { color: #b9b3aa; font-size: 1.05rem; line-height: 1.7; max-width: 480px; }
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.shell { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 42px 0 32px; }
+.topline, .admin-header, footer { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.eyebrow, .admin-label { color: #a5a097; font-size: 0.72rem; letter-spacing: 0.18em; margin: 0; }
+.text-button { background: transparent; border: 0; color: #b9b3aa; cursor: pointer; font-size: 0.8rem; padding: 10px 0; }
+.text-button:hover { color: #f4efe7; }
+.text-button:active, .save-button:active { transform: scale(0.96); }
+.intro { max-width: 760px; margin: 132px 0 72px; }
+.kicker { color: #a5a097; font-size: 0.78rem; letter-spacing: 0.08em; margin: 0 0 20px; text-transform: uppercase; }
+.intro h1, .admin-layout h1 { color: #f4efe7; font-family: Georgia, "Songti SC", "Noto Serif SC", serif; font-size: clamp(3.5rem, 9vw, 7.4rem); font-weight: 400; letter-spacing: -0.07em; line-height: 0.92; margin: 0 0 28px; text-wrap: balance; }
+.intro > p:last-child { color: #b9b3aa; font-size: 1.05rem; line-height: 1.8; max-width: 480px; text-wrap: pretty; }
 .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.collection-card { min-height: 310px; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; transition: transform 220ms ease; }
+.collection-card { min-height: 310px; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; text-decoration: none; transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1); }
 .collection-card:hover { transform: translateY(-6px); }
+.collection-card:focus-visible { outline: 3px solid #f4efe7; outline-offset: 4px; }
 .card-1 { background: #c8d0c2; color: #20251f; }
 .card-2 { background: #d7ad8b; color: #2c211b; }
 .card-3 { background: #a9b8ca; color: #1e2730; }
 .card-index { position: absolute; top: 24px; left: 24px; font-size: 0.75rem; letter-spacing: 0.12em; opacity: 0.7; }
-.collection-card h2 { font-family: Georgia, serif; font-size: 2.6rem; font-weight: 400; letter-spacing: -0.05em; margin: 0 0 12px; }
-.collection-card p { line-height: 1.5; margin: 0; max-width: 240px; }
-.card-arrow { position: absolute; top: 20px; right: 24px; font-size: 1.6rem; }
-footer { border-top: 1px solid #393835; color: #77736d; font-size: 0.78rem; letter-spacing: 0.06em; margin-top: 84px; padding-top: 20px; }
+.card-count { position: absolute; top: 24px; right: 24px; font-size: 0.72rem; letter-spacing: 0.06em; opacity: 0.7; }
+.collection-card h2 { font-family: Georgia, "Songti SC", "Noto Serif SC", serif; font-size: 2.6rem; font-weight: 400; letter-spacing: -0.05em; margin: 0 0 12px; }
+.collection-card p { line-height: 1.6; margin: 0; max-width: 240px; }
+.card-arrow { position: absolute; bottom: 22px; right: 24px; font-size: 1.6rem; }
+footer { border-top: 1px solid #393835; color: #77736d; font-size: 0.75rem; letter-spacing: 0.06em; margin-top: 84px; padding-top: 20px; }
+.admin-shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 42px 0 72px; }
+.admin-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap: 80px; margin-top: 120px; }
+.admin-layout h1 { font-size: clamp(3rem, 6vw, 6rem); max-width: 700px; }
+.resource-form { display: grid; gap: 20px; max-width: 600px; margin-top: 52px; }
+.resource-form label { color: #a5a097; display: grid; font-size: 0.78rem; gap: 8px; letter-spacing: 0.06em; }
+.resource-form input, .resource-form select, .resource-form textarea { background: #20201e; border: 1px solid #3a3935; border-radius: 2px; color: #f4efe7; outline: 0; padding: 13px 14px; }
+.resource-form input:focus, .resource-form select:focus, .resource-form textarea:focus { border-color: #c8d0c2; box-shadow: 0 0 0 2px rgba(200, 208, 194, 0.18); }
+.resource-form textarea { line-height: 1.7; resize: vertical; }
+.save-button { background: #c8d0c2; border: 0; color: #20251f; cursor: pointer; justify-self: start; padding: 14px 18px; transition: transform 140ms ease, background-color 180ms ease; }
+.save-button:hover { background: #d9e0d5; }
+.save-button span { display: inline-block; margin-left: 24px; }
+.form-message { color: #c8d0c2; font-size: 0.84rem; }
+.saved-panel { border-top: 1px solid #393835; padding-top: 20px; }
+.saved-panel h2 { font-family: Georgia, "Songti SC", "Noto Serif SC", serif; font-size: 2rem; font-weight: 400; margin: 0 0 24px; }
+.saved-panel ul { list-style: none; margin: 0; padding: 0; }
+.saved-panel li { border-top: 1px solid #393835; display: grid; gap: 7px; padding: 17px 0; }
+.saved-panel li span, .saved-panel li small { color: #8e8980; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.saved-panel li strong { font-weight: 500; }
+.empty-state { color: #77736d; line-height: 1.7; }
 @media (max-width: 760px) {
-  .shell { width: min(100% - 32px, 560px); padding-top: 32px; }
-  .eyebrow { margin-bottom: 56px; }
-  .intro { margin-bottom: 48px; }
-  .collection-grid { grid-template-columns: 1fr; }
+  .shell, .admin-shell { width: min(100% - 32px, 560px); padding-top: 28px; }
+  .intro { margin: 96px 0 48px; }
+  .collection-grid, .admin-layout { grid-template-columns: 1fr; }
   .collection-card { min-height: 220px; }
+  .admin-layout { gap: 64px; margin-top: 88px; }
+  footer { align-items: flex-start; flex-direction: column; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
 }
