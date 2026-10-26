@@ -41,6 +41,21 @@ app.get('/api/resources/:slug', async (c) => {
   return c.json({ data: { ...resource, links, assets, tags: resourceTagRows.map(({ tag }) => tag) } })
 })
 
+app.get('/api/assets/:id', async (c) => {
+  const db = createDb(c.env.DB)
+  const rows = await db.select().from(resourceAssets).where(eq(resourceAssets.id, c.req.param('id'))).limit(1)
+  const asset = rows[0]
+  if (!asset) return c.notFound()
+  if (asset.storageType === 'external') return c.redirect(asset.location)
+  const object = await c.env.ASSETS.get(asset.location)
+  if (!object) return c.notFound()
+  const headers = new Headers() as unknown as Headers
+  object.writeHttpMetadata(headers)
+  headers.set('etag', object.httpEtag)
+  headers.set('cache-control', 'public, max-age=31536000, immutable')
+  return new Response(object.body as unknown as BodyInit, { headers: headers as unknown as HeadersInit })
+})
+
 app.get('/api/admin/resources', async (c) => {
   if (!requireAdmin(c)) return c.json({ error: 'Unauthorized' }, 401)
   const db = createDb(c.env.DB)
@@ -148,6 +163,27 @@ app.delete('/api/admin/resources/:id', async (c) => {
   const deleted = await db.delete(resources).where(eq(resources.id, resourceId)).returning({ id: resources.id })
   if (!deleted[0]) return c.json({ error: 'Resource not found' }, 404)
   return c.body(null, 204)
+})
+
+app.post('/api/admin/assets', async (c) => {
+  if (!requireAdmin(c)) return c.json({ error: 'Unauthorized' }, 401)
+  const form = await c.req.parseBody()
+  const resourceId = typeof form.resourceId === 'string' ? form.resourceId : ''
+  const kind = typeof form.kind === 'string' ? form.kind : 'file'
+  const file = form.file
+  if (!resourceId || !(file instanceof File)) return c.json({ error: 'resourceId and file are required' }, 400)
+
+  const db = createDb(c.env.DB)
+  const resource = await db.select({ id: resources.id }).from(resources).where(eq(resources.id, resourceId)).limit(1)
+  if (!resource[0]) return c.json({ error: 'Resource not found' }, 404)
+
+  const assetId = crypto.randomUUID()
+  const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+  const key = `resources/${resourceId}/${assetId}-${safeFilename}`
+  await c.env.ASSETS.put(key, await file.arrayBuffer(), { httpMetadata: { contentType: file.type || 'application/octet-stream' } })
+  const asset = { id: assetId, resourceId, kind, filename: file.name, storageType: 'r2' as const, location: key, mimeType: file.type || 'application/octet-stream', size: file.size, metadata: '{}', createdAt: new Date() }
+  await db.insert(resourceAssets).values(asset)
+  return c.json({ data: { ...asset, url: `/api/assets/${asset.id}` } }, 201)
 })
 
 export default app
