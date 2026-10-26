@@ -50,7 +50,7 @@ app.get('/api/assets/:id', async (c) => {
   const object = await c.env.ASSETS.get(asset.location)
   if (!object) return c.notFound()
   const headers = new Headers() as unknown as Headers
-  object.writeHttpMetadata(headers)
+  object.writeHttpMetadata(headers as unknown as import('@cloudflare/workers-types').Headers)
   headers.set('etag', object.httpEtag)
   headers.set('cache-control', 'public, max-age=31536000, immutable')
   return new Response(object.body as unknown as BodyInit, { headers: headers as unknown as HeadersInit })
