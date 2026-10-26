@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { and, desc, eq, like, or } from 'drizzle-orm'
+import { and, asc, desc, eq, like, or } from 'drizzle-orm'
 
 import type { Bindings } from './types'
 import { createDb } from './db/client'
@@ -19,10 +19,12 @@ app.get('/api/resources', async (c) => {
   const db = createDb(c.env.DB)
   const type = c.req.query('type')
   const query = c.req.query('q')?.trim()
+  const sort = c.req.query('sort')
   const filters = [eq(resources.status, 'published')]
   if (type) filters.push(eq(resources.type, type as 'tools' | 'projects' | 'library'))
   if (query) filters.push(or(like(resources.title, `%${query}%`), like(resources.summary, `%${query}%`))!)
-  const rows = await db.select().from(resources).where(and(...filters)).orderBy(desc(resources.updatedAt))
+  const order = sort === 'title' ? asc(resources.title) : desc(resources.updatedAt)
+  const rows = await db.select().from(resources).where(and(...filters)).orderBy(order)
 
   return c.json({ data: rows })
 })
@@ -184,6 +186,16 @@ app.post('/api/admin/assets', async (c) => {
   const asset = { id: assetId, resourceId, kind, filename: file.name, storageType: 'r2' as const, location: key, mimeType: file.type || 'application/octet-stream', size: file.size, metadata: '{}', createdAt: new Date() }
   await db.insert(resourceAssets).values(asset)
   return c.json({ data: { ...asset, url: `/api/assets/${asset.id}` } }, 201)
+})
+
+app.delete('/api/admin/assets/:id', async (c) => {
+  if (!requireAdmin(c)) return c.json({ error: 'Unauthorized' }, 401)
+  const db = createDb(c.env.DB)
+  const asset = await db.select().from(resourceAssets).where(eq(resourceAssets.id, c.req.param('id'))).limit(1)
+  if (!asset[0]) return c.json({ error: 'Asset not found' }, 404)
+  if (asset[0].storageType === 'r2') await c.env.ASSETS.delete(asset[0].location)
+  await db.delete(resourceAssets).where(eq(resourceAssets.id, asset[0].id))
+  return c.body(null, 204)
 })
 
 export default app

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import DOMPurify from 'dompurify'
+import { marked } from 'marked'
 import './App.css'
 
 type Resource = {
@@ -84,22 +86,23 @@ function CollectionHome({ onAdmin }: { onAdmin: () => void }) {
 function ResourceBrowser({ type, onBack }: { type: Resource['type']; onBack: () => void }) {
   const section = sections.find((item) => item.key === type) ?? sections[0]
   const [query, setQuery] = useState('')
+  const [sort, setSort] = useState('updated')
   const [resources, setResources] = useState<Resource[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setLoading(true)
     const search = query ? `&q=${encodeURIComponent(query)}` : ''
-    fetch(`/api/resources?type=${type}${search}`)
+    fetch(`/api/resources?type=${type}&sort=${sort}${search}`)
       .then((response) => response.json() as Promise<{ data: Resource[] }>)
       .then(({ data }) => setResources(data))
       .finally(() => setLoading(false))
-  }, [query, type])
+  }, [query, sort, type])
 
   return (
     <main className="browser-shell">
       <header className="browser-header"><button className="text-button" type="button" onClick={onBack}>← Klasma</button><span className="eyebrow">{section.label}</span></header>
-      <div className="browser-intro"><p className="kicker">Collection / {section.key}</p><h1>{section.description}</h1><input className="search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索标题或说明" aria-label="搜索资源" /></div>
+      <div className="browser-intro"><p className="kicker">Collection / {section.key}</p><h1>{section.description}</h1><div className="browser-controls"><input className="search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索标题或说明" aria-label="搜索资源" /><select value={sort} onChange={(event) => setSort(event.target.value)} aria-label="排序"><option value="updated">最近整理</option><option value="title">按标题</option></select></div></div>
       {loading ? <p className="empty-state">正在读取收藏…</p> : resources.length === 0 ? <p className="empty-state">这里还没有公开资源。</p> : <div className="resource-list">{resources.map((resource) => <a href={`/resource/${resource.slug}`} className="resource-row" key={resource.id}><span className="resource-type">{resource.type}</span><div><h2>{resource.title}</h2><p>{resource.summary || '暂无说明'}</p></div><span className="row-arrow">↗</span></a>)}</div>}
     </main>
   )
@@ -111,7 +114,8 @@ function ResourceDetail({ slug, onBack }: { slug: string; onBack: () => void }) 
   useEffect(() => { fetch(`/api/resources/${slug}`).then((response) => { if (!response.ok) throw new Error('missing'); return response.json() as Promise<{ data: Resource }> }).then(({ data }) => setResource(data)).catch(() => setMissing(true)) }, [slug])
   if (missing) return <main className="browser-shell"><button className="text-button" type="button" onClick={onBack}>← 返回</button><h1>没有找到这条资源。</h1></main>
   if (!resource) return <main className="browser-shell"><p className="empty-state">正在读取资源…</p></main>
-  return <main className="detail-shell"><button className="text-button" type="button" onClick={onBack}>← 返回收藏</button><p className="kicker">{resource.type} / {resource.status}</p><h1>{resource.title}</h1><p className="detail-summary">{resource.summary}</p><div className="detail-content">{resource.content || '这条资源还没有补充详细内容。'}</div>{resource.links?.length ? <div className="detail-links">{resource.links.map((link) => <a href={link.url} target="_blank" rel="noreferrer" key={link.id ?? link.url}>{link.label || link.url} ↗</a>)}</div> : null}{resource.assets?.length ? <div className="detail-links">{resource.assets.map((asset) => <a href={`/api/assets/${asset.id}`} target="_blank" rel="noreferrer" key={asset.id}>{asset.filename} ↓</a>)}</div> : null}</main>
+  const contentHtml = DOMPurify.sanitize(marked.parse(resource.content || '这条资源还没有补充详细内容。', { async: false }))
+  return <main className="detail-shell"><button className="text-button" type="button" onClick={onBack}>← 返回收藏</button><p className="kicker">{resource.type} / {resource.status}</p><h1>{resource.title}</h1><p className="detail-summary">{resource.summary}</p><div className="detail-content markdown-content" dangerouslySetInnerHTML={{ __html: contentHtml }} />{resource.links?.length ? <div className="detail-links">{resource.links.map((link) => <a href={link.url} target="_blank" rel="noreferrer" key={link.id ?? link.url}>{link.label || link.url} ↗</a>)}</div> : null}{resource.assets?.length ? <div className="detail-links">{resource.assets.map((asset) => <a href={`/api/assets/${asset.id}`} target="_blank" rel="noreferrer" key={asset.id}>{asset.filename} ↓</a>)}</div> : null}</main>
 }
 
 function AdminPage({ onBack }: { onBack: () => void }) {
@@ -181,6 +185,12 @@ function AdminPage({ onBack }: { onBack: () => void }) {
     if (response.ok) { setAssetFile(null); void loadResources() }
   }
 
+  const deleteAsset = async (assetId: string) => {
+    const response = await fetch(`/api/admin/assets/${assetId}`, { method: 'DELETE' })
+    setMessage(response.ok ? '附件已删除。' : '附件删除失败。')
+    if (response.ok) void loadResources()
+  }
+
   return (
     <main className="admin-shell">
       <header className="admin-header">
@@ -208,7 +218,7 @@ function AdminPage({ onBack }: { onBack: () => void }) {
         <aside className="saved-panel">
           <p className="kicker">Current archive</p>
           <h2>已录入的资源</h2>
-          {saved.length === 0 ? <p className="empty-state">还没有资源，先保存第一条。</p> : <ul>{saved.map((resource) => <li key={resource.id}><span>{resource.type} · {resource.status}</span><strong>{resource.title}</strong><small>{resource.summary || '没有摘要'}{resource.assets?.length ? ` · ${resource.assets.length} 个附件` : ''}</small><div className="resource-actions"><button type="button" onClick={() => editResource(resource)}>编辑</button><button type="button" onClick={() => void deleteResource(resource)}>删除</button></div></li>)}</ul>}
+          {saved.length === 0 ? <p className="empty-state">还没有资源，先保存第一条。</p> : <ul>{saved.map((resource) => <li key={resource.id}><span>{resource.type} · {resource.status}</span><strong>{resource.title}</strong><small>{resource.summary || '没有摘要'}{resource.assets?.length ? ` · ${resource.assets.length} 个附件` : ''}</small>{editingId === resource.id && resource.assets?.map((asset) => <div className="asset-item" key={asset.id}><span>{asset.filename}</span><button type="button" onClick={() => void deleteAsset(asset.id)}>删除附件</button></div>)}<div className="resource-actions"><button type="button" onClick={() => editResource(resource)}>编辑</button><button type="button" onClick={() => void deleteResource(resource)}>删除</button></div></li>)}</ul>}
         </aside>
       </div>
     </main>
