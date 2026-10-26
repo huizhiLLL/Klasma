@@ -8,7 +8,10 @@ type Resource = {
   slug: string
   title: string
   summary: string
+  content?: string
   status: 'draft' | 'published'
+  links?: Array<{ kind: string; url: string; label: string }>
+  tags?: Array<{ slug: string; label: string }>
 }
 
 const sections = [
@@ -77,7 +80,8 @@ function CollectionHome({ onAdmin }: { onAdmin: () => void }) {
 function AdminPage({ onBack }: { onBack: () => void }) {
   const [saved, setSaved] = useState<Resource[]>([])
   const [message, setMessage] = useState('')
-  const [form, setForm] = useState({ type: 'tools', slug: '', title: '', summary: '', status: 'draft' })
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [form, setForm] = useState({ type: 'tools', slug: '', title: '', summary: '', content: '', links: '', tags: '', status: 'draft' })
 
   const loadResources = () => fetch('/api/admin/resources').then((response) => response.json() as Promise<{ data: Resource[] }>).then(({ data }) => setSaved(data)).catch(() => setMessage('后台 API 尚未启动，先检查 Wrangler 开发服务器。'))
   useEffect(() => { void loadResources() }, [])
@@ -85,15 +89,47 @@ function AdminPage({ onBack }: { onBack: () => void }) {
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     setMessage('正在保存…')
-    const response = await fetch('/api/admin/resources', {
-      method: 'POST',
+    const response = await fetch(editingId ? `/api/admin/resources/${editingId}` : '/api/admin/resources', {
+      method: editingId ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        type: form.type,
+        slug: form.slug,
+        title: form.title,
+        summary: form.summary,
+        content: form.content,
+        status: form.status,
+        tagSlugs: form.tags.split(',').map((tag) => tag.trim()).filter(Boolean),
+        links: form.links.split(',').map((url) => url.trim()).filter(Boolean).map((url) => ({ kind: 'website', url })),
+      }),
     })
     if (!response.ok) { setMessage('保存失败，请检查字段和 Worker 日志。'); return }
-    setMessage('已保存到 D1。')
-    setForm({ type: 'tools', slug: '', title: '', summary: '', status: 'draft' })
+    setMessage(editingId ? '已更新资源。' : '已保存到 D1。')
+    setEditingId(null)
+    setForm({ type: 'tools', slug: '', title: '', summary: '', content: '', links: '', tags: '', status: 'draft' })
     void loadResources()
+  }
+
+  const editResource = (resource: Resource) => {
+    setEditingId(resource.id)
+    setForm({
+      type: resource.type,
+      slug: resource.slug,
+      title: resource.title,
+      summary: resource.summary,
+      content: resource.content ?? '',
+      links: resource.links?.map((link) => link.url).join(', ') ?? '',
+      tags: resource.tags?.map((tag) => tag.slug).join(', ') ?? '',
+      status: resource.status,
+    })
+    setMessage('正在编辑已有资源。')
+  }
+
+  const deleteResource = async (resource: Resource) => {
+    if (!window.confirm(`确定删除“${resource.title}”吗？`)) return
+    const response = await fetch(`/api/admin/resources/${resource.id}`, { method: 'DELETE' })
+    setMessage(response.ok ? '资源已删除。' : '删除失败，请检查 Worker 日志。')
+    if (response.ok) void loadResources()
   }
 
   return (
@@ -111,15 +147,18 @@ function AdminPage({ onBack }: { onBack: () => void }) {
             <label>Slug<input required value={form.slug} onChange={(event) => setForm({ ...form, slug: event.target.value })} placeholder="my-useful-tool" /></label>
             <label>标题<input required value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} placeholder="资源名称" /></label>
             <label>一句话说明<textarea value={form.summary} onChange={(event) => setForm({ ...form, summary: event.target.value })} placeholder="为什么值得保留" rows={3} /></label>
+            <label>详细内容<textarea value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} placeholder="可以先写 Markdown，后续接入渲染" rows={6} /></label>
+            <label>外部链接<input value={form.links} onChange={(event) => setForm({ ...form, links: event.target.value })} placeholder="多个链接用逗号分隔" /></label>
+            <label>标签<input value={form.tags} onChange={(event) => setForm({ ...form, tags: event.target.value })} placeholder="minecraft, sfm, automation" /></label>
             <label>状态<select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}><option value="draft">草稿</option><option value="published">发布</option></select></label>
-            <button className="save-button" type="submit">保存资源 <span>↗</span></button>
+            <div className="form-actions"><button className="save-button" type="submit">{editingId ? '更新资源' : '保存资源'} <span>↗</span></button>{editingId && <button className="text-button" type="button" onClick={() => { setEditingId(null); setForm({ type: 'tools', slug: '', title: '', summary: '', content: '', links: '', tags: '', status: 'draft' }) }}>取消编辑</button>}</div>
             {message && <p className="form-message" role="status">{message}</p>}
           </form>
         </section>
         <aside className="saved-panel">
           <p className="kicker">Current archive</p>
           <h2>已录入的资源</h2>
-          {saved.length === 0 ? <p className="empty-state">还没有资源，先保存第一条。</p> : <ul>{saved.map((resource) => <li key={resource.id}><span>{resource.type}</span><strong>{resource.title}</strong><small>{resource.status}</small></li>)}</ul>}
+          {saved.length === 0 ? <p className="empty-state">还没有资源，先保存第一条。</p> : <ul>{saved.map((resource) => <li key={resource.id}><span>{resource.type} · {resource.status}</span><strong>{resource.title}</strong><small>{resource.summary || '没有摘要'}</small><div className="resource-actions"><button type="button" onClick={() => editResource(resource)}>编辑</button><button type="button" onClick={() => void deleteResource(resource)}>删除</button></div></li>)}</ul>}
         </aside>
       </div>
     </main>

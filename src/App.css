@@ -44,6 +44,7 @@ footer { border-top: 1px solid #393835; color: #77736d; font-size: 0.75rem; lett
 .save-button { background: #c8d0c2; border: 0; color: #20251f; cursor: pointer; justify-self: start; padding: 14px 18px; transition: transform 140ms ease, background-color 180ms ease; }
 .save-button:hover { background: #d9e0d5; }
 .save-button span { display: inline-block; margin-left: 24px; }
+.form-actions { align-items: center; display: flex; gap: 20px; }
 .form-message { color: #c8d0c2; font-size: 0.84rem; }
 .saved-panel { border-top: 1px solid #393835; padding-top: 20px; }
 .saved-panel h2 { font-family: Georgia, "Songti SC", "Noto Serif SC", serif; font-size: 2rem; font-weight: 400; margin: 0 0 24px; }
@@ -51,6 +52,9 @@ footer { border-top: 1px solid #393835; color: #77736d; font-size: 0.75rem; lett
 .saved-panel li { border-top: 1px solid #393835; display: grid; gap: 7px; padding: 17px 0; }
 .saved-panel li span, .saved-panel li small { color: #8e8980; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .saved-panel li strong { font-weight: 500; }
+.resource-actions { display: flex; gap: 16px; }
+.resource-actions button { background: transparent; border: 0; color: #c8d0c2; cursor: pointer; font-size: 0.78rem; padding: 6px 0; }
+.resource-actions button:last-child { color: #d7ad8b; }
 .empty-state { color: #77736d; line-height: 1.7; }
 @media (max-width: 760px) {
   .shell, .admin-shell { width: min(100% - 32px, 560px); padding-top: 28px; }
