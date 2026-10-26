@@ -22,6 +22,12 @@
     }
   ],
   "vars": {
-    "APP_ENV": "local"
-  }
+    "APP_ENV": "production"
+  },
+  "routes": [
+    {
+      "pattern": "klasma.huizhi.ink",
+      "custom_domain": true
+    }
+  ]
 }

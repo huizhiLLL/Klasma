@@ -8,8 +8,8 @@ import { resources } from './db/schema'
 const app = new Hono<{ Bindings: Bindings }>()
 
 const requireAdmin = (c: { env: Bindings; req: { header: (name: string) => string | undefined } }) => {
-  if (!c.env.ADMIN_KEY) return true
-  return c.req.header('X-Admin-Key') === c.env.ADMIN_KEY
+  if (c.env.APP_ENV === 'local') return true
+  return Boolean(c.req.header('Cf-Access-Authenticated-User-Email')) || c.req.header('X-Admin-Key') === c.env.ADMIN_KEY
 }
 
 app.get('/api/health', (c) => c.json({ ok: true, service: 'klasma-api' }))

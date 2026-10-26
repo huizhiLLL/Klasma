@@ -3,5 +3,6 @@ import type { D1Database, R2Bucket } from '@cloudflare/workers-types'
 export type Bindings = {
   DB: D1Database
   ASSETS: R2Bucket
+  APP_ENV?: string
   ADMIN_KEY?: string
 }
