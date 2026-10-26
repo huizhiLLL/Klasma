@@ -34,3 +34,12 @@ npm run cf:deploy
 ```
 
 部署前请确认当前 Wrangler 登录到了目标 Cloudflare 账号。
+
+## GitHub Actions 自动部署
+
+推送到 `master` 会自动执行类型检查、构建、D1 迁移和 Worker 部署。仓库需要配置以下 Actions Secrets：
+
+- `CLOUDFLARE_API_TOKEN`：用于部署的 Cloudflare API Token
+- `CLOUDFLARE_ACCOUNT_ID`：`425afec50d33b391420f5a8652fcab50`
+
+本机 Wrangler 的 OAuth 登录凭据不会复制到 GitHub Actions。
