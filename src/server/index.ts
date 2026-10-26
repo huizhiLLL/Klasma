@@ -9,7 +9,8 @@ const app = new Hono<{ Bindings: Bindings }>()
 
 const requireAdmin = (c: { env: Bindings; req: { header: (name: string) => string | undefined } }) => {
   if (c.env.APP_ENV === 'local') return true
-  return Boolean(c.req.header('Cf-Access-Authenticated-User-Email')) || c.req.header('X-Admin-Key') === c.env.ADMIN_KEY
+  const adminKey = c.env.ADMIN_KEY
+  return Boolean(c.req.header('Cf-Access-Authenticated-User-Email')) || Boolean(adminKey) && c.req.header('X-Admin-Key') === adminKey
 }
 
 app.get('/api/health', (c) => c.json({ ok: true, service: 'klasma-api' }))
