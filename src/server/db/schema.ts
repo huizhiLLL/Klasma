@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const resources = sqliteTable('resources', {
   id: text('id').primaryKey(),
@@ -20,4 +20,30 @@ export const resourceLinks = sqliteTable('resource_links', {
   kind: text('kind').notNull(),
   url: text('url').notNull(),
   label: text('label').notNull().default(''),
+})
+
+export const tags = sqliteTable('tags', {
+  id: text('id').primaryKey(),
+  slug: text('slug').notNull().unique(),
+  label: text('label').notNull(),
+})
+
+export const resourceTags = sqliteTable('resource_tags', {
+  resourceId: text('resource_id').notNull().references(() => resources.id),
+  tagId: text('tag_id').notNull().references(() => tags.id),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.resourceId, table.tagId] }),
+}))
+
+export const resourceAssets = sqliteTable('resource_assets', {
+  id: text('id').primaryKey(),
+  resourceId: text('resource_id').notNull().references(() => resources.id),
+  kind: text('kind').notNull(),
+  filename: text('filename').notNull(),
+  storageType: text('storage_type', { enum: ['r2', 'external'] }).notNull(),
+  location: text('location').notNull(),
+  mimeType: text('mime_type').notNull().default('application/octet-stream'),
+  size: integer('size'),
+  metadata: text('metadata').notNull().default('{}'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })
