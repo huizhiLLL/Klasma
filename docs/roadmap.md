@@ -1,5 +1,13 @@
 # Klasma 开发路线
 
+## 当前进度（2026-10-26）
+
+- 阶段 0 已完成：React + Vite、Cloudflare Worker、D1、R2、Wrangler 配置和远程资源已建立。
+- 阶段 1 已完成基础闭环：公开查询 API、管理 API、本地 D1 migration、最小资源录入页面和生产部署。
+- 线上地址：`https://klasma.huizhi.ink`。
+- 管理写入接口暂时等待 Cloudflare Access 配置，生产环境默认拒绝未认证请求。
+- 下一步进入阶段 2，先补齐资源编辑、链接与附件模型，再完善公开列表和详情页。
+
 ## 阶段 0：项目骨架
 
 目标：建立可运行的 React + Vite + Cloudflare Worker 项目，完成本地开发和部署配置。
