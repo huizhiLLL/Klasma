@@ -12,6 +12,7 @@ type Resource = {
   status: 'draft' | 'published'
   links?: Array<{ id?: string; kind: string; url: string; label: string }>
   tags?: Array<{ slug: string; label: string }>
+  assets?: Array<{ id: string; filename: string; kind: string }>
 }
 
 const sections = [
@@ -110,13 +111,14 @@ function ResourceDetail({ slug, onBack }: { slug: string; onBack: () => void }) 
   useEffect(() => { fetch(`/api/resources/${slug}`).then((response) => { if (!response.ok) throw new Error('missing'); return response.json() as Promise<{ data: Resource }> }).then(({ data }) => setResource(data)).catch(() => setMissing(true)) }, [slug])
   if (missing) return <main className="browser-shell"><button className="text-button" type="button" onClick={onBack}>← 返回</button><h1>没有找到这条资源。</h1></main>
   if (!resource) return <main className="browser-shell"><p className="empty-state">正在读取资源…</p></main>
-  return <main className="detail-shell"><button className="text-button" type="button" onClick={onBack}>← 返回收藏</button><p className="kicker">{resource.type} / {resource.status}</p><h1>{resource.title}</h1><p className="detail-summary">{resource.summary}</p><div className="detail-content">{resource.content || '这条资源还没有补充详细内容。'}</div>{resource.links?.length ? <div className="detail-links">{resource.links.map((link) => <a href={link.url} target="_blank" rel="noreferrer" key={link.id ?? link.url}>{link.label || link.url} ↗</a>)}</div> : null}</main>
+  return <main className="detail-shell"><button className="text-button" type="button" onClick={onBack}>← 返回收藏</button><p className="kicker">{resource.type} / {resource.status}</p><h1>{resource.title}</h1><p className="detail-summary">{resource.summary}</p><div className="detail-content">{resource.content || '这条资源还没有补充详细内容。'}</div>{resource.links?.length ? <div className="detail-links">{resource.links.map((link) => <a href={link.url} target="_blank" rel="noreferrer" key={link.id ?? link.url}>{link.label || link.url} ↗</a>)}</div> : null}{resource.assets?.length ? <div className="detail-links">{resource.assets.map((asset) => <a href={`/api/assets/${asset.id}`} target="_blank" rel="noreferrer" key={asset.id}>{asset.filename} ↓</a>)}</div> : null}</main>
 }
 
 function AdminPage({ onBack }: { onBack: () => void }) {
   const [saved, setSaved] = useState<Resource[]>([])
   const [message, setMessage] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [assetFile, setAssetFile] = useState<File | null>(null)
   const [form, setForm] = useState({ type: 'tools', slug: '', title: '', summary: '', content: '', links: '', tags: '', status: 'draft' })
 
   const loadResources = () => fetch('/api/admin/resources').then((response) => response.json() as Promise<{ data: Resource[] }>).then(({ data }) => setSaved(data)).catch(() => setMessage('后台 API 尚未启动，先检查 Wrangler 开发服务器。'))
@@ -168,6 +170,17 @@ function AdminPage({ onBack }: { onBack: () => void }) {
     if (response.ok) void loadResources()
   }
 
+  const uploadAsset = async () => {
+    if (!editingId || !assetFile) return
+    const body = new FormData()
+    body.set('resourceId', editingId)
+    body.set('kind', 'attachment')
+    body.set('file', assetFile)
+    const response = await fetch('/api/admin/assets', { method: 'POST', body })
+    setMessage(response.ok ? '附件已上传到 R2。' : '附件上传失败，请检查 Worker 日志。')
+    if (response.ok) { setAssetFile(null); void loadResources() }
+  }
+
   return (
     <main className="admin-shell">
       <header className="admin-header">
@@ -188,13 +201,14 @@ function AdminPage({ onBack }: { onBack: () => void }) {
             <label>标签<input value={form.tags} onChange={(event) => setForm({ ...form, tags: event.target.value })} placeholder="minecraft, sfm, automation" /></label>
             <label>状态<select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}><option value="draft">草稿</option><option value="published">发布</option></select></label>
             <div className="form-actions"><button className="save-button" type="submit">{editingId ? '更新资源' : '保存资源'} <span>↗</span></button>{editingId && <button className="text-button" type="button" onClick={() => { setEditingId(null); setForm({ type: 'tools', slug: '', title: '', summary: '', content: '', links: '', tags: '', status: 'draft' }) }}>取消编辑</button>}</div>
+            {editingId && <div className="asset-upload"><label>上传附件<input type="file" onChange={(event) => setAssetFile(event.target.files?.[0] ?? null)} /></label><button className="text-button" type="button" disabled={!assetFile} onClick={() => void uploadAsset()}>上传到 R2 ↗</button></div>}
             {message && <p className="form-message" role="status">{message}</p>}
           </form>
         </section>
         <aside className="saved-panel">
           <p className="kicker">Current archive</p>
           <h2>已录入的资源</h2>
-          {saved.length === 0 ? <p className="empty-state">还没有资源，先保存第一条。</p> : <ul>{saved.map((resource) => <li key={resource.id}><span>{resource.type} · {resource.status}</span><strong>{resource.title}</strong><small>{resource.summary || '没有摘要'}</small><div className="resource-actions"><button type="button" onClick={() => editResource(resource)}>编辑</button><button type="button" onClick={() => void deleteResource(resource)}>删除</button></div></li>)}</ul>}
+          {saved.length === 0 ? <p className="empty-state">还没有资源，先保存第一条。</p> : <ul>{saved.map((resource) => <li key={resource.id}><span>{resource.type} · {resource.status}</span><strong>{resource.title}</strong><small>{resource.summary || '没有摘要'}{resource.assets?.length ? ` · ${resource.assets.length} 个附件` : ''}</small><div className="resource-actions"><button type="button" onClick={() => editResource(resource)}>编辑</button><button type="button" onClick={() => void deleteResource(resource)}>删除</button></div></li>)}</ul>}
         </aside>
       </div>
     </main>
