@@ -9,8 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
-    "cf:dev": "wrangler dev",
-    "cf:deploy": "npm run build && wrangler deploy"
+    "cf:dev": "npx wrangler dev",
+    "cf:deploy": "npm run build && npx wrangler deploy"
   },
   "dependencies": {
     "drizzle-orm": "^0.44.7",
