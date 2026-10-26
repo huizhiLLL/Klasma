@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "klasma",
+  "main": "src/server/index.ts",
+  "compatibility_date": "2026-10-26",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "klasma-db",
+      "database_id": "22f633a8-2170-48c2-9eee-622006793711",
+      "migrations_dir": "drizzle/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ASSETS",
+      "bucket_name": "klasma-assets"
+    }
+  ]
+}
