@@ -20,5 +20,8 @@
       "binding": "ASSETS",
       "bucket_name": "klasma-assets"
     }
-  ]
+  ],
+  "vars": {
+    "APP_ENV": "local"
+  }
 }
