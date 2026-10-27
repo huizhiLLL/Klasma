@@ -198,4 +198,6 @@ app.delete('/api/admin/assets/:id', async (c) => {
   return c.body(null, 204)
 })
 
+app.all('*', (c) => c.env.ASSETS.fetch(c.req.raw))
+
 export default app
