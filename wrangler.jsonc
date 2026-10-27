@@ -17,7 +17,7 @@
   ],
   "r2_buckets": [
     {
-      "binding": "ASSETS",
+      "binding": "BUCKET",
       "bucket_name": "klasma-assets"
     }
   ],

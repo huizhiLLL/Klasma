@@ -49,7 +49,7 @@ app.get('/api/assets/:id', async (c) => {
   const asset = rows[0]
   if (!asset) return c.notFound()
   if (asset.storageType === 'external') return c.redirect(asset.location)
-  const object = await c.env.ASSETS.get(asset.location)
+  const object = await c.env.BUCKET.get(asset.location)
   if (!object) return c.notFound()
   const headers = new Headers() as unknown as Headers
   object.writeHttpMetadata(headers as unknown as import('@cloudflare/workers-types').Headers)
@@ -182,7 +182,7 @@ app.post('/api/admin/assets', async (c) => {
   const assetId = crypto.randomUUID()
   const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
   const key = `resources/${resourceId}/${assetId}-${safeFilename}`
-  await c.env.ASSETS.put(key, await file.arrayBuffer(), { httpMetadata: { contentType: file.type || 'application/octet-stream' } })
+  await c.env.BUCKET.put(key, await file.arrayBuffer(), { httpMetadata: { contentType: file.type || 'application/octet-stream' } })
   const asset = { id: assetId, resourceId, kind, filename: file.name, storageType: 'r2' as const, location: key, mimeType: file.type || 'application/octet-stream', size: file.size, metadata: '{}', createdAt: new Date() }
   await db.insert(resourceAssets).values(asset)
   return c.json({ data: { ...asset, url: `/api/assets/${asset.id}` } }, 201)
@@ -193,7 +193,7 @@ app.delete('/api/admin/assets/:id', async (c) => {
   const db = createDb(c.env.DB)
   const asset = await db.select().from(resourceAssets).where(eq(resourceAssets.id, c.req.param('id'))).limit(1)
   if (!asset[0]) return c.json({ error: 'Asset not found' }, 404)
-  if (asset[0].storageType === 'r2') await c.env.ASSETS.delete(asset[0].location)
+  if (asset[0].storageType === 'r2') await c.env.BUCKET.delete(asset[0].location)
   await db.delete(resourceAssets).where(eq(resourceAssets.id, asset[0].id))
   return c.body(null, 204)
 })
