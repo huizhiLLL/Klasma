@@ -36,10 +36,10 @@ function App() {
   if (route.startsWith('/resource/')) return <ResourceDetail slug={route.replace('/resource/', '')} onBack={() => { window.history.pushState({}, '', '/'); setRoute('/') }} />
   const type = new URLSearchParams(window.location.search).get('type') as Resource['type'] | null
   if (type) return <ResourceBrowser type={type} onBack={() => { window.history.pushState({}, '', '/'); setRoute('/') }} />
-  return <CollectionHome onAdmin={() => { window.history.pushState({}, '', '/admin'); setRoute('/admin') }} />
+  return <CollectionHome />
 }
 
-function CollectionHome({ onAdmin }: { onAdmin: () => void }) {
+function CollectionHome() {
   const [resources, setResources] = useState<Resource[]>([])
   const [apiState, setApiState] = useState<'loading' | 'ready' | 'offline'>('loading')
 
@@ -52,10 +52,7 @@ function CollectionHome({ onAdmin }: { onAdmin: () => void }) {
 
   return (
     <main className="shell">
-      <header className="topline">
-        <p className="eyebrow">KLASMA / PERSONAL COLLECTION</p>
-        <button className="text-button" type="button" onClick={onAdmin}>管理入口 ↗</button>
-      </header>
+      <header className="topline"><p className="eyebrow">KLASMA / PERSONAL COLLECTION</p></header>
       <section className="intro">
         <p className="kicker">A small archive of useful things</p>
         <h1>拾起值得留下的碎片。</h1>
@@ -121,19 +118,35 @@ function ResourceDetail({ slug, onBack }: { slug: string; onBack: () => void }) 
 function AdminPage({ onBack }: { onBack: () => void }) {
   const [saved, setSaved] = useState<Resource[]>([])
   const [message, setMessage] = useState('')
+  const [adminKey, setAdminKey] = useState(() => window.localStorage.getItem('klasma_admin_key') ?? '')
+  const [authNeeded, setAuthNeeded] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [assetFile, setAssetFile] = useState<File | null>(null)
   const [form, setForm] = useState({ type: 'tools', slug: '', title: '', summary: '', content: '', links: '', tags: '', status: 'draft' })
 
-  const loadResources = () => fetch('/api/admin/resources').then((response) => response.json() as Promise<{ data: Resource[] }>).then(({ data }) => setSaved(data)).catch(() => setMessage('后台 API 尚未启动，先检查 Wrangler 开发服务器。'))
+  const adminHeaders = (json = false) => ({ ...(json ? { 'Content-Type': 'application/json' } : {}), ...(adminKey ? { 'X-Admin-Key': adminKey } : {}) })
+  const loadResources = async () => {
+    const response = await fetch('/api/admin/resources', { headers: adminHeaders() })
+    if (response.status === 401) { setAuthNeeded(true); return }
+    if (!response.ok) { setMessage('后台 API 尚未启动，先检查 Wrangler 开发服务器。'); return }
+    const { data } = await response.json() as { data: Resource[] }
+    setAuthNeeded(false)
+    setSaved(data)
+  }
   useEffect(() => { void loadResources() }, [])
+
+  const saveAdminKey = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    window.localStorage.setItem('klasma_admin_key', adminKey)
+    void loadResources()
+  }
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     setMessage('正在保存…')
     const response = await fetch(editingId ? `/api/admin/resources/${editingId}` : '/api/admin/resources', {
       method: editingId ? 'PUT' : 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: adminHeaders(true),
       body: JSON.stringify({
         type: form.type,
         slug: form.slug,
@@ -169,7 +182,7 @@ function AdminPage({ onBack }: { onBack: () => void }) {
 
   const deleteResource = async (resource: Resource) => {
     if (!window.confirm(`确定删除“${resource.title}”吗？`)) return
-    const response = await fetch(`/api/admin/resources/${resource.id}`, { method: 'DELETE' })
+    const response = await fetch(`/api/admin/resources/${resource.id}`, { method: 'DELETE', headers: adminHeaders() })
     setMessage(response.ok ? '资源已删除。' : '删除失败，请检查 Worker 日志。')
     if (response.ok) void loadResources()
   }
@@ -180,16 +193,18 @@ function AdminPage({ onBack }: { onBack: () => void }) {
     body.set('resourceId', editingId)
     body.set('kind', 'attachment')
     body.set('file', assetFile)
-    const response = await fetch('/api/admin/assets', { method: 'POST', body })
+    const response = await fetch('/api/admin/assets', { method: 'POST', headers: adminHeaders(), body })
     setMessage(response.ok ? '附件已上传到 R2。' : '附件上传失败，请检查 Worker 日志。')
     if (response.ok) { setAssetFile(null); void loadResources() }
   }
 
   const deleteAsset = async (assetId: string) => {
-    const response = await fetch(`/api/admin/assets/${assetId}`, { method: 'DELETE' })
+    const response = await fetch(`/api/admin/assets/${assetId}`, { method: 'DELETE', headers: adminHeaders() })
     setMessage(response.ok ? '附件已删除。' : '附件删除失败。')
     if (response.ok) void loadResources()
   }
+
+  if (authNeeded) return <main className="admin-shell"><header className="admin-header"><button className="text-button" type="button" onClick={onBack}>← 返回前台</button><span className="admin-label">Klasma / Admin</span></header><section className="auth-panel"><p className="kicker">Private route</p><h1>输入管理密钥。</h1><form onSubmit={saveAdminKey}><input className="auth-input" type="password" value={adminKey} onChange={(event) => setAdminKey(event.target.value)} placeholder="ADMIN_KEY" autoFocus /><button className="save-button" type="submit">进入管理页 ↗</button></form></section></main>
 
   return (
     <main className="admin-shell">
