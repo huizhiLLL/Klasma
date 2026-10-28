@@ -7,3 +7,7 @@ dist/
 !.env.example
 .DS_Store
 *.log
+
+# 本地浏览器验证产物，不包含 docs/ 下的原型源码和设计草图
+/.playwright-cli/
+/output/playwright/
