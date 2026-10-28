@@ -10,23 +10,23 @@
 | --- | --- | --- |
 | 前端 | React + TypeScript | 公开前台、资源详情、管理后台 |
 | 构建与本地开发 | Vite | 快速开发反馈与前端构建 |
-| 路由 | TanStack Router | 类型安全的客户端路由 |
-| 样式 | Tailwind CSS + 原生 CSS 变量 | 快速搭建基础样式，同时保留视觉自由度 |
-| 基础交互组件 | Radix UI / shadcn/ui | 后台表单、Dialog、Select、上传等基础能力 |
-| 常规动效 | Motion for React | 布局变化、卡片展开、页面内状态转场 |
+| 路由 | 当前使用 History / URL；TanStack Router 为候选 | 后续按页面组织需求决定是否引入 |
+| 样式 | 当前为原生 CSS；Tailwind CSS 为候选 | 以设计约束与有限 token 组织样式 |
+| 基础交互组件 | 当前为原生控件；Radix UI / shadcn/ui 为候选 | 后台表单、Dialog、Select、上传等基础能力 |
+| 常规动效 | Motion for React（待引入与验证） | 布局变化、卡片展开、页面内状态转场 |
 | 复杂时间轴 | GSAP（按需） | 多元素协同和特殊转场，首版不强制引入 |
 | 后端运行时 | Cloudflare Workers | API、鉴权边界和文件操作 |
 | API 框架 | Hono | 路由、中间件和请求处理 |
 | 数据库 | Cloudflare D1 + Drizzle ORM | 元数据、标签、关系和迁移 |
 | 文件存储 | Cloudflare R2 | 蓝图、脚本附件、图片和其他二进制文件 |
-| 后台鉴权 | Cloudflare Access | 保护 `/admin` 与管理 API |
+| 后台鉴权 | 当前支持 ADMIN_KEY；Cloudflare Access 为目标 | 保护 `/admin` 与管理 API，Access 尚待配置和完整验证 |
 | 外部分发 | GitHub Releases、OpenList、官方网站 | 保留已有文件分发渠道 |
 
 React + Vite 首版按 SPA 实现。公开资源详情页的 SEO 和社交分享需求明确后，再评估 SSR 或服务端生成元信息，不为尚未验证的需求提前引入 Next.js 等复杂框架。
 
 ## 3. 部署形态
 
-前端静态资源和 API 放在同一个 Cloudflare 项目中，通过 Workers Static Assets 与 Worker 路由统一部署。公开读取接口保持开放；管理页面和管理写入接口同时受到 Cloudflare Access 保护，并在 Worker 内再次校验身份信息。
+前端静态资源和 API 放在同一个 Cloudflare 项目中，通过 Workers Static Assets 与 Worker 路由统一部署。公开读取接口保持开放，当前管理界面支持密钥输入，Worker 支持 `ADMIN_KEY` 校验；密钥仅由环境 Secret 提供，不写入仓库。Cloudflare Access 仍为目标方案，需落实配置与可信身份验证，不能将请求中身份头的存在直接视为已验证身份。以下示意图描述 Access 落地后的目标边界。
 
 ```text
 Browser
@@ -81,6 +81,8 @@ resource_assets
 类型专属信息先放入 `metadata`，等筛选和查询需求稳定后，再将高频字段提升为正式列或独立关系表。小型文本内容（例如 SFM 代码或 Mermaid 源码）可以直接保存以便搜索、编辑和复制；较大的二进制文件放到 R2 或继续使用外部渠道。
 
 ## 5. 前端边界
+
+下方是后续拆分方向，不代表当前已经存在的目录。当前公开页面与后台主要位于 `src/App.tsx`，API 位于 `src/server/index.ts`。独立设计原型位于 `docs/mockups/`，使用原生 HTML、CSS、JavaScript，不接 API、不参与 Vite 正式应用构建；原型技术选择不自动转为正式架构决策。
 
 ```text
 src/

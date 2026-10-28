@@ -2,6 +2,16 @@
 
 Klasma 是一个个人精选资源库和作品展示站，首期包含 Tools、Projects、Library 三类内容。
 
+## 项目文档
+
+- [项目定位与需求](docs/project.md)
+- [架构与技术边界](docs/architecture.md)
+- [路线与决策](docs/roadmap.md)
+- [UI/UX 设计约束](docs/design.md)
+- [布局与交互原型](docs/mockups/README.md)：独立运行，不连接 API，也不参与正式应用构建。
+
+项目内的 [Refactoring UI skill](.agents/skills/refactoring-ui/SKILL.md) 用于约束排版、间距、层级等设计质量，适用解释见设计文档。
+
 ## 本地开发
 
 ```powershell
