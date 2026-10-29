@@ -1,5 +1,7 @@
 const app = document.querySelector("#app");
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const previewParams = new URLSearchParams(location.search);
+document.body.classList.toggle("embedded", previewParams.has("embed"));
 const categories = ["SFM", "蓝图", "多方块", "配置", "其他"];
 const software = ["Mole", "软件 B", "工具 C", "工具 D", "软件 E"];
 let currentSoftware = 0;
@@ -9,6 +11,8 @@ let currentMedia = 0;
 let activeAnimations = [];
 let transition;
 let lastInput = "pointer";
+let previewObserver;
+let navigationVersion = 0;
 document.addEventListener("keydown", () => {
   lastInput = "keyboard";
 });
@@ -22,8 +26,12 @@ const miniScene = () =>
   `<div class="mini-scene"><div class="mini-object">${structure()}</div><div class="mini-object"><div class="mini-code">EVERY 20 TICKS<br>INPUT → OUTPUT</div></div><div class="mini-object">${structure()}</div></div>`;
 const appWindow = (name = "界面占位", variant = 0) =>
   `<div class="mini-window"><div class="window-bar"><i></i><i></i><i></i><span>${name}</span></div><div class="window-body"><div class="window-sidebar"><b></b><b></b><b></b></div><div class="window-content"><div class="line short"></div><div class="line ${variant ? "accent" : ""}"></div><div class="line short"></div><div class="window-cells">${"<i></i>".repeat(variant === 2 ? 6 : 4)}</div></div></div></div>`;
-const heading = (title, label = "") =>
-  `<header class="page-heading"><div><h1 lang="en" style="view-transition-name:collection-title">${title}</h1>${label ? `<p class="page-label">${label}</p>` : ""}</div><a class="back-home" href="#home">↖ 返回牌阵</a></header>`;
+const collectionRoutes = ["software", "projects", "library"];
+const collectionIndex = (route) => collectionRoutes.indexOf(route === "scene" ? "library" : route);
+const heading = (title, label = "") => {
+  const index = collectionIndex(currentRoute());
+  return `<header class="page-heading"><div><h1 lang="en" class="collection-heading" style="view-transition-name:collection-title"><span>What I </span><span class="word-wheel"><span class="wheel-ghost" aria-hidden="true">${["keep", "prefer", "make"][index]}</span><span class="wheel-word">${["prefer", "make", "keep"][index]}</span><span class="wheel-ghost" aria-hidden="true">${["make", "keep", "prefer"][index]}</span></span></h1>${label ? `<p class="page-label">${label}</p>` : ""}</div><nav class="collection-nav" aria-label="集合导航"><a href="#home" class="home-link" aria-label="返回首页" title="返回首页">⌂</a>${collectionRoutes.map((route, i) => `<a href="#${route}" ${index === i ? 'aria-current="page"' : ""}>${index === i ? '<span class="nav-selection" aria-hidden="true"></span>' : ""}<span>${["Prefer", "Make", "Keep"][i]}</span></a>`).join("")}</nav></header>`;
+};
 
 function home() {
   const wall = `<div class="logo-wall">${["M", "⌘", "P", "K", "↗", "C", "◈", "F", "M", "⌥", "S", "↔"].map((x) => `<span class="logo-tile">${x}</span>`).join("")}</div>`;
@@ -50,16 +58,20 @@ function home() {
       meta: "Fragments",
     },
   ];
-  return `<main id="main" class="frame home-frame"><div class="home-top"><h1>Klasma</h1><p>偏好、创作，以及留下的东西。</p></div><div class="deck">${cards.map((c, i) => `<button class="tarot" data-route="${c.route}" aria-label="${c.cn}，${c.en}"><div class="card-meta"><span>0${i + 1}</span><span>${c.meta}</span></div><div class="card-art">${c.art}</div><div class="card-fade"></div><div class="card-copy"><span>${c.cn}</span><h2 lang="en">${c.en.replace(" I ", " I<br>")}</h2><div class="card-arrow"><span>进入</span><span>↗</span></div></div></button>`).join("")}</div><div class="home-foot"><span>选择一张牌</span><span>What I prefer · make · keep</span></div></main>`;
+  return `<main id="main" class="frame home-frame"><div class="home-top"><div class="creator"><div class="avatar" aria-label="头像占位">枝</div><div><p class="creator-name">会枝 <span>/ huizhiLLL</span></p><p>拾起值得留下的碎片</p></div></div><nav class="personal-links" aria-label="个人站点"><a href="https://github.com/huizhiLLL" target="_blank" rel="noreferrer">GitHub ↗</a><button data-notice="Blog 链接待补充">Blog ↗</button><button data-notice="Weekly 链接待补充">Weekly ↗</button></nav></div><div class="site-intro"><h1>Klasma <span>/ κλάσμα</span></h1><p>源自希腊语，意为「碎片」。<br>这里收藏着我欣赏的软件、亲手做的作品，以及值得保留和复用的工程资产。</p></div><div class="deck">${cards.map((c, i) => `<button class="tarot" data-route="${c.route}" aria-label="${c.cn}，${c.en}"><div class="card-meta"><span>0${i + 1}</span><span>${c.meta}</span></div><div class="card-art">${c.art}</div><div class="card-fade"></div><div class="card-copy"><span>${c.cn}</span><h2 lang="en">${c.en.replace(" I ", " I<br>")}</h2><div class="card-arrow"><span>进入</span><span>↗</span></div></div></button>`).join("")}</div><div class="home-foot"><span>选择一张牌</span><span>What I prefer · make · keep</span></div></main>`;
+}
+
+function softwareArticle() {
+  return `<p>一些值得停下来细看的地方。</p><h3>我喜欢的细节</h3><p>这里放一小段个人观察，与截图互相补充。留白、交互和表达，都可以成为欣赏一个软件的理由。</p>${currentSoftware === 1 ? "" : `<h3>背后的选择</h3>${Array.from({length: 5}, (_, i) => `<p>片段 ${i + 1} / 记录作者的思考，也留下自己的理解。一个工具值得被分享，往往来自那些细小却持续影响使用感受的选择。这里用较长的示例文字观察阅读节奏与展开过程。</p>`).join("")}`}<p class="source">示例文案 · 非软件测评</p>`;
 }
 
 function softwareContent() {
   const name = software[currentSoftware];
-  return `<div class="media-column"><div class="media-screen">${appWindow(`${name} · 界面占位 ${currentMedia + 1}`, currentMedia)}</div><div class="thumbnails" aria-label="截图选择">${["主界面", "细节", "另一视角"].map((t, i) => `<button class="thumbnail ${i === currentMedia ? "selected" : ""}" data-media="${i}" aria-pressed="${i === currentMedia}">0${i + 1} / ${t}</button>`).join("")}</div></div><article class="article" tabindex="0" aria-label="${name} 的分享内容"><span class="eyebrow">${currentSoftware ? "Software" : "Windows · tw93"}</span><h2>${name}</h2><p>一些值得停下来细看的地方。</p><h3>我喜欢的细节</h3><p>这里放一小段个人观察，与左侧截图互相补充。留白、交互和表达，都可以成为欣赏一个软件的理由。</p><h3>背后的选择</h3><p>记录作者的思考，也留下自己的理解。篇幅可以很短，更多内容仍然在这里阅读。</p><p class="source">示例文案 · 媒体为布局占位</p><button class="pill-button" data-notice="正式内容将在这里连接作者或软件官网">作者与官网 ↗</button></article>`;
+  return `<div class="media-column"><div class="media-screen">${appWindow(`${name} · 界面占位 ${currentMedia + 1}`, currentMedia)}</div><div class="thumbnails" aria-label="截图选择">${["主界面", "细节", "另一视角"].map((t, i) => `<button class="thumbnail ${i === currentMedia ? "selected" : ""}" data-media="${i}" aria-pressed="${i === currentMedia}">0${i + 1} / ${t}</button>`).join("")}</div></div><section class="article" aria-label="${name} 的分享内容"><span class="eyebrow">${currentSoftware ? "Software" : "Windows · tw93"}</span><h2>${name}</h2><div class="article-preview"><div class="article-copy">${softwareArticle()}</div></div><div class="article-actions"><button class="pill-button" data-read-more hidden>阅读全文 ↗</button><button class="text-button" data-notice="官网链接待补充">官网 ↗</button></div></section>`;
 }
 
 function softwarePage() {
-  return `<main id="main" class="frame software-frame" style="view-transition-name:collection">${heading("What I prefer", "软件 / 欣赏与分享")}<section class="software-layout" id="software-content">${softwareContent()}</section><div class="dock-wrap"><nav class="dock" aria-label="软件切换">${software.map((name, i) => `<button class="app-icon" data-software="${i}" aria-label="${name}" aria-pressed="${currentSoftware === i}">${["M", "B", "C", "D", "E"][i]}<span class="tip">${name}</span></button>`).join("")}</nav></div></main>`;
+  return `<main id="main" class="frame software-frame" style="view-transition-name:collection">${heading("What I prefer", "软件 / 欣赏与分享")}<section class="software-layout" id="software-content">${softwareContent()}</section><div class="dock-wrap"><nav class="dock" aria-label="软件切换">${software.map((name, i) => `<button class="app-icon" data-software="${i}" aria-label="${name}" aria-pressed="${currentSoftware === i}">${["M", "B", "C", "D", "E"][i]}<span class="tip">${name}</span></button>`).join("")}</nav></div><dialog class="modal reader" aria-labelledby="reader-title"><div class="modal-head"><h2 id="reader-title"></h2><button data-close-reader aria-label="关闭阅读全文">×</button></div><article class="reader-body"></article></dialog></main>`;
 }
 
 function projectContent() {
@@ -93,7 +105,7 @@ function pizza() {
 }
 
 function libraryPage() {
-  return `<main id="main" class="frame library-frame" style="view-transition-name:collection">${heading("What I keep", "工程资产 / 蓝图、结构与代码")}<div class="pizza-stage">${pizza()}<button class="preview-bubble" aria-label="进入分类场景"><div class="preview-art">${miniScene()}</div><div class="preview-caption"><span id="preview-name">SFM</span><span>进入 ↗</span></div></button></div><p class="library-hint">悬停看缩略图，点击进入场景</p></main>`;
+  return `<main id="main" class="frame library-frame" style="view-transition-name:collection">${heading("What I keep", "工程资产 / 蓝图、结构与代码")}<div class="pizza-stage">${pizza()}<button class="preview-bubble" aria-label="进入分类场景" hidden><div class="preview-art">${miniScene()}</div><div class="preview-caption"><span id="preview-name">SFM</span><span>进入 ↗</span></div></button></div><p class="library-hint"><span class="pointer-hint">悬停看缩略图，点击进入场景</span><span class="touch-hint">点选分类预览，再点缩略图进入</span></p></main>`;
 }
 
 function scenePage() {
@@ -102,7 +114,7 @@ function scenePage() {
     currentCategory === 0
       ? ["产线结构", "控制流程", "空间布局"]
       : ["结构片段", "运行示意", "蓝图片段"];
-  return `<main id="main" class="frame scene-frame"><header class="page-heading scene-heading"><h1>${cat}<span lang="en">What I keep</span></h1><a class="back-home" href="#home">↖ 返回牌阵</a></header><div class="scene-canvas" style="view-transition-name:asset-scene">${titles.map((name, i) => `<button class="asset-item" data-asset="${i}" aria-label="打开${name}详情"><div class="asset-image">${i === 1 ? '<div class="mini-code">EVERY 20 TICKS DO<br> INPUT → MACHINE<br> OUTPUT → STORAGE<br>END</div>' : structure()}</div><div class="asset-caption">${name}<span>0${i + 1} ↗</span></div></button>`).join("")}</div><button class="return-arc" data-route="library" aria-label="返回全局分类"><strong>↙</strong><span>返回全局</span></button><dialog class="modal" aria-labelledby="detail-title"><div class="modal-head"><h2 id="detail-title">资产详情</h2><button data-close-modal aria-label="关闭详情">×</button></div><div class="modal-placeholder">${structure()}</div><p>按资产类型单独设计，此处仅确认遮罩与返回关系。</p></dialog></main>`;
+  return `<main id="main" class="frame scene-frame" data-quadrant="${currentCategory}">${heading("What I keep", `工程资产 / ${cat}`)}<div class="scene-canvas" style="view-transition-name:asset-scene">${titles.map((name, i) => `<button class="asset-item" data-asset="${i}" aria-label="打开${name}详情"><div class="asset-image">${i === 1 ? '<div class="mini-code">EVERY 20 TICKS DO<br> INPUT → MACHINE<br> OUTPUT → STORAGE<br>END</div>' : structure()}</div><div class="asset-caption">${name}<span>0${i + 1} ↗</span></div></button>`).join("")}</div><button class="return-arc" data-route="library" aria-label="返回全局分类"><strong>↙</strong><span>返回全局</span></button><dialog class="modal" aria-labelledby="detail-title"><div class="modal-head"><h2 id="detail-title">资产详情</h2><button data-close-modal aria-label="关闭详情">×</button></div><div class="modal-placeholder">${structure()}</div><p>按资产类型单独设计，此处仅确认遮罩与返回关系。</p></dialog></main>`;
 }
 
 const views = {
@@ -116,21 +128,32 @@ function currentRoute() {
   return location.hash.slice(1) || "home";
 }
 function render() {
+  previewObserver?.disconnect();
   const route = currentRoute();
+  if (route === "scene" && Number.isInteger(history.state?.category)) currentCategory = history.state.category;
   app.innerHTML = (views[route] || home)();
   document
     .querySelectorAll(".review-bar nav a")
     .forEach((a) => a.classList.toggle("active", a.hash === `#${route}`));
   document.title = `Klasma · ${{ home: "首页", software: "软件", projects: "作品", library: "全局", scene: "场景" }[route] || "首页"}`;
   bind();
+  observePreview();
 }
 function updateHash(route) {
-  history.pushState(null, "", `#${route}`);
+  history.pushState({ category: currentCategory }, "", `#${route}`);
   render();
+  document.querySelector("#main h1")?.setAttribute("tabindex", "-1");
+  document.querySelector("#main h1")?.focus({ preventScroll: true });
 }
-function navigate(route, source) {
-  if (route === currentRoute()) return;
+async function navigate(route, source) {
+  const version = ++navigationVersion;
   transition?.skipTransition();
+  await transition?.updateCallbackDone.catch(() => {});
+  if (version !== navigationVersion) return;
+  if (route === currentRoute()) return;
+  const oldIndex = collectionIndex(currentRoute());
+  const newIndex = collectionIndex(route);
+  document.documentElement.style.setProperty("--wheel-direction", newIndex >= oldIndex ? 1 : -1);
   activeAnimations.forEach((a) => a.cancel());
   activeAnimations = [];
   document.querySelectorAll(".animation-ghost").forEach((el) => el.remove());
@@ -145,6 +168,7 @@ function navigate(route, source) {
   if (route === "library" && currentRoute() === "scene") {
     // 返回时重建原来的缩略图位置，保持场景身份连续。
     const change = () => {
+      if (version !== navigationVersion) return;
       updateHash(route);
       showPreview(currentCategory);
       document.querySelector(".preview-art").style.viewTransitionName =
@@ -155,9 +179,12 @@ function navigate(route, source) {
     else change();
     return;
   }
+  const change = () => {
+    if (version === navigationVersion) updateHash(route);
+  };
   if (document.startViewTransition && motionAllowed())
-    transition = document.startViewTransition(() => updateHash(route));
-  else updateHash(route);
+    transition = document.startViewTransition(change);
+  else change();
 }
 
 function runAnimation(el, frames, duration = 550) {
@@ -216,6 +243,7 @@ function changeSoftware(index) {
   currentSoftware = index;
   currentMedia = 0;
   panel.innerHTML = softwareContent();
+  observePreview();
   document
     .querySelectorAll("[data-software]")
     .forEach((b) =>
@@ -270,6 +298,7 @@ function showPreview(index) {
   currentCategory = index;
   const bubble = document.querySelector(".preview-bubble");
   if (!bubble) return;
+  bubble.hidden = false;
   bubble.classList.add("visible");
   bubble.setAttribute("aria-label", `进入${categories[index]}场景`);
   document.querySelector("#preview-name").textContent = categories[index];
@@ -279,6 +308,33 @@ function showPreview(index) {
       el.classList.toggle("previewing", Number(el.dataset.category) === index),
     );
   // 预览与分类在同一操作区域内，跨过空隙时仍可点击气泡。
+}
+
+function observePreview() {
+  previewObserver?.disconnect();
+  const preview = document.querySelector(".article-preview");
+  if (!preview) return;
+  const update = () => {
+    const overflowing = preview.scrollHeight > preview.clientHeight + 1;
+    document.querySelector("[data-read-more]").hidden = !overflowing;
+    preview.classList.toggle("overflowing", overflowing);
+    // 预览只展示可见片段，完整语义由阅读层提供。
+    preview.inert = overflowing;
+    preview.setAttribute("aria-hidden", String(overflowing));
+  };
+  previewObserver = new ResizeObserver(update);
+  previewObserver.observe(preview);
+  previewObserver.observe(preview.firstElementChild);
+  update();
+}
+
+function openReader() {
+  const reader = document.querySelector(".reader");
+  reader.querySelector("#reader-title").textContent = software[currentSoftware];
+  reader.querySelector(".reader-body").innerHTML = softwareArticle();
+  reader.showModal();
+  reader.scrollTop = 0;
+  runAnimation(reader, [{ opacity: 0, transform: "translateY(18px) scale(.97)" }, { opacity: 1, transform: "none" }], 300);
 }
 
 function notice(message) {
@@ -308,6 +364,14 @@ function bind() {
   });
 }
 document.addEventListener("click", (e) => {
+  if (e.target.closest("[data-read-more]")) {
+    openReader();
+    return;
+  }
+  if (e.target.closest("[data-close-reader]")) {
+    document.querySelector(".reader").close();
+    return;
+  }
   const routeButton = e.target.closest("[data-route]");
   if (routeButton) {
     navigate(routeButton.dataset.route, routeButton);
@@ -316,7 +380,13 @@ document.addEventListener("click", (e) => {
   const link = e.target.closest('a[href^="#"]');
   if (link && link.hash !== "#main") {
     e.preventDefault();
-    if (link.dataset.category) currentCategory = Number(link.dataset.category);
+    if (link.dataset.category !== undefined) {
+      currentCategory = Number(link.dataset.category);
+      if (matchMedia("(hover: none), (max-width: 700px)").matches) {
+        showPreview(currentCategory);
+        return;
+      }
+    }
     navigate(link.getAttribute("href").slice(1), link);
     return;
   }
@@ -366,6 +436,15 @@ document.addEventListener("click", (e) => {
   const toast = e.target.closest("[data-notice]");
   if (toast) notice(toast.dataset.notice);
 });
-window.addEventListener("popstate", render);
-window.addEventListener("hashchange", render);
+function renderHistory() {
+  navigationVersion++;
+  transition?.skipTransition();
+  activeAnimations.forEach((a) => a.cancel());
+  document.querySelectorAll(".animation-ghost").forEach((el) => el.remove());
+  render();
+}
+window.addEventListener("popstate", renderHistory);
+window.addEventListener("hashchange", renderHistory);
 render();
+if (previewParams.get("panel") === "reader" && currentRoute() === "software") openReader();
+if (previewParams.get("panel") === "asset" && currentRoute() === "scene") document.querySelector(".modal").showModal();

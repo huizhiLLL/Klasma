@@ -1,0 +1,24 @@
+:root { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; color: #252b31; background: #eaf0f2; --preview-width: 390px; --preview-height: 844px; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: inherit; }
+.preview-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; padding: 20px 28px; background: #fff; border-bottom: 1px solid #dce2e5; }
+.preview-toolbar > div { margin-right: auto; }
+.preview-toolbar a { font-size: 13px; }
+h1 { font-size: 20px; font-weight: 500; margin: 8px 0 0; }
+label { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+select { min-height: 44px; padding: 8px 12px; color: inherit; background: #f3f5f6; border: 1px solid #dce2e5; border-radius: 8px; font: inherit; }
+select:focus-visible, a:focus-visible { outline: 3px solid #527b70; outline-offset: 3px; }
+.preview-note { margin: 20px 28px; max-width: 780px; font-size: 13px; line-height: 1.8; color: #59686f; }
+.preview-grid { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 36px; padding: 8px 28px 48px; }
+.preview-item { flex: none; margin: 0; width: var(--preview-width); }
+.preview-item h2 { font-size: 15px; font-weight: 500; margin: 0 0 12px; }
+.preview-item p { font-size: 12px; color: #59686f; margin: 12px 0; line-height: 1.8; }
+iframe { display: block; width: var(--preview-width); height: var(--preview-height); border: 1px solid #c5d0d5; border-radius: 12px; background: white; }
+[hidden] { display: none !important; }
+@media (max-width: 500px) {
+  .preview-toolbar { padding: 16px; gap: 12px; }
+  .preview-toolbar > div { flex-basis: 100%; }
+  .preview-grid { padding: 8px 12px 30px; }
+  .preview-note { margin: 16px; }
+}
