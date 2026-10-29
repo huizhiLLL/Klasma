@@ -3,6 +3,8 @@
   --canvas: #f5f6f8; --surface: #fcfdfe; --ink: #202731; --muted: #596575;
   --border: #d8dee7; --control-border: #7b8796; --blue: #2464d4; --blue-hover: #1c53b6; --blue-pressed: #174594; --blue-soft: #eaf1fd;
   --surface-card: rgb(252 253 254 / .64); --surface-floating: rgb(252 253 254 / .96); --overlay: rgb(32 39 49 / .28);
+  --motion-feedback: 140ms; --motion-switch: 280ms; --motion-spatial: 560ms;
+  --ease-settle: cubic-bezier(.22, 1, .36, 1);
   --radius-control: 8px; --radius-card: 16px; --radius-reader: 20px;
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
   --shadow-card: 0 2px 3px rgb(32 39 49 / .06), 0 16px 32px rgb(32 39 49 / .08);
@@ -69,7 +71,7 @@ h1 { font-size: clamp(28px, 3.3vw, 44px); font-weight: 600; line-height: 1.5; }
 .canvas { background: var(--canvas); } .surface { background: var(--surface); } .ink { background: var(--ink); } .muted { background: var(--muted); } .blue { background: var(--blue); } .blue-soft { background: var(--blue-soft); }
 .control-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-12); }
 .button-row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
-.primary, .secondary { font-size: 14px; padding: var(--space-2) var(--space-4); border-radius: var(--radius-control); border: 1px solid transparent; transition: background-color 140ms ease, transform 140ms ease; }
+.primary, .secondary { font-size: 14px; padding: var(--space-2) var(--space-4); border-radius: var(--radius-control); border: 1px solid transparent; transition: background-color var(--motion-feedback) ease, transform var(--motion-feedback) ease; }
 .primary { background: var(--blue); color: #fff; }
 .primary:hover { background: var(--blue-hover); }
 .primary:active { background: var(--blue-pressed); transform: scale(.98); }
@@ -123,3 +125,17 @@ dialog::backdrop { background: var(--overlay); }
 .material-example h3 { font-size: 16px; font-weight: 600; line-height: 1.8; margin-top: var(--space-4); }
 .material-example p { font-size: 14px; color: var(--muted); line-height: 1.8; margin-top: var(--space-1); }
 @media (max-width: 760px) { .material-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.motion-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
+.motion-stage { min-height: 192px; display: grid; place-items: center; overflow: hidden; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); }
+.motion-piece { display: block; width: 64px; height: 44px; background: var(--blue-soft); border: 1px solid var(--blue); border-radius: var(--radius-control); }
+.motion-wide { width: 96px; height: 64px; }
+.motion-tall { width: 64px; height: 96px; border-radius: var(--radius-card); }
+.motion-piece[data-played="true"] { background: var(--blue); }
+.motion-example h3 { margin-top: var(--space-4); font-size: 16px; line-height: 1.8; font-weight: 600; }
+.motion-example p { margin-top: var(--space-1); font-size: 14px; line-height: 1.8; color: var(--muted); }
+.motion-example button { margin-top: var(--space-4); }
+.motion-setting { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: 14px; cursor: pointer; }
+.motion-setting input { width: 20px; height: 20px; accent-color: var(--blue); }
+.motion-setting input:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+@media (max-width: 760px) { .motion-grid { grid-template-columns: minmax(0, 1fr); } }

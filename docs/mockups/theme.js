@@ -40,6 +40,53 @@ document.querySelector("#state-button").addEventListener("click", () => {
   document.querySelector("#state-feedback").textContent = "已收到点击，可以继续查看悬停和聚焦状态。";
 });
 
+const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+const reduceMotion = document.querySelector("#reduce-motion");
+const activeMotions = new Map();
+const motionNames = { feedback: "短促反馈", switch: "连贯切换", spatial: "空间展开" };
+const motionFrames = {
+  feedback: [{ transform: "scale(1)" }, { transform: "scale(.96)", offset: .4 }, { transform: "none" }],
+  switch: [{ transform: "translateY(24px)", opacity: .25 }, { transform: "none", opacity: 1 }],
+  spatial: [{ transform: "translateY(24px) rotate(-8deg) scale(.9)" }, { transform: "translateY(-5px) rotate(1deg) scale(1.02)", offset: .75 }, { transform: "none" }],
+};
+function motionReduced() { return motionPreference.matches || reduceMotion.checked; }
+function stopMotions() {
+  for (const animation of activeMotions.values()) animation.cancel();
+  activeMotions.clear();
+  document.querySelector("#motion-status").textContent = motionReduced()
+    ? "减少动态：直接显示操作结果，保留相同信息。"
+    : "点击重播查看节奏；时长与曲线为候选。";
+}
+reduceMotion.addEventListener("change", stopMotions);
+motionPreference.addEventListener("change", stopMotions);
+document.querySelectorAll("[data-motion]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const kind = button.dataset.motion;
+    const piece = document.getElementById(`motion-${kind}`);
+    const previous = activeMotions.get(kind);
+    const currentStyle = getComputedStyle(piece);
+    const current = { transform: currentStyle.transform, opacity: currentStyle.opacity };
+    previous?.cancel();
+    activeMotions.delete(kind);
+    piece.dataset.played = String(piece.dataset.played !== "true");
+    const reduced = motionReduced() || typeof piece.animate !== "function";
+    document.querySelector("#motion-status").textContent = `${motionNames[kind]}：${reduced ? "已直接切换状态" : "已触发演示，可再次点击接续"}。`;
+    if (reduced) return;
+    const frames = motionFrames[kind].map((frame) => ({ ...frame }));
+    if (previous) frames[0] = current;
+    const styles = getComputedStyle(document.documentElement);
+    const animation = piece.animate(frames, {
+      duration: parseFloat(styles.getPropertyValue(`--motion-${kind}`)),
+      easing: styles.getPropertyValue("--ease-settle").trim(),
+    });
+    activeMotions.set(kind, animation);
+    animation.onfinish = () => {
+      if (activeMotions.get(kind) === animation) activeMotions.delete(kind);
+    };
+  });
+});
+stopMotions();
+
 const probes = [
   ["MiSans", 400, "软件作品工程资产"], ["MiSans", 600, "软件"],
   ["Manrope", 400, "Klasma"], ["Manrope", 700, "What I prefer"],
