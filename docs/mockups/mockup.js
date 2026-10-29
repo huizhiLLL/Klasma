@@ -13,6 +13,9 @@ let transition;
 let lastInput = "pointer";
 let previewObserver;
 let navigationVersion = 0;
+let returningCardRoute = null;
+const icon = (name) => `<svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="icons/lucide/sprite.svg#${name}"></use></svg>`;
+const navWords = ["prefer", "make", "keep"];
 document.addEventListener("keydown", () => {
   lastInput = "keyboard";
 });
@@ -30,7 +33,7 @@ const collectionRoutes = ["software", "projects", "library"];
 const collectionIndex = (route) => collectionRoutes.indexOf(route === "scene" ? "library" : route);
 const heading = (title, label = "") => {
   const index = collectionIndex(currentRoute());
-  return `<header class="page-heading"><div><h1 lang="en" class="collection-heading" style="view-transition-name:collection-title"><span>What I </span><span class="word-wheel"><span class="wheel-ghost" aria-hidden="true">${["keep", "prefer", "make"][index]}</span><span class="wheel-word">${["prefer", "make", "keep"][index]}</span><span class="wheel-ghost" aria-hidden="true">${["make", "keep", "prefer"][index]}</span></span></h1>${label ? `<p class="page-label">${label}</p>` : ""}</div><nav class="collection-nav" aria-label="集合导航"><a href="#home" class="home-link" aria-label="返回首页" title="返回首页">⌂</a>${collectionRoutes.map((route, i) => `<a href="#${route}" ${index === i ? 'aria-current="page"' : ""}>${index === i ? '<span class="nav-selection" aria-hidden="true"></span>' : ""}<span>${["Prefer", "Make", "Keep"][i]}</span></a>`).join("")}</nav></header>`;
+  return `<header class="page-heading"><div><h1 lang="en" class="collection-heading" style="view-transition-name:collection-title"><span>What I </span><span class="word-wheel"><span class="wheel-ghost" aria-hidden="true">${["keep", "prefer", "make"][index]}</span><span class="wheel-word">${["prefer", "make", "keep"][index]}</span><span class="wheel-ghost" aria-hidden="true">${["make", "keep", "prefer"][index]}</span></span></h1>${label ? `<p class="page-label">${label}</p>` : ""}</div><nav class="collection-nav" aria-label="集合导航"><a href="#home" class="home-link" aria-label="返回首页" title="返回首页">${icon("house")}</a>${collectionRoutes.map((route, i) => `<a href="#${route}" ${index === i ? 'aria-current="page"' : ""}>${index === i ? '<span class="nav-selection" aria-hidden="true"></span>' : ""}<span class="nav-word" data-word="${navWords[i]}">${["Prefer", "Make", "Keep"][i]}</span></a>`).join("")}</nav></header>`;
 };
 
 function home() {
@@ -58,7 +61,7 @@ function home() {
       meta: "Fragments",
     },
   ];
-  return `<main id="main" class="frame home-frame"><div class="home-top"><div class="creator"><div class="avatar" aria-label="头像占位">枝</div><div><p class="creator-name">会枝 <span>/ huizhiLLL</span></p><p>拾起值得留下的碎片</p></div></div><nav class="personal-links" aria-label="个人站点"><a href="https://github.com/huizhiLLL" target="_blank" rel="noreferrer">GitHub ↗</a><button data-notice="Blog 链接待补充">Blog ↗</button><button data-notice="Weekly 链接待补充">Weekly ↗</button></nav></div><div class="site-intro"><h1>Klasma <span>/ κλάσμα</span></h1><p>源自希腊语，意为「碎片」。<br>这里收藏着我欣赏的软件、亲手做的作品，以及值得保留和复用的工程资产。</p></div><div class="deck">${cards.map((c, i) => `<button class="tarot" data-route="${c.route}" aria-label="${c.cn}，${c.en}"><div class="card-meta"><span>0${i + 1}</span><span>${c.meta}</span></div><div class="card-art">${c.art}</div><div class="card-fade"></div><div class="card-copy"><span>${c.cn}</span><h2 lang="en">${c.en.replace(" I ", " I<br>")}</h2><div class="card-arrow"><span>进入</span><span>↗</span></div></div></button>`).join("")}</div><div class="home-foot"><span>选择一张牌</span><span>What I prefer · make · keep</span></div></main>`;
+  return `<main id="main" class="frame home-frame"><div class="home-top"><div class="identity-column"><div class="creator"><div class="avatar" aria-label="头像占位">枝</div><div><p class="creator-name">会枝 <span>/ huizhiLLL</span></p><p>拾起值得留下的碎片</p></div></div><nav class="personal-links" aria-label="个人站点"><a href="https://github.com/huizhiLLL" target="_blank" rel="noreferrer">GitHub ${icon("arrow-up-right")}</a><button data-notice="Blog 链接待补充">Blog ${icon("arrow-up-right")}</button><button data-notice="Weekly 链接待补充">Weekly ${icon("arrow-up-right")}</button></nav></div><aside class="space-note" aria-label="空间说明"><p>个人数字碎片库</p><div lang="en" class="space-words"><span>What I</span> ${navWords.map((word, i) => `${i ? '<span class="word-dot" aria-hidden="true">·</span>' : ""}<span class="nav-word" data-word="${word}">${word}</span>`).join(" ")}</div></aside></div><div class="site-intro"><h1>Klasma <span>/ κλάσμα</span></h1><p>源自希腊语，意为「碎片」。<br>这里收藏着我欣赏的软件、亲手做的作品，以及值得保留和复用的工程资产。</p></div><div class="deck">${cards.map((c, i) => `<button class="tarot" data-route="${c.route}" ${returningCardRoute === c.route ? 'style="view-transition-name:collection"' : ""} aria-label="${c.cn}，${c.en}"><div class="card-meta"><span>0${i + 1}</span><span>${c.meta}</span></div><div class="card-art">${c.art}</div><div class="card-fade"></div><div class="card-copy"><span>${c.cn}</span><h2 lang="en" ${returningCardRoute === c.route ? 'style="view-transition-name:collection-title"' : ""}>${c.en.replace(" I ", " I<br>")}</h2><div class="card-arrow"><span>进入</span><span>${icon("arrow-up-right")}</span></div></div></button>`).join("")}</div><div class="home-foot"><span>选择一张牌</span><span>偏好 · 创作 · 沉淀</span></div></main>`;
 }
 
 function softwareArticle() {
@@ -71,7 +74,7 @@ function softwareContent() {
 }
 
 function softwarePage() {
-  return `<main id="main" class="frame software-frame" style="view-transition-name:collection">${heading("What I prefer", "软件 / 欣赏与分享")}<section class="software-layout" id="software-content">${softwareContent()}</section><div class="dock-wrap"><nav class="dock" aria-label="软件切换">${software.map((name, i) => `<button class="app-icon" data-software="${i}" aria-label="${name}" aria-pressed="${currentSoftware === i}">${["M", "B", "C", "D", "E"][i]}<span class="tip">${name}</span></button>`).join("")}</nav></div><dialog class="modal reader" aria-labelledby="reader-title"><div class="modal-head"><h2 id="reader-title"></h2><button data-close-reader aria-label="关闭阅读全文">×</button></div><article class="reader-body"></article></dialog></main>`;
+  return `<main id="main" class="frame software-frame" style="view-transition-name:collection">${heading("What I prefer", "软件 / 欣赏与分享")}<section class="software-layout" id="software-content">${softwareContent()}</section><div class="dock-wrap"><nav class="dock" aria-label="软件切换">${software.map((name, i) => `<button class="app-icon" data-software="${i}" aria-label="${name}" aria-pressed="${currentSoftware === i}">${["M", "B", "C", "D", "E"][i]}<span class="tip">${name}</span></button>`).join("")}</nav></div><dialog class="modal reader" aria-labelledby="reader-title"><div class="modal-head"><h2 id="reader-title"></h2><button data-close-reader aria-label="关闭阅读全文" title="关闭阅读全文">${icon("x")}</button></div><article class="reader-body"></article></dialog></main>`;
 }
 
 function projectContent() {
@@ -114,7 +117,7 @@ function scenePage() {
     currentCategory === 0
       ? ["产线结构", "控制流程", "空间布局"]
       : ["结构片段", "运行示意", "蓝图片段"];
-  return `<main id="main" class="frame scene-frame" data-quadrant="${currentCategory}">${heading("What I keep", `工程资产 / ${cat}`)}<div class="scene-canvas" style="view-transition-name:asset-scene">${titles.map((name, i) => `<button class="asset-item" data-asset="${i}" aria-label="打开${name}详情"><div class="asset-image">${i === 1 ? '<div class="mini-code">EVERY 20 TICKS DO<br> INPUT → MACHINE<br> OUTPUT → STORAGE<br>END</div>' : structure()}</div><div class="asset-caption">${name}<span>0${i + 1} ↗</span></div></button>`).join("")}</div><button class="return-arc" data-route="library" aria-label="返回全局分类"><strong>↙</strong><span>返回全局</span></button><dialog class="modal" aria-labelledby="detail-title"><div class="modal-head"><h2 id="detail-title">资产详情</h2><button data-close-modal aria-label="关闭详情">×</button></div><div class="modal-placeholder">${structure()}</div><p>按资产类型单独设计，此处仅确认遮罩与返回关系。</p></dialog></main>`;
+  return `<main id="main" class="frame scene-frame" data-quadrant="${currentCategory}">${heading("What I keep", `工程资产 / ${cat}`)}<div class="scene-canvas" style="view-transition-name:asset-scene">${titles.map((name, i) => `<button class="asset-item" data-asset="${i}" aria-label="打开${name}详情"><div class="asset-image">${i === 1 ? '<div class="mini-code">EVERY 20 TICKS DO<br> INPUT → MACHINE<br> OUTPUT → STORAGE<br>END</div>' : structure()}</div><div class="asset-caption">${name}<span>0${i + 1} ↗</span></div></button>`).join("")}</div><button class="return-arc" data-route="library" aria-label="返回全局分类"><strong>${icon("arrow-left")}</strong><span>返回全局</span></button><dialog class="modal" aria-labelledby="detail-title"><div class="modal-head"><h2 id="detail-title">资产详情</h2><button data-close-modal aria-label="关闭详情" title="关闭详情">${icon("x")}</button></div><div class="modal-placeholder">${structure()}</div><p>按资产类型单独设计，此处仅确认遮罩与返回关系。</p></dialog></main>`;
 }
 
 const views = {
@@ -151,12 +154,26 @@ async function navigate(route, source) {
   await transition?.updateCallbackDone.catch(() => {});
   if (version !== navigationVersion) return;
   if (route === currentRoute()) return;
+  const previousRoute = currentRoute();
+  const homeTransition = previousRoute === "home" || route === "home";
+  document.documentElement.dataset.navigationKind = homeTransition ? "home" : "collection";
+  if (route === "home") returningCardRoute = previousRoute === "scene" ? "library" : previousRoute;
   const oldIndex = collectionIndex(currentRoute());
   const newIndex = collectionIndex(route);
   document.documentElement.style.setProperty("--wheel-direction", newIndex >= oldIndex ? 1 : -1);
   activeAnimations.forEach((a) => a.cancel());
   activeAnimations = [];
   document.querySelectorAll(".animation-ghost").forEach((el) => el.remove());
+  if (previousRoute === "home") {
+    // 返回首页后重新选牌，先清理上一次返回保留的共享元素名。
+    document.querySelectorAll(".tarot, .tarot h2").forEach((el) => {
+      el.style.viewTransitionName = "none";
+    });
+    returningCardRoute = null;
+    if (!source?.classList.contains("tarot")) {
+      source = document.querySelector(`[data-route="${route === "scene" ? "library" : route}"]`);
+    }
+  }
   if (source?.classList.contains("tarot")) {
     source.style.viewTransitionName = "collection";
     source.querySelector("h2").style.viewTransitionName = "collection-title";
@@ -437,6 +454,7 @@ document.addEventListener("click", (e) => {
   if (toast) notice(toast.dataset.notice);
 });
 function renderHistory() {
+  returningCardRoute = null;
   navigationVersion++;
   transition?.skipTransition();
   activeAnimations.forEach((a) => a.cancel());

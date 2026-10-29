@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / ".font-cache"
 CACHE.mkdir(exist_ok=True)
 CORPUS = json.dumps(json.loads((ROOT / "typography-sample.json").read_text(encoding="utf-8")), ensure_ascii=False)
-# 主题稿与字体对照共用缓存，新增主题文案也纳入字形覆盖。
-for name in ("theme.html", "theme.js"):
+# 主题稿、布局原型与字体对照共用缓存，将新增文案纳入字形覆盖。
+for name in ("theme.html", "theme.js", "index.html", "mockup.js"):
     source = ROOT / name
     if source.exists():
         CORPUS += source.read_text(encoding="utf-8")
