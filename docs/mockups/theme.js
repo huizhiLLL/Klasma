@@ -111,3 +111,72 @@ const results = await Promise.all(probes.map(async ([family, weight, text]) => {
 document.querySelector("#font-status").textContent = results.every(Boolean)
   ? "首选字体已加载 · MiSans / Manrope / Noto Serif SC / Source Serif 4"
   : "部分首选字体未加载，当前可能使用替代字体。请运行 prepare-fonts.py 后刷新。";
+
+const morphDemo = document.querySelector("#nav-morph-demo");
+if (morphDemo) {
+  const homeView = document.querySelector("#nav-morph-home");
+  const collectionView = document.querySelector("#nav-morph-collection");
+  const titleWord = document.querySelector("#nav-morph-title-word");
+  const subtitle = document.querySelector("#nav-morph-subtitle");
+  const status = document.querySelector("#nav-morph-status");
+  const enterPrefer = document.querySelector("#nav-morph-enter-prefer");
+  const morphNames = {
+    prefer: { label: "Prefer", title: "prefer", subtitle: "软件 · 偏好与欣赏" },
+    make: { label: "Make", title: "make", subtitle: "作品 · 创作与交互" },
+    keep: { label: "Keep", title: "keep", subtitle: "工程资产 · 长期的沉淀" },
+  };
+  let activeMorphCollection = "prefer";
+  let activeMorphTransition = null;
+
+  function selectMorphCollection(name) {
+    activeMorphCollection = name;
+    const selected = morphNames[name];
+    titleWord.textContent = selected.title;
+    subtitle.textContent = selected.subtitle;
+    collectionView.querySelectorAll("[data-morph-collection]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.morphCollection === name));
+    });
+  }
+
+  function setMorphState(nextState) {
+    const update = () => {
+      const isHome = nextState === "home";
+      morphDemo.dataset.state = nextState;
+      homeView.hidden = !isHome;
+      collectionView.hidden = isHome;
+      enterPrefer.hidden = !isHome;
+      status.textContent = isHome
+        ? "首页状态：右上三个词是说明文字。点击任一收藏牌开始过渡。"
+        : `集合状态：${morphNames[activeMorphCollection].label}。点击 Home 返回，可反向观察三个词。`;
+    };
+    if (!motionReduced() && typeof document.startViewTransition === "function") {
+      activeMorphTransition?.skipTransition();
+      const transition = document.startViewTransition(update);
+      activeMorphTransition = transition;
+      transition.finished.finally(() => {
+        if (activeMorphTransition === transition) activeMorphTransition = null;
+      }).catch(() => {});
+    } else {
+      update();
+    }
+  }
+
+  document.querySelectorAll("[data-morph-enter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectMorphCollection(button.dataset.morphEnter);
+      setMorphState("collection");
+    });
+  });
+  document.querySelectorAll("[data-morph-collection]").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectMorphCollection(button.dataset.morphCollection);
+      status.textContent = `集合状态：${morphNames[activeMorphCollection].label}。切换集合只改变选中项，不重播首页入场。`;
+    });
+  });
+  document.querySelector("[data-morph-home]").addEventListener("click", () => setMorphState("home"));
+  enterPrefer.addEventListener("click", () => {
+    selectMorphCollection("prefer");
+    setMorphState("collection");
+  });
+  selectMorphCollection(activeMorphCollection);
+}
