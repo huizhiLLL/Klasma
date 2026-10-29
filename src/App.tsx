@@ -6,9 +6,8 @@ import { CollectionShell } from './app/components/CollectionShell'
 import { HomePage } from './app/pages/HomePage'
 import { PreviewNote } from './app/components/PreviewNote'
 import { StatePanel } from './app/components/StatePanel'
-import { StructureVisual } from './app/components/Visual'
+import { LibraryPage } from './app/features/library/LibraryPage'
 import { ToolsPage } from './app/features/tools/ToolsPage'
-import { previewState } from './app/data/model'
 import { useMotionPolicy } from './app/animations/useMotionPolicy'
 import './admin/admin.css'
 import './app/styles/public.css'
@@ -22,11 +21,10 @@ function App() {
   document.querySelector<HTMLElement>('[data-page-heading]')?.focus({ preventScroll:true })
  },[route.kind])
  if (route.kind === 'admin') return <div className="admin-app"><Suspense fallback={<p>正在打开管理页…</p>}><Admin onBack={() => navigate('/')} /></Suspense></div>
- const state = previewState(route.search)
  let page
  if (route.kind === 'home') page = <HomePage />
  else if (route.kind === 'tools') page = <CollectionShell collection="tools"><ToolsPage slug={route.slug} search={route.search} /></CollectionShell>
- else if (route.kind === 'library') page = <CollectionShell collection="library">{state !== 'ready' ? <StatePanel state={state} back="/library" /> : <div style={{ height:420 }}><StructureVisual /></div>}</CollectionShell>
+ else if (route.kind === 'library') page = <CollectionShell collection="library"><LibraryPage category={route.category} slug={route.slug} search={route.search} /></CollectionShell>
  else if (route.kind === 'projects') page = <CollectionShell collection="projects"><StatePanel state="empty" noun="作品" back="/" /></CollectionShell>
  else page = <main><StatePanel state="missing" /></main>
  return <div className="public-app"><a className="skip-link" href="#page-content">跳到内容</a><MotionConfig reducedMotion={enabled ? 'never' : 'always'}><LayoutGroup id="klasma"><div className="app-stage" id="page-content">{page}</div></LayoutGroup></MotionConfig><PreviewNote path={routePath(route)} search={route.search} /></div>
