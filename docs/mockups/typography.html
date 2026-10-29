@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Klasma · 字体对照</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href=".font-cache/fonts.css" />
+    <link rel="stylesheet" href="typography.css" />
+  </head>
+  <body>
+    <header class="lab-header"><a href="index.html">← 布局原型</a><a href="theme.html">设计主题稿 →</a></header>
+    <main>
+      <div class="lab-intro"><div><p class="kicker">Klasma / Typography study</p><h1>字体对照</h1><p>首选 A／A／D：MiSans + Manrope 界面，Noto Serif SC + Source Serif 4 长文。保留其他候选供对照。</p></div><p id="font-status" role="status">正在检查字体…</p></div>
+      <div class="lab-controls">
+        <div class="mode-switch" role="group" aria-label="对照内容"><button data-mode="ui" aria-pressed="true">英文界面</button><button data-mode="reading" aria-pressed="false">英文阅读</button><button data-mode="chinese" aria-pressed="false">中文阅读</button><button data-mode="pair" aria-pressed="false">组合效果</button></div>
+        <div class="settings"><label>界面主标题 <select id="title-weight"><option value="600">600</option><option value="700" selected>700</option></select></label><label>样张宽度 <select id="sample-size"><option value="fluid">并排自适应</option><option value="390">390px</option><option value="360">360px</option></select></label><label id="reading-font-control">中文长文 <select id="chinese-reading"><option value="noto">Noto Serif SC</option><option value="zhuque">朱雀仿宋 · 测试版</option></select></label><button class="blind-button" id="blind-mode" aria-pressed="false">隐藏字体名称</button></div>
+      </div>
+      <p class="comparison-note" id="comparison-note"></p>
+      <p class="font-warning" id="font-warning" role="alert" hidden>部分字体未加载。请先运行原型目录下的 prepare-fonts.py，并刷新页面；此时请勿根据替代字体作选择。</p>
+      <div class="specimens" id="specimens" aria-label="字体样张"></div>
+      <div class="lab-footer"><p>先看英文标题的轮廓与密度，再看中英文并排时的协调；长文重点看笔画、标点和连续阅读的节奏。</p><p>样张的文案、颜色、字号、行高、字距与区域宽度保持一致，仅切换相应字体。数值用于比较，尚未定为 Design Tokens。素材为自拟文字。</p><p>字体来源与准备方式见 <a href="typography-SOURCES.md">来源说明</a>。MiSans 与朱雀使用未修改的官方字库文件，其他字体使用 Google Fonts 为本页固定素材提供的切片。</p></div>
+    </main>
+    <script type="module" src="typography.js"></script>
+  </body>
+</html>

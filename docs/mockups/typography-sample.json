@@ -1,0 +1,25 @@
+{
+  "brand": "Klasma",
+  "identity": "会枝 / huizhiLLL",
+  "signature": "拾起值得留下的碎片",
+  "nav": ["Prefer", "Make", "Keep"],
+  "title": "What I prefer",
+  "subtitle": "软件 · 偏好与欣赏",
+  "intro": "有些工具值得留下，不只因为功能，也因为作者对细节的认真。",
+  "labels": ["软件", "作品", "工程资产"],
+  "button": "阅读全文",
+  "meta": "Windows · 界面与交互 / 2026.10.29",
+  "readingTitle": "把日常的细节做好",
+  "readingEnglishTitle": "Small details, lasting impressions",
+  "lead": "一款工具的性格，常常藏在那些容易被忽略的地方。",
+  "paragraphs": [
+    "打开一个窗口，找到需要的内容，再顺手把它收起。动作很短，却会在每天的使用中重复许多次。我偏爱那些认真照顾这些时刻的软件：文字摆得舒服，状态交代清楚，操作之后也总有恰当的回应。",
+    "精致并不一定来自复杂的装饰。有时候，只是标题与正文之间多留了一点空间；有时候，是一个可以随时打断的过渡，让界面跟得上人的想法。这些细节很难写成功能清单，却会慢慢形成值得信任的使用感受。",
+    "这里记录我欣赏的选择，也保留自己的观察。截图帮助我们看见界面，文字则试着说明：为什么这个细节值得停下来，再看一眼。"
+  ],
+  "english": "A good tool earns its place through small, thoughtful decisions. A clear label, a quiet pause, a window that follows your intent. These details shape the way a piece of software feels, long after its first impression.",
+  "mixed": "在 Klasma 中，What I prefer 讲述偏好，What I make 展示作品，What I keep 留下可以复用的工程资产。",
+  "caption": "图 01 · 同一份素材，观察字形、节奏与中英文衔接。",
+  "glyphs": "Aa Gg Rr Qq  0O 1Il 2Z  0123456789  @ & / →",
+  "punctuation": "「偏好」与“选择”：留白、比例，以及 24px / 1.8 的阅读节奏。"
+}

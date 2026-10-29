@@ -11,3 +11,6 @@ dist/
 # 本地浏览器验证产物，不包含 docs/ 下的原型源码和设计草图
 /.playwright-cli/
 /output/playwright/
+
+# 字体评审页的本地字体缓存，可通过 prepare-fonts.py 重建
+/docs/mockups/.font-cache/
