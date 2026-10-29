@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Klasma · 设计主题稿</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href=".font-cache/fonts.css" />
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <header class="review"><a href="index.html">← 布局原型</a><span>设计主题稿 · 2026.10.29</span><a href="typography.html">字体对照 ↗</a></header>
+  <main>
+    <header class="intro"><div><p class="eyebrow">Klasma / Visual direction</p><h1>轻盈，有自己的轮廓。</h1><p class="description">已确认方向的持续样张。颜色、圆角与间距的具体数值先作试排。</p></div><p class="edition">MiSans + Manrope<br>Noto Serif SC + Source Serif 4</p></header>
+
+    <section class="composition" aria-label="收藏牌与阅读排版">
+      <div class="card-stage">
+        <p class="stage-label">收藏牌 / 悬停或聚焦查看抬起</p>
+        <button class="collection-card" id="collection-card" aria-haspopup="dialog">
+          <span class="card-art" aria-hidden="true"><span class="art-label">素材背景墙占位</span><span class="art-word">Prefer<br>Make<br>Keep</span></span>
+          <span class="card-face"><span class="card-number">01 / Collection</span><span class="card-name">软件</span><span class="card-english" lang="en">What I prefer</span><span class="card-bottom"><span>偏好与欣赏</span><span aria-hidden="true">↗</span></span></span>
+        </button>
+        <p class="stage-footnote">半透明表面 · 修长轮廓 · 轻微厚度</p>
+      </div>
+      <div class="reading-stage">
+        <nav class="capsule" aria-label="集合样式预览"><button type="button" aria-pressed="true" data-collection="prefer">Prefer</button><button type="button" aria-pressed="false" data-collection="make">Make</button><button type="button" aria-pressed="false" data-collection="keep">Keep</button></nav>
+        <h2 class="collection-title" lang="en">What I <span id="collection-word">prefer</span></h2>
+        <p class="collection-subtitle" id="collection-subtitle">软件 · 偏好与欣赏</p>
+        <article class="reading-preview"><p class="eyebrow">阅读排版样张</p><h3 id="reading-title">把日常的细节做好</h3><div class="reading-copy" id="reading-copy"></div><button class="text-button" id="open-reader">阅读全文 <span aria-hidden="true">↗</span></button></article>
+        <p class="annotation">集合切换仅演示选中状态；正文为排版素材。</p>
+      </div>
+    </section>
+
+    <section class="spec-section" aria-labelledby="palette-title"><div class="section-heading"><h2 id="palette-title">画布与颜色</h2><p>微冷白承托内容，清透蓝标记交互。</p></div><div class="swatches"><div><span class="swatch canvas"></span><strong>画布</strong><code>#F5F6F8</code></div><div><span class="swatch surface"></span><strong>表面</strong><code>#FCFDFE</code></div><div><span class="swatch ink"></span><strong>主要文字</strong><code>#202731</code></div><div><span class="swatch muted"></span><strong>次级文字</strong><code>#596575</code></div><div><span class="swatch blue"></span><strong>交互蓝</strong><code>#2464D4</code></div><div><span class="swatch blue-soft"></span><strong>选中浅底</strong><code>#EAF1FD</code></div></div><p class="annotation">色值为本轮候选；素材本身保留原色，普通表面边界使用 #D8DEE7。</p></section>
+
+    <section class="spec-section" aria-labelledby="control-title"><div class="section-heading"><h2 id="control-title">圆角与状态</h2><p>控件利落，阅读容器稍柔和。</p></div><div class="control-grid"><div class="control-example"><p class="eyebrow">按钮 · 8px</p><div class="button-row"><button class="primary" id="state-button">试一下反馈</button><button class="secondary" id="secondary-reader">阅读样张</button><button class="secondary" disabled>暂不可用</button></div><p class="feedback" id="state-feedback" role="status">可尝试悬停、按下与 Tab 聚焦。</p></div><div class="radius-examples"><div class="radius-card">收藏牌 <strong>16px</strong></div><div class="radius-reader">阅读层 <strong>20px</strong></div></div></div></section>
+
+    <section class="spec-section" aria-labelledby="space-title"><div class="section-heading"><h2 id="space-title">间距与节奏</h2><p>4px 基础阶梯，近处紧凑，展示区舒展。</p></div><div class="space-scale" aria-label="间距阶梯"><div style="--space:4px"><i></i><span>4</span></div><div style="--space:8px"><i></i><span>8</span></div><div style="--space:12px"><i></i><span>12</span></div><div style="--space:16px"><i></i><span>16</span></div><div style="--space:24px"><i></i><span>24</span></div><div style="--space:32px"><i></i><span>32</span></div><div style="--space:48px"><i></i><span>48</span></div><div style="--space:64px"><i></i><span>64</span></div><div style="--space:96px"><i></i><span>96</span></div></div><p class="annotation">4–12：图文与控件内部；16–24：关联内容；32–48：内容分组；64–96：展示区块。均为试排映射。</p></section>
+    <footer><p id="font-status" role="status">正在检查首选字体…</p><p>已确认：字体组合、排版起点、表面方向、圆角性格与 4px 间距基准。待评审：具体色值、圆角数值、阴影参数和标题尺度。</p></footer>
+  </main>
+  <dialog id="reader" aria-labelledby="dialog-title"><div class="reader-toolbar"><span>阅读样张</span><button id="close-reader" class="secondary">关闭</button></div><article class="reader-content"><p class="eyebrow">MiSans / Noto Serif SC / Source Serif 4</p><h2 id="dialog-title">把日常的细节做好</h2><div class="reading-copy" id="full-copy"></div></article></dialog>
+  <script type="module" src="theme.js"></script>
+</body>
+</html>

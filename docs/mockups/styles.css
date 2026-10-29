@@ -1139,6 +1139,7 @@ body:has(dialog[open]) { overflow: hidden; }
 .reader-body h3 { font-size: 19px; margin-top: 32px; font-weight: 500; }
 .touch-hint { display: none; }
 .mobile-preview-link { font-size: 12px; min-height: 44px; display: inline-flex; align-items: center; }
+.review-links { display: flex; gap: 18px; }
 .embedded .review-bar { display: none; }
 .embedded .frame { height: 100dvh; }
 .embedded .home-frame { height: auto; min-height: 100dvh; }
