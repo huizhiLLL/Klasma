@@ -25,6 +25,8 @@
 | `src/admin/AdminPage.tsx` | 管理后台；新建软件 / 工程资产，保留历史作品编辑 |
 | `src/shared/resource.ts` | 现有动态资源类型与兼容边界 |
 | `src/app/pages/LegacyResources.tsx`、`src/app/styles/legacy.css` | 旧动态列表、详情与作用域隔离的兼容样式 |
+| `src/app/data/` | 公开前台内容模型、mock fixtures、catalog 数据边界与预览状态 |
+| `public/samples/` | 明确标记为示例的文本下载附件，不写入 D1 / R2 |
 | `src/app/features/projects/registry.ts` | 静态作品注册表与组件加载边界 |
 | `tests/` | 路由与内容边界的 Node 逻辑测试 |
 | `src/index.css` | 应用中性重置与全局基础 |

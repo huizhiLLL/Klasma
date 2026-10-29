@@ -1,0 +1,4 @@
+# Klasma design preview only
+render_distance = 12
+show_progress = true
+keep_workspace = true

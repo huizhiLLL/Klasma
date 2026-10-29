@@ -1,0 +1,9 @@
+Klasma design preview / 示例数据
+
+此文件用于验证附件下载与代码阅读体验，不是经过游戏验证的 SFM 生产脚本。
+
+NAME "A quiet production line"
+EVERY 20 TICKS DO
+    INPUT FROM "原料仓库"
+    OUTPUT TO "加工机器"
+END
