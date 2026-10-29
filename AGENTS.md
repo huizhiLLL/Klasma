@@ -19,8 +19,15 @@
 | `docs/design-assets/` | 用户设计草图：软件 Dock、作品切换、工程资产全局与分类场景；对应布局评审时查看 |
 | `docs/mockups/` | 独立设计原型与主题稿，具体入口见下表；不接入正式应用构建 |
 | `.agents/skills/refactoring-ui/` | `SKILL.md` 为设计质量约束，`SOURCE.md` / `LICENSE` 为来源与许可 |
-| `src/main.tsx`、`src/App.tsx` | React 入口，以及当前集中实现的公开页、详情和管理页 |
-| `src/index.css`、`src/App.css` | 正式应用全局与页面样式 |
+| `src/main.tsx`、`src/App.tsx` | React 入口与路由分发 |
+| `src/app/routes.ts`、`src/app/routing.ts` | URL 解析、旧链接兼容与 History 订阅 |
+| `src/app/components/Link.tsx` | 保留修饰键与原生行为的内部链接 |
+| `src/admin/AdminPage.tsx` | 管理后台；新建软件 / 工程资产，保留历史作品编辑 |
+| `src/shared/resource.ts` | 现有动态资源类型与兼容边界 |
+| `src/app/pages/LegacyResources.tsx`、`src/app/styles/legacy.css` | 旧动态列表、详情与作用域隔离的兼容样式 |
+| `src/app/features/projects/registry.ts` | 静态作品注册表与组件加载边界 |
+| `tests/` | 路由与内容边界的 Node 逻辑测试 |
+| `src/index.css` | 应用中性重置与全局基础 |
 | `src/assets/`、`public/` | 应用导入素材与静态公共资源 |
 | `src/server/index.ts`、`src/server/types.ts` | Hono Worker API 入口、环境绑定与服务端类型 |
 | `src/server/db/client.ts`、`src/server/db/schema.ts` | D1 / Drizzle 数据库客户端与表结构 |
