@@ -1,0 +1,6 @@
+# Design preview only; fictional project
+# Illustrative commands, not an executable workflow
+relay collect ./fragments
+relay arrange --local
+relay link ./workspace
+relay keep --snapshot
