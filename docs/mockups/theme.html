@@ -31,7 +31,35 @@
       </div>
     </section>
 
-    <section class="spec-section" aria-labelledby="palette-title"><div class="section-heading"><h2 id="palette-title">画布与颜色</h2><p>微冷白承托内容，清透蓝标记交互。</p></div><div class="swatches"><div><span class="swatch canvas"></span><strong>画布</strong><code>#F5F6F8</code></div><div><span class="swatch surface"></span><strong>表面</strong><code>#FCFDFE</code></div><div><span class="swatch ink"></span><strong>主要文字</strong><code>#202731</code></div><div><span class="swatch muted"></span><strong>次级文字</strong><code>#596575</code></div><div><span class="swatch blue"></span><strong>交互蓝</strong><code>#2464D4</code></div><div><span class="swatch blue-soft"></span><strong>选中浅底</strong><code>#EAF1FD</code></div></div><p class="annotation">色值为本轮候选；素材本身保留原色，普通表面边界使用 #D8DEE7。</p></section>
+<section class="spec-section nav-morph-section" aria-labelledby="nav-morph-title">
+      <div class="section-heading"><h2 id="nav-morph-title">首页说明 → 集合导航</h2><p>只让 prefer / make / keep 成为共享元素；个人头像不参与。</p></div>
+      <div class="nav-morph-demo" id="nav-morph-demo" data-state="home">
+        <div class="nav-morph-home" id="nav-morph-home">
+          <div class="nav-morph-home-top">
+            <div class="nav-morph-profile"><span class="nav-morph-avatar" aria-hidden="true">会</span><span class="nav-morph-profile-copy"><strong>会枝</strong><small>huizhiLLL · 一个喜欢创造与折腾的人</small></span></div>
+            <div class="nav-morph-note"><p>个人数字碎片库</p><div class="nav-morph-words"><span>What I</span> <span class="morph-word morph-prefer">prefer</span> <span class="nav-morph-dot">·</span> <span class="morph-word morph-make">make</span> <span class="nav-morph-dot">·</span> <span class="morph-word morph-keep">keep</span></div></div>
+          </div>
+          <div class="nav-morph-cards" aria-label="首页收藏牌">
+            <button type="button" data-morph-enter="prefer"><span>01</span><strong>软件</strong></button>
+            <button type="button" data-morph-enter="make"><span>02</span><strong>作品</strong></button>
+            <button type="button" data-morph-enter="keep"><span>03</span><strong>工程资产</strong></button>
+          </div>
+        </div>
+        <div class="nav-morph-collection" id="nav-morph-collection" hidden>
+          <div class="nav-morph-collection-heading"><p class="eyebrow">集合页</p><h3>What I <span id="nav-morph-title-word">prefer</span></h3><p id="nav-morph-subtitle">软件 · 偏好与欣赏</p></div>
+          <nav class="nav-morph-capsule" aria-label="集合导航样张">
+            <button type="button" data-morph-home aria-label="返回首页"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="icons/lucide/sprite.svg#house"></use></svg></button>
+            <button type="button" data-morph-collection="prefer" aria-pressed="true"><span class="morph-word morph-prefer">Prefer</span></button>
+            <button type="button" data-morph-collection="make" aria-pressed="false"><span class="morph-word morph-make">Make</span></button>
+            <button type="button" data-morph-collection="keep" aria-pressed="false"><span class="morph-word morph-keep">Keep</span></button>
+          </nav>
+        </div>
+        <div class="nav-morph-footer"><span id="nav-morph-status" role="status" aria-live="polite">首页状态：右上三个词是说明文字。点击任一收藏牌开始过渡。</span><button class="secondary" type="button" id="nav-morph-enter-prefer">进入 Prefer</button></div>
+      </div>
+      <p class="annotation">此样张只验证右上三个词与胶囊词项之间的空间连续性。完整收藏牌展开到左侧大标题是另一条转场；窄屏、快速中断与正式页面仍需单独评审。</p>
+    </section>
+
+        <section class="spec-section" aria-labelledby="palette-title"><div class="section-heading"><h2 id="palette-title">画布与颜色</h2><p>微冷白承托内容，清透蓝标记交互。</p></div><div class="swatches"><div><span class="swatch canvas"></span><strong>画布</strong><code>#F5F6F8</code></div><div><span class="swatch surface"></span><strong>表面</strong><code>#FCFDFE</code></div><div><span class="swatch ink"></span><strong>主要文字</strong><code>#202731</code></div><div><span class="swatch muted"></span><strong>次级文字</strong><code>#596575</code></div><div><span class="swatch blue"></span><strong>交互蓝</strong><code>#2464D4</code></div><div><span class="swatch blue-soft"></span><strong>选中浅底</strong><code>#EAF1FD</code></div></div><p class="annotation">色值为本轮候选；素材本身保留原色，普通表面边界使用 #D8DEE7。</p></section>
 
     <section class="spec-section" aria-labelledby="material-title"><div class="section-heading"><h2 id="material-title">材质与层次</h2><p>收藏牌半透明，导航接近实色，阅读表面实色。</p></div><div class="material-grid">
       <article class="material-example"><div class="material-scene"><span class="material-back" aria-hidden="true">Prefer / Make<br>Keep / Prefer<br>Make / Keep</span><div class="material-floating" aria-hidden="true"><span>Prefer</span><span>Make</span><span>Keep</span></div></div><h3>悬浮导航</h3><p>接近实色的浅色表面，轻微悬浮感。</p></article>
