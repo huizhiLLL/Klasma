@@ -18,8 +18,18 @@ if (sample) {
   document.querySelector("#full-copy").textContent = "阅读素材加载失败，请刷新页面。";
 }
 
+const iconControls = document.querySelectorAll(".icon-control");
+iconControls.forEach((control) => {
+  for (const type of ["pointerenter", "focus"]) {
+    control.addEventListener(type, () => delete control.dataset.tooltipSuppressed);
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") iconControls.forEach((control) => { control.dataset.tooltipSuppressed = "true"; });
+});
+
 const dialog = document.querySelector("#reader");
-for (const id of ["collection-card", "open-reader", "secondary-reader"]) {
+for (const id of ["collection-card", "open-reader", "secondary-reader", "icon-reader"]) {
   document.getElementById(id).addEventListener("click", () => dialog.showModal());
 }
 document.querySelector("#close-reader").addEventListener("click", () => dialog.close());

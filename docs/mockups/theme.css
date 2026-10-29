@@ -139,3 +139,15 @@ dialog::backdrop { background: var(--overlay); }
 .motion-setting input { width: 20px; height: 20px; accent-color: var(--blue); }
 .motion-setting input:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
 @media (max-width: 760px) { .motion-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.icon { width: 20px; height: 20px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; }
+.icon-control { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; min-width: 44px; padding: 0; text-decoration: none; }
+.capsule .icon-control { color: var(--muted); border-radius: 999px; }
+.capsule .icon-control:hover { color: var(--blue); background: var(--blue-soft); }
+.icon-tip { display: none; position: absolute; z-index: 10; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); padding: 8px 12px; white-space: nowrap; border-radius: var(--radius-control); background: var(--ink); color: var(--surface); font-size: 14px; line-height: 1.6; font-weight: 400; pointer-events: none; }
+.icon-control:hover .icon-tip, .icon-control:focus-visible .icon-tip { display: block; }
+.icon-control[data-tooltip-suppressed] .icon-tip { display: none; }
+.icon-examples { display: flex; flex-wrap: wrap; gap: var(--space-4); padding-block: var(--space-2) var(--space-8); }
+.motion-replay { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-4); }
+.motion-replay button { margin-top: 0; }
+.motion-replay > span { font-size: 14px; color: var(--muted); }

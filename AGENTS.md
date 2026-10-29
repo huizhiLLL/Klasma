@@ -41,6 +41,7 @@
 | `docs/mockups/mobile.html`、`mobile.css`、`mobile.js` | 同一响应式原型的多尺寸手机评审入口 |
 | `docs/mockups/theme.html`、`theme.css`、`theme.js` | 随已确认设计持续更新的主题稿；展示字体、色彩、圆角、间距与反馈 |
 | `docs/mockups/typography.html`、`typography.css`、`typography.js` | 同素材字体对照样张 |
+| `docs/mockups/icons/lucide/` | 主题稿使用的固定来源图标子集；`sprite.svg` 为图标，`SOURCE.md` / `LICENSE` 为来源与许可 |
 | `docs/mockups/typography-sample.json` | 自拟排版素材，由字体样张与主题稿共用 |
 | `docs/mockups/typography-SOURCES.md`、`prepare-fonts.py` | 字体来源、许可与本地缓存准备方式 |
 
