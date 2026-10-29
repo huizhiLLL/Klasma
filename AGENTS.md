@@ -2,9 +2,54 @@
 
 开发沟通、分析、计划和变更说明默认使用中文；代码和项目文档沿用仓库规范。任务背景、架构和路线分别见 `docs/project.md`、`docs/architecture.md`、`docs/roadmap.md`。
 
+## 目录索引与按需读取
+
+以下为当前实际目录；调整职责或增删主要目录时同步此索引。不要将架构文档中的规划目录当作已经实现的结构。
+
+| 路径 | 用途与读取时机 |
+| --- | --- |
+| `README.md` | 项目入口、文档导航、本地开发与部署使用方式 |
+| `AGENTS.md` | 协作约束与目录索引 |
+| `docs/project.md` | 产品定位、功能需求与当前状态；理解任务背景时读取 |
+| `docs/architecture.md` | 技术栈、架构边界、数据与部署约束；技术实现前按需读取 |
+| `docs/roadmap.md` | 阶段计划、进展与工程决策；推进阶段任务时读取 |
+| `docs/design.md` | 仅记录已确认的设计点与约束；UI 工作默认依据 |
+| `docs/design-process.md` | 设计时间线、参考、候选、未决问题和历史方案；仅追溯或继续相关讨论时读取，不默认载入全文 |
+| `docs/design-assets/` | 用户设计草图：软件 Dock、作品切换、工程资产全局与分类场景；对应布局评审时查看 |
+| `docs/mockups/` | 独立设计原型与主题稿，具体入口见下表；不接入正式应用构建 |
+| `.agents/skills/refactoring-ui/` | `SKILL.md` 为设计质量约束，`SOURCE.md` / `LICENSE` 为来源与许可 |
+| `src/main.tsx`、`src/App.tsx` | React 入口，以及当前集中实现的公开页、详情和管理页 |
+| `src/index.css`、`src/App.css` | 正式应用全局与页面样式 |
+| `src/assets/`、`public/` | 应用导入素材与静态公共资源 |
+| `src/server/index.ts`、`src/server/types.ts` | Hono Worker API 入口、环境绑定与服务端类型 |
+| `src/server/db/client.ts`、`src/server/db/schema.ts` | D1 / Drizzle 数据库客户端与表结构 |
+| `drizzle/migrations/` | SQL 迁移；持久化结构变更前检查 |
+| `package.json`、`package-lock.json` | npm 脚本、依赖声明与锁定 |
+| `index.html`、`vite.config.ts` | 正式前端 HTML 入口与构建配置 |
+| `tsconfig.json`、`tsconfig.app.json`、`tsconfig.node.json` | TypeScript 项目、前端与工具配置 |
+| `.oxlintrc.json` | 静态检查配置 |
+| `drizzle.config.ts`、`wrangler.jsonc` | 数据库迁移工具、Worker / D1 / R2 / 静态资源配置 |
+| `.github/workflows/deploy.yml` | GitHub 推送后的检查与 Cloudflare 部署流程 |
+| `.gitignore` | 本地产物与缓存的版本控制边界 |
+
+### 独立设计产物
+
+| 路径 | 用途 |
+| --- | --- |
+| `docs/mockups/README.md` | 原型运行方式、交互范围与验证限制 |
+| `docs/mockups/index.html`、`styles.css`、`mockup.js` | 五个主视图与详情容器的布局交互原型 |
+| `docs/mockups/mobile.html`、`mobile.css`、`mobile.js` | 同一响应式原型的多尺寸手机评审入口 |
+| `docs/mockups/theme.html`、`theme.css`、`theme.js` | 随已确认设计持续更新的主题稿；展示字体、色彩、圆角、间距与反馈 |
+| `docs/mockups/typography.html`、`typography.css`、`typography.js` | 同素材字体对照样张 |
+| `docs/mockups/typography-sample.json` | 自拟排版素材，由字体样张与主题稿共用 |
+| `docs/mockups/typography-SOURCES.md`、`prepare-fonts.py` | 字体来源、许可与本地缓存准备方式 |
+
+表中同组文件均位于该行给出的目录。`node_modules/`、`dist/`、`.wrangler/`、`docs/mockups/.font-cache/` 为本地依赖、构建或缓存；`.playwright-cli/`、`output/` 为本地产物目录。默认不读取这些目录来理解项目，也不将其内容提交；`.git/` 由 Git 管理。
+
 ## UI/UX 工作
 
 - 进行界面设计讨论、排版、样式、组件、UI 文案或视觉评审前，读取 `docs/design.md` 和项目内 `.agents/skills/refactoring-ui/SKILL.md`，将该 skill 作为设计质量约束。
+- `docs/design.md` 只维护已确认设计与约束；详细过程、候选值和未决问题写入 `docs/design-process.md`。每次确认设计点，同步更新有效规范与独立的 `docs/mockups/theme.html` 主题稿及其样式，不能把样张全部参数视作已确认。
 - 用户当前处于设计评审阶段：允许更新文档、项目 skill 和 `docs/mockups/` 中独立的布局交互原型；未经明确要求，不将原型接入正式应用或修改 `src/` 中的页面。
 - 保留已经确认的方向：前台浅色单主题，现代收藏牌式首页，三张牌整体对称、摆放灵动，选牌后通过共享元素过渡展开为集合页。
 - Skill 中的模板、配色、布局和数值示例不是项目的最终设计。通用建议与用户已确认的设计冲突时，优先遵守用户意图和 `docs/design.md` 中的决策，并说明具体取舍。
