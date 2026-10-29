@@ -1,0 +1,155 @@
+https://hyperos.mi.com/font/en/download/
+
+MiSans
+MULTI-LANGUAGE
+UNCOMMON CHARACTERS
+DOWNLOAD
+FAQ
+ABOUT
+En/中
+MiSans
+29608
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+11
+LANGUAGE
+S
+MiSans Latin
+1350
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+311
+LANGUAGE
+S
+MiSans TC
+15116
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+5
+LANGUAGE
+S
+MiSans L3
+60340
+GLYPH
+S
+1
+WEIGHT
+1
+LANGUAGE
+MiSans Tibetan
+1944
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+4
+LANGUAGE
+S
+MiSans Arabic
+876
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+71
+LANGUAGE
+S
+MiSans Devanagari
+989
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+90
+LANGUAGE
+S
+MiSans Gurmukhi
+693
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+1
+LANGUAGE
+MiSans Thai
+153
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+7
+LANGUAGE
+S
+MiSans Lao
+135
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+3
+LANGUAGE
+S
+MiSans Myanmar
+171
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+6
+LANGUAGE
+S
+MiSans Khmer
+339
+GLYPH
+S
+10
+WEIGHT
+S
++ VARIABLE
+1
+LANGUAGE
+DOWNLOAD ALL
+LICENSE
+AGREEMENT
+This MiSans Fonts Intellectual Property License Agreement
+              (hereinafter the "Agreement") is a legal agreement between you and
+              Xiaomi Inc. (hereinafter "Xiaomi" or the "Licensor") regarding the
+              installation and use of MiSans fonts (hereinafter "MiSans" or
+              "MiSans Fonts"). You must accept all terms and conditions set
+              forth in this Agreement before using all or any part of MiSans.
+              Installing and using MiSans will be deemed as your acceptance of
+              this Agreement and your consent to be bound by the terms of this
+              Agreement. If you have any objections, please do not install
+              and/or use MiSans and delete all MiSans font packages
+              immediately.
+Subject to the terms and conditions of this Agreement, the Licensor hereby grants you a non-transferable, non-exclusive, royalty-free, revocable, worldwide copyright license to use MiSans Fonts in accordance with this Agreement, provided that the following conditions are met:
+You should specifically note in the software that MiSans Fonts was used.
+You may not adapt or redevelop MiSans Fonts or any of its components.
+You may not separately lease, sublicense, give, loan or further distribute MiSans Fonts or its components; nor may you redistribute or sell the font software or any copies thereof. This restriction does not apply to any other work you create using MiSans Fonts. If you use MiSans Fonts to create promotional materials, logos, apps, etc., you have the right to distribute or sell such works.
+{"props":{"pageProps":{"_nextI18Next":{"initialI18nStore":{"en":{"download":{"text1":"GLYPH","text2":"WEIGHT","text3":" + VARIABLE","text4":"LANGUAGE","text5":"DOWNLOAD ALL"},"nav-menu":{"multi-language":"MULTI-LANGUAGE","uncommon-characters":"UNCOMMON CHARACTERS","download":"DOWNLOAD","faq":"FAQ","about":"ABOUT"},"common":{"download-title":"Authorization prompt","download-button":"Confirm and start download","download-remind":"Don't remind me again today"}},"zh":{"download":{"text1":"个字符","text2":"字重","text3":" + 可变字体","text4":"种语言","text5":"一键下载全部"},"nav-menu":{"multi-language":"多语言","uncommon-characters":"生僻字","download":"下载","faq":"FAQ","about":"关于"},"common":{"download-title":"授权提示","download-button":"确认并开始下载","download-remind":"今日不再提醒"}}},"initialLocale":"en","ns":["download","nav-menu","common"],"userConfig":{"i18n":{"defaultLocale":"zh","locales":["en","zh"],"alias":{"zh-CN":"zh"}},"default":{"i18n":{"defaultLocale":"zh","locales":["en","zh"],"alias":{"zh-CN":"zh"}}}}}},"__N_SSG":true},"page":"/[locale]/download","query":{"locale":"en"},"buildId":"5N3N-NmkRI2tov1ohC7zM","assetPrefix":"/font","isFallback":false,"gsp":true,"scriptLoader":[]}

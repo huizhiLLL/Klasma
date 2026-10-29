@@ -1,0 +1,14 @@
+/* 具体数值沿用主题稿试值，继续随页面校准。 */
+:root {
+ color-scheme: light;
+ --canvas:#f5f6f8; --surface:#fcfdfe; --ink:#202731; --muted:#596575; --border:#d8dee7; --control-border:#7b8796;
+ --accent:#2464d4; --accent-hover:#1c53b6; --accent-soft:#eaf1fd;
+ --card-surface:rgb(252 253 254 / .64); --floating:rgb(252 253 254 / .96); --scrim:rgb(32 39 49 / .28);
+ --radius-control:8px; --radius-card:16px; --radius-reader:20px;
+ --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s6:24px; --s8:32px; --s12:48px; --s16:64px; --s24:96px;
+ --font-ui:'Manrope','MiSans',system-ui,sans-serif; --font-reading:'Source Serif 4','Noto Serif SC',serif;
+ --text-small:14px; --text-body:16px; --text-reading:18px;
+ --shadow-card:0 2px 3px rgb(32 39 49 / .06),0 16px 32px rgb(32 39 49 / .08);
+ --shadow-lift:0 3px 5px rgb(32 39 49 / .06),0 24px 48px rgb(32 39 49 / .13);
+ --motion-feedback:140ms; --motion-switch:280ms; --motion-spatial:560ms; --ease-settle:cubic-bezier(.22,1,.36,1);
+}

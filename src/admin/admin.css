@@ -1,0 +1,67 @@
+.admin-app {
+  color: #f4efe7;
+  background: #171716;
+  font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+.admin-app * { box-sizing: border-box; }
+.admin-app body { margin: 0; min-width: 320px; }
+.admin-app button, .admin-app input, .admin-app select, .admin-app textarea { font: inherit; }
+.admin-app button, .admin-app a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+ .admin-app .admin-header, .admin-app footer { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+ .admin-app .admin-label { color: #a5a097; font-size: 0.72rem; letter-spacing: 0.18em; margin: 0; }
+.admin-app .text-button { background: transparent; border: 0; color: #b9b3aa; cursor: pointer; font-size: 0.8rem; padding: 10px 0; }
+.admin-app .text-button:hover { color: #f4efe7; }
+.admin-app .text-button:active, .admin-app .save-button:active { transform: scale(0.96); }
+.admin-app .kicker { color: #a5a097; font-size: 0.78rem; letter-spacing: 0.08em; margin: 0 0 20px; text-transform: uppercase; }
+ .admin-app .admin-layout h1 { color: #f4efe7; font-family: Georgia, "Songti SC", "Noto Serif SC", serif; font-size: clamp(3.5rem, 9vw, 7.4rem); font-weight: 400; letter-spacing: -0.07em; line-height: 0.92; margin: 0 0 28px; text-wrap: balance; }
+.admin-app footer { border-top: 1px solid #393835; color: #77736d; font-size: 0.75rem; letter-spacing: 0.06em; margin-top: 84px; padding-top: 20px; }
+.admin-app .admin-shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 42px 0 72px; }
+.admin-app .admin-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap: 80px; margin-top: 120px; }
+.admin-app .auth-panel { margin-top: 140px; max-width: 560px; }
+.admin-app .auth-panel h1 { color: #f4efe7; font-family: Georgia, "Songti SC", "Noto Serif SC", serif; font-size: clamp(3rem, 6vw, 6rem); font-weight: 400; letter-spacing: -0.06em; line-height: 0.96; margin: 0 0 42px; }
+.admin-app .auth-panel form { display: flex; gap: 18px; }
+.admin-app .auth-input { background: #20201e; border: 1px solid #3a3935; color: #f4efe7; outline: 0; padding: 14px; width: min(100%, 320px); }
+.admin-app .auth-input:focus { border-color: #c8d0c2; box-shadow: 0 0 0 2px rgba(200, 208, 194, 0.18); }
+.admin-app .admin-layout h1 { font-size: clamp(3rem, 6vw, 6rem); max-width: 700px; }
+.admin-app .resource-form { display: grid; gap: 20px; max-width: 600px; margin-top: 52px; }
+.admin-app .resource-form label { color: #a5a097; display: grid; font-size: 0.78rem; gap: 8px; letter-spacing: 0.06em; }
+.admin-app .resource-form input, .admin-app .resource-form select, .admin-app .resource-form textarea { background: #20201e; border: 1px solid #3a3935; border-radius: 2px; color: #f4efe7; outline: 0; padding: 13px 14px; }
+.admin-app .resource-form input:focus, .admin-app .resource-form select:focus, .admin-app .resource-form textarea:focus { border-color: #c8d0c2; box-shadow: 0 0 0 2px rgba(200, 208, 194, 0.18); }
+.admin-app .resource-form textarea { line-height: 1.7; resize: vertical; }
+.admin-app .save-button { background: #c8d0c2; border: 0; color: #20251f; cursor: pointer; justify-self: start; padding: 14px 18px; transition: transform 140ms ease, background-color 180ms ease; }
+.admin-app .save-button:hover { background: #d9e0d5; }
+.admin-app .save-button span { display: inline-block; margin-left: 24px; }
+.admin-app .form-actions { align-items: center; display: flex; gap: 20px; }
+.admin-app .form-message { color: #c8d0c2; font-size: 0.84rem; }
+.admin-app .asset-upload { align-items: end; border-top: 1px solid #393835; display: flex; gap: 20px; justify-content: space-between; padding-top: 20px; }
+.admin-app .asset-upload input[type="file"] { color: #8e8980; font-size: 0.78rem; }
+.admin-app .asset-upload button:disabled { color: #595650; cursor: not-allowed; }
+.admin-app .asset-item { align-items: center; color: #8e8980; display: flex; font-size: 0.78rem; justify-content: space-between; }
+.admin-app .asset-item button { background: transparent; border: 0; color: #d7ad8b; cursor: pointer; font-size: 0.72rem; padding: 4px 0; }
+.admin-app .saved-panel { border-top: 1px solid #393835; padding-top: 20px; }
+.admin-app .saved-panel h2 { font-family: Georgia, "Songti SC", "Noto Serif SC", serif; font-size: 2rem; font-weight: 400; margin: 0 0 24px; }
+.admin-app .saved-panel ul { list-style: none; margin: 0; padding: 0; }
+.admin-app .saved-panel li { border-top: 1px solid #393835; display: grid; gap: 7px; padding: 17px 0; }
+.admin-app .saved-panel li span, .admin-app .saved-panel li small { color: #8e8980; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.admin-app .saved-panel li strong { font-weight: 500; }
+.admin-app .resource-actions { display: flex; gap: 16px; }
+.admin-app .resource-actions button { background: transparent; border: 0; color: #c8d0c2; cursor: pointer; font-size: 0.78rem; padding: 6px 0; }
+.admin-app .resource-actions button:last-child { color: #d7ad8b; }
+.admin-app .empty-state { color: #77736d; line-height: 1.7; }
+@media (max-width: 760px) {
+   .admin-app .admin-shell { width: min(100% - 32px, 560px); padding-top: 28px; }
+   .admin-app .admin-layout { grid-template-columns: 1fr; }
+  .admin-app .admin-layout { gap: 64px; margin-top: 88px; }
+  .admin-app .auth-panel { margin-top: 96px; }
+  .admin-app .auth-panel form { align-items: stretch; flex-direction: column; }
+  .admin-app .auth-input { width: 100%; }
+  .admin-app footer { align-items: flex-start; flex-direction: column; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-app *, .admin-app *::before, .admin-app *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
+
+.admin-app { min-height: 100dvh; }

@@ -1,5 +1,5 @@
-import { useEffect, useSyncExternalStore } from 'react'
-import { canonicalPath, parseRoute } from './routes'
+import { useSyncExternalStore } from 'react'
+import { parseRoute } from './routes'
 
 const navigationEvent = 'klasma:navigate'
 const snapshot = () => window.location.pathname + window.location.search + window.location.hash
@@ -15,7 +15,7 @@ function subscribe(listener: () => void) {
 export function navigate(href: string, options: { replace?: boolean; preserveScroll?: boolean } = {}) {
   const url = new URL(href, window.location.href)
   if (url.origin !== window.location.origin) { window.location.assign(url.href); return }
-  const next = canonicalPath(url.href)
+  const next = url.pathname + url.search + url.hash
   if (next === snapshot()) return
   window.history[options.replace ? 'replaceState' : 'pushState']({}, '', next)
   window.dispatchEvent(new Event(navigationEvent))
@@ -24,9 +24,5 @@ export function navigate(href: string, options: { replace?: boolean; preserveScr
 
 export function useRoute() {
   const href = useSyncExternalStore(subscribe, snapshot, () => '/')
-  useEffect(() => {
-    const canonical = canonicalPath(href)
-    if (href !== canonical) navigate(canonical, { replace: true })
-  }, [href])
   return parseRoute(href)
 }
