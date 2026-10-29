@@ -6,7 +6,8 @@ import { CollectionShell } from './app/components/CollectionShell'
 import { HomePage } from './app/pages/HomePage'
 import { PreviewNote } from './app/components/PreviewNote'
 import { StatePanel } from './app/components/StatePanel'
-import { SoftwareVisual, StructureVisual } from './app/components/Visual'
+import { StructureVisual } from './app/components/Visual'
+import { ToolsPage } from './app/features/tools/ToolsPage'
 import { previewState } from './app/data/model'
 import { useMotionPolicy } from './app/animations/useMotionPolicy'
 import './admin/admin.css'
@@ -24,7 +25,7 @@ function App() {
  const state = previewState(route.search)
  let page
  if (route.kind === 'home') page = <HomePage />
- else if (route.kind === 'tools') page = <CollectionShell collection="tools">{state !== 'ready' ? <StatePanel state={state} back="/tools" /> : <div style={{ height:420 }}><SoftwareVisual title="Mole · 界面示意" /></div>}</CollectionShell>
+ else if (route.kind === 'tools') page = <CollectionShell collection="tools"><ToolsPage slug={route.slug} search={route.search} /></CollectionShell>
  else if (route.kind === 'library') page = <CollectionShell collection="library">{state !== 'ready' ? <StatePanel state={state} back="/library" /> : <div style={{ height:420 }}><StructureVisual /></div>}</CollectionShell>
  else if (route.kind === 'projects') page = <CollectionShell collection="projects"><StatePanel state="empty" noun="作品" back="/" /></CollectionShell>
  else page = <main><StatePanel state="missing" /></main>
