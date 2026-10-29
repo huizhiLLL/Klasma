@@ -8,6 +8,7 @@ Klasma 是一个个人精选资源库和作品展示站，首期包含 Tools、P
 - [架构与技术边界](docs/architecture.md)
 - [路线与决策](docs/roadmap.md)
 - [UI/UX 设计约束](docs/design.md)
+- [前台评审入口与覆盖](docs/frontend-preview.md)
 - [正式前端实施准备](docs/frontend-implementation.md)：路由、内容边界、首批落地范围与验证方式。
 - [设计过程与评审记录](docs/design-process.md)：追溯讨论、候选与历史方案时按需查阅。
 - [布局与交互原型](docs/mockups/README.md)：独立运行，不连接 API，也不参与正式应用构建。
@@ -21,11 +22,25 @@ npm install
 npm run dev
 ```
 
-前端默认由 Vite 提供。Worker API 使用 Wrangler：
+公开前台默认读取本地 mock 内容，不依赖 Worker；评审入口、示例与验证限制见 [前台评审](docs/frontend-preview.md)。`/admin` 继续使用真实管理 API，不会修改公开样例。
+
+前端由 Vite 提供。管理页开发需要另外启动 Worker API：
 
 ```powershell
 npm run cf:dev
 ```
+
+验证命令：
+
+```powershell
+npm run typecheck
+npm run lint
+npm test
+npm run verify:frontend
+npm run build
+```
+
+`verify:frontend` 在 Node 中渲染组件并检查本地资源，不运行浏览器。
 
 ## Cloudflare 资源
 

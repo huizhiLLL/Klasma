@@ -13,22 +13,28 @@
 | `docs/project.md` | 产品定位、功能需求与当前状态；理解任务背景时读取 |
 | `docs/architecture.md` | 技术栈、架构边界、数据与部署约束；技术实现前按需读取 |
 | `docs/roadmap.md` | 阶段计划、进展与工程决策；推进阶段任务时读取 |
-| `docs/frontend-implementation.md` | 正式前端实施准备：首批范围、路由兼容、文件职责与验收；开始前台落地时读取 |
+| `docs/frontend-implementation.md` | 正式前端实施边界、当前路由、文件职责与验收；开始前台落地时读取 |
+| `docs/frontend-preview.md` | 正式前台 mock 评审入口、覆盖矩阵与验证边界 |
 | `docs/design.md` | 仅记录已确认的设计点与约束；UI 工作默认依据 |
 | `docs/design-process.md` | 设计时间线、参考、候选、未决问题和历史方案；仅追溯或继续相关讨论时读取，不默认载入全文 |
 | `docs/design-assets/` | 用户设计草图：软件 Dock、作品切换、工程资产全局与分类场景；对应布局评审时查看 |
 | `docs/mockups/` | 独立设计原型与主题稿，具体入口见下表；不接入正式应用构建 |
 | `.agents/skills/refactoring-ui/` | `SKILL.md` 为设计质量约束，`SOURCE.md` / `LICENSE` 为来源与许可 |
 | `src/main.tsx`、`src/App.tsx` | React 入口与路由分发 |
-| `src/app/routes.ts`、`src/app/routing.ts` | URL 解析、旧链接兼容与 History 订阅 |
-| `src/app/components/Link.tsx` | 保留修饰键与原生行为的内部链接 |
+| `src/app/routes.ts`、`src/app/routing.ts` | 新 URL 解析、导航与 History 订阅；不兼容旧路由 |
+| `src/app/components/` | 集合外壳、链接、原生 Dialog、Markdown、状态反馈与示意素材 |
+| `src/app/pages/HomePage.tsx` | 个人身份与三张收藏牌首页 |
+| `src/app/styles/`、`src/app/animations/` | 公开前台 token、布局、示意素材样式与动效降级 |
 | `src/admin/AdminPage.tsx` | 管理后台；新建软件 / 工程资产，保留历史作品编辑 |
 | `src/shared/resource.ts` | 现有动态资源类型与兼容边界 |
-| `src/app/pages/LegacyResources.tsx`、`src/app/styles/legacy.css` | 旧动态列表、详情与作用域隔离的兼容样式 |
 | `src/app/data/` | 公开前台内容模型、mock fixtures、catalog 数据边界与预览状态 |
 | `public/samples/` | 明确标记为示例的文本下载附件，不写入 D1 / R2 |
-| `src/app/features/projects/registry.ts` | 静态作品注册表与组件加载边界 |
-| `tests/` | 路由与内容边界的 Node 逻辑测试 |
+| `src/app/features/tools/` | 固定媒体、文案预览、全文阅读层与 Dock |
+| `src/app/features/library/` | 披萨分类、预览、空间场景、详情与分类几何 |
+| `src/app/features/projects/` | 静态注册表、作品切换外壳与独立延迟加载的 `pages/` |
+| `public/fonts/`、`public/icons/lucide/` | 正式字体分片、图标与来源许可 |
+| `scripts/` | 正式字体准备与无浏览器前台渲染验证 |
+| `tests/` | 路由、内容、分类几何与作品下载的 Node 逻辑测试 |
 | `src/index.css` | 应用中性重置与全局基础 |
 | `src/assets/`、`public/` | 应用导入素材与静态公共资源 |
 | `src/server/index.ts`、`src/server/types.ts` | Hono Worker API 入口、环境绑定与服务端类型 |
