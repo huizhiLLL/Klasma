@@ -137,3 +137,7 @@ body:has(.public-app dialog[open]) { overflow:hidden; }
 @media (max-width:360px) { .page-wrap { padding-inline:var(--s4); } .collection-nav a { min-width:50px; padding-inline:10px; } }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; } }
 html[data-keyboard='true'] .public-app * { transition-duration:0ms; animation-duration:0ms; }
+
+.public-app [inert] { pointer-events:none; }
+.public-app :is(input,textarea,[tabindex='0']):focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+.public-app .review-note summary { min-height:44px; }

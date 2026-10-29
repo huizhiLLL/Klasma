@@ -12,20 +12,32 @@ export function AdminPage({ onBack }: { onBack: () => void }) {
   const [form, setForm] = useState({ type: 'tools', slug: '', title: '', summary: '', content: '', links: '', tags: '', status: 'draft' })
 
   const adminHeaders = (json = false) => ({ ...(json ? { 'Content-Type': 'application/json' } : {}), ...(adminKey ? { 'X-Admin-Key': adminKey } : {}) })
-  const loadResources = async () => {
-    const response = await fetch('/api/admin/resources', { headers: adminHeaders() })
-    if (response.status === 401) { setAuthNeeded(true); return }
-    if (!response.ok) { setMessage('后台 API 尚未启动，先检查 Wrangler 开发服务器。'); return }
-    const { data } = await response.json() as { data: Resource[] }
-    setAuthNeeded(false)
-    setSaved(data)
-  }
-  useEffect(() => { void loadResources() }, [])
+  const [submittedKey, setSubmittedKey] = useState(adminKey)
+  const [revision, setRevision] = useState(0)
+  const reloadResources = () => setRevision(value => value + 1)
+  useEffect(() => {
+    const controller = new AbortController()
+    void fetch('/api/admin/resources', {
+      headers: submittedKey ? { 'X-Admin-Key': submittedKey } : {}, signal: controller.signal,
+    }).then(async response => {
+      if (controller.signal.aborted) return
+      if (response.status === 401) { setAuthNeeded(true); return }
+      if (!response.ok) throw new Error('API unavailable')
+      const { data } = await response.json() as { data: Resource[] }
+      if (controller.signal.aborted) return
+      setAuthNeeded(false)
+      setSaved(data)
+    }).catch(() => {
+      if (!controller.signal.aborted) setMessage('后台 API 暂时不可用，请检查 Wrangler 开发服务器。')
+    })
+    return () => controller.abort()
+  }, [submittedKey, revision])
 
   const saveAdminKey = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     window.localStorage.setItem('klasma_admin_key', adminKey)
-    void loadResources()
+    setSubmittedKey(adminKey)
+    reloadResources()
   }
 
   const submit = async (event: FormEvent) => {
@@ -49,7 +61,7 @@ export function AdminPage({ onBack }: { onBack: () => void }) {
     setMessage(editingId ? '已更新资源。' : '已保存到 D1。')
     setEditingId(null)
     setForm({ type: 'tools', slug: '', title: '', summary: '', content: '', links: '', tags: '', status: 'draft' })
-    void loadResources()
+    reloadResources()
   }
 
   const editResource = (resource: Resource) => {
@@ -71,7 +83,7 @@ export function AdminPage({ onBack }: { onBack: () => void }) {
     if (!window.confirm(`确定删除“${resource.title}”吗？`)) return
     const response = await fetch(`/api/admin/resources/${resource.id}`, { method: 'DELETE', headers: adminHeaders() })
     setMessage(response.ok ? '资源已删除。' : '删除失败，请检查 Worker 日志。')
-    if (response.ok) void loadResources()
+    if (response.ok) reloadResources()
   }
 
   const uploadAsset = async () => {
@@ -82,13 +94,13 @@ export function AdminPage({ onBack }: { onBack: () => void }) {
     body.set('file', assetFile)
     const response = await fetch('/api/admin/assets', { method: 'POST', headers: adminHeaders(), body })
     setMessage(response.ok ? '附件已上传到 R2。' : '附件上传失败，请检查 Worker 日志。')
-    if (response.ok) { setAssetFile(null); void loadResources() }
+    if (response.ok) { setAssetFile(null); reloadResources() }
   }
 
   const deleteAsset = async (assetId: string) => {
     const response = await fetch(`/api/admin/assets/${assetId}`, { method: 'DELETE', headers: adminHeaders() })
     setMessage(response.ok ? '附件已删除。' : '附件删除失败。')
-    if (response.ok) void loadResources()
+    if (response.ok) reloadResources()
   }
 
   if (authNeeded) return <main className="admin-shell"><header className="admin-header"><button className="text-button" type="button" onClick={onBack}>← 返回前台</button><span className="admin-label">Klasma / Admin</span></header><section className="auth-panel"><p className="kicker">Private route</p><h1>输入管理密钥。</h1><form onSubmit={saveAdminKey}><input className="auth-input" type="password" value={adminKey} onChange={(event) => setAdminKey(event.target.value)} placeholder="ADMIN_KEY" autoFocus /><button className="save-button" type="submit">进入管理页 ↗</button></form></section></main>

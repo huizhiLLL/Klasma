@@ -10,7 +10,7 @@ export function Dialog({ title, children, onDismiss, returnFocus, reader = false
   node.querySelector<HTMLButtonElement>('button')?.focus()
   return () => {
    node.close()
-   const target = previous?.isConnected ? previous : returnFocus ? document.querySelector<HTMLElement>(returnFocus) : null
+   const target = previous?.isConnected && previous !== document.body ? previous : returnFocus ? document.querySelector<HTMLElement>(returnFocus) : null
    target?.focus({ preventScroll:true })
   }
  }, [returnFocus])

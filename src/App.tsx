@@ -28,6 +28,6 @@ function App() {
  else if (route.kind === 'library') page = <CollectionShell collection="library"><LibraryPage category={route.category} slug={route.slug} search={route.search} /></CollectionShell>
  else if (route.kind === 'projects') page = <CollectionShell collection="projects"><ProjectsPage slug={route.slug} search={route.search} /></CollectionShell>
  else page = <main><StatePanel state="missing" /></main>
- return <div className="public-app"><a className="skip-link" href="#page-content">跳到内容</a><MotionConfig reducedMotion={enabled ? 'never' : 'always'}><LayoutGroup id="klasma"><div className="app-stage" id="page-content">{page}</div></LayoutGroup></MotionConfig><PreviewNote path={routePath(route)} search={route.search} /></div>
+ return <div className="public-app"><a className="skip-link" href="#page-content">跳到内容</a><MotionConfig reducedMotion={enabled ? 'never' : 'always'}><LayoutGroup id="klasma"><div className="app-stage" id="page-content" tabIndex={-1}>{page}</div></LayoutGroup></MotionConfig><PreviewNote path={routePath(route)} search={route.search} /></div>
 }
 export default App
