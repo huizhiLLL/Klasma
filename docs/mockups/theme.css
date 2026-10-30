@@ -281,3 +281,5 @@ html[data-theme-asset-transition]::view-transition-old(root) { display:none; }
 html[data-theme-asset-transition]::view-transition-new(root) { animation:none; }
 html[data-theme-asset-transition]::view-transition-group(theme-asset-media),
 html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { animation-duration:var(--motion-spatial); animation-timing-function:var(--ease-settle); }
+
+.theme-wheel-measure { visibility:hidden; }

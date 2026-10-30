@@ -44,7 +44,11 @@ const themeWheelNames = ['prefer', 'make', 'keep'];
 const themeWheelLabel = document.createElement('span');
 themeWheelLabel.className = 'theme-wheel-semantic';
 themeWheelLabel.textContent = 'prefer';
-themeWheel.replaceChildren(themeWheelLabel);
+const themeWheelMeasure = document.createElement('span');
+themeWheelMeasure.className = 'theme-wheel-measure';
+themeWheelMeasure.textContent = 'prefer';
+themeWheelMeasure.setAttribute('aria-hidden', 'true');
+themeWheel.replaceChildren(themeWheelLabel, themeWheelMeasure);
 const themeWheelItems = themeWheelNames.map((word) => {
   const item = document.createElement('span');
   item.className = 'theme-wheel-word';

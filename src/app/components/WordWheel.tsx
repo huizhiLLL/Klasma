@@ -14,5 +14,5 @@ export function WordWheel({ index,enabled }: { index:number; enabled:boolean }) 
   const control = animate(position,nearestWheelPosition(position.get(),index),{ duration:enabled ? .56 : 0,ease:[.22,1,.36,1] })
   return () => control.stop()
  },[index,enabled,position])
- return <><span className="sr-only">{collections[index].word}</span><span className="word-wheel" aria-hidden="true">{collections.map((item,wordIndex) => <WheelWord key={item.key} word={item.word} index={wordIndex} position={position} />)}</span></>
+ return <><span className="sr-only"> {collections[index].word}</span><span className="word-wheel" aria-hidden="true"><span className="wheel-measure">prefer</span>{collections.map((item,wordIndex) => <WheelWord key={item.key} word={item.word} index={wordIndex} position={position} />)}</span></>
 }
