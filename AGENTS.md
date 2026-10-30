@@ -27,6 +27,7 @@
 | `src/app/styles/`、`src/app/animations/` | 公开前台 token、布局、示意素材样式与动效降级；`wordWheel.ts` 为连续滚轮，`assetTransition.ts` 为跨原生 dialog 的共享快照 |
 | `src/admin/AdminPage.tsx` | 管理后台；新建软件 / 工程资产，保留历史作品编辑 |
 | `src/shared/resource.ts` | 现有动态资源类型与兼容边界 |
+| `src/app/components/CollectionTransition.tsx`、`src/app/animations/collectionTransition.ts`、`collectionPresence.ts`、`src/app/styles/collection-transition.css` | 集合主体交接、选择器底板共享、退场弹窗隔离与换场姿态 |
 | `src/app/data/` | 公开前台内容模型、mock fixtures、catalog 数据边界与预览状态 |
 | `public/samples/` | 明确标记为示例的文本下载附件，不写入 D1 / R2 |
 | `src/app/features/tools/` | 固定媒体、文案预览、全文阅读层与 Dock |

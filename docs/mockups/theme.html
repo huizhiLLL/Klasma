@@ -95,6 +95,20 @@
 
     <section class="spec-section" aria-labelledby="icons-title"><div class="section-heading"><h2 id="icons-title">图标与操作</h2><p>明确表意的操作优先用图标，统一使用 Lucide。</p></div><div class="icon-examples"><a class="secondary icon-control" aria-label="返回首页" href="index.html#home"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="icons/lucide/sprite.svg#house"></use></svg><span class="icon-tip" aria-hidden="true">返回首页</span></a><a class="secondary icon-control" aria-label="返回布局原型" href="index.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="icons/lucide/sprite.svg#arrow-left"></use></svg><span class="icon-tip" aria-hidden="true">返回布局原型</span></a><button class="secondary icon-control" aria-label="打开阅读样张" id="icon-reader" aria-haspopup="dialog"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="icons/lucide/sprite.svg#arrow-up-right"></use></svg><span class="icon-tip" aria-hidden="true">打开阅读样张</span></button></div><p class="annotation">悬停或键盘聚焦查看提示，Escape 隐藏提示。图标先试 20px / 2px 描边，点击区域 44px；含义不明确时保留文字，软件与作品使用原生 logo。</p></section>
 
+    <section class="spec-section" aria-labelledby="collection-transition-title">
+      <div class="section-heading"><h2 id="collection-transition-title">集合之间的换场</h2><p>Prefer 与 Make 共享选择器底板；Keep 以景深与展开衔接。</p></div>
+      <div class="button-row" aria-label="集合转场样张">
+        <button class="secondary" type="button" data-theme-collection="prefer" aria-pressed="true">Prefer</button>
+        <button class="secondary" type="button" data-theme-collection="make" aria-pressed="false">Make</button>
+        <button class="secondary" type="button" data-theme-collection="keep" aria-pressed="false">Keep</button>
+      </div>
+      <div id="theme-collection-transition" data-collection="prefer">
+        <div class="theme-collection-content" aria-live="polite">A small detail, well made.</div>
+        <div class="theme-collection-surface" aria-hidden="true"></div><span class="theme-collection-marks" aria-hidden="true">M · R · P</span>
+      </div>
+      <p class="annotation">560ms 为本轮空间节奏试值。可连续切换三个方向；键盘或减少动态时直接更新。此处仅表达底板路径与主体进入，完整双向交接在正式页面评审。</p>
+    </section>
+
     <section class="spec-section" aria-labelledby="motion-title"><div class="section-heading"><h2 id="motion-title">动效与节奏</h2><label class="motion-setting"><input type="checkbox" id="reduce-motion" />减少动态</label></div><div class="motion-grid">
       <article class="motion-example"><div class="motion-stage"><span class="motion-piece" id="motion-feedback" aria-hidden="true"></span></div><h3>短促反馈</h3><p>按钮轻微收紧，及时回应。</p><div class="motion-replay"><button class="secondary icon-control" aria-label="重播短促反馈" data-motion="feedback"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="icons/lucide/sprite.svg#rotate-ccw"></use></svg><span class="icon-tip" aria-hidden="true">重播短促反馈</span></button><span>140ms · 候选</span></div></article>
       <article class="motion-example"><div class="motion-stage"><span class="motion-piece motion-wide" id="motion-switch" aria-hidden="true"></span></div><h3>连贯切换</h3><p>内容迅速衔接，平稳落定。</p><div class="motion-replay"><button class="secondary icon-control" aria-label="重播连贯切换" data-motion="switch"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="icons/lucide/sprite.svg#rotate-ccw"></use></svg><span class="icon-tip" aria-hidden="true">重播连贯切换</span></button><span>280ms · 候选</span></div></article>

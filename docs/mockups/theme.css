@@ -316,3 +316,12 @@ html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { an
 .theme-media-arrow { display:grid; place-items:center; width:44px; height:44px; padding:0; border:1px solid var(--border); border-radius:50%; background:var(--surface); color:var(--ink); }
 .theme-media-arrow.is-next .icon { transform:rotate(180deg); }
 .theme-media-arrow:hover { color:var(--blue); border-color:var(--blue); }
+
+/* 集合级交接样张：与正式 React 隔离。 */
+#theme-collection-transition { position:relative; min-height:360px; margin-top:24px; border:1px solid var(--border); border-radius:var(--radius-card); overflow:hidden; }
+.theme-collection-content { position:absolute; inset:32px 100px 100px 32px; display:grid; place-items:center; color:var(--ink); background:#edf0f3; border-radius:var(--radius-card); font-size:clamp(18px,3vw,28px); text-align:center; padding:24px; }
+.theme-collection-surface { position:absolute; bottom:16px; left:calc(50% - 120px); width:240px; height:64px; background:var(--surface-floating); border:1px solid var(--border); border-radius:var(--radius-reader); box-shadow:var(--shadow-soft); }
+.theme-collection-marks { position:absolute; bottom:16px; left:calc(50% - 120px); width:240px; height:64px; display:grid; place-items:center; white-space:pre-line; font-size:24px; text-align:center; line-height:2; }
+[data-collection="make"] :is(.theme-collection-surface,.theme-collection-marks) { left:auto; right:16px; bottom:calc(50% - 100px); width:64px; height:200px; }
+[data-collection="keep"] .theme-collection-content { inset:44px; width:240px; height:240px; max-width:calc(100% - 88px); margin:auto; border-radius:50%; background:conic-gradient(#e6ebf0 0 72deg,#dfe8e9 72deg 144deg,#e2e8f4 144deg 216deg,#e8e5ed 216deg 288deg,#e2e5e8 288deg); }
+[data-collection="keep"] :is(.theme-collection-surface,.theme-collection-marks) { opacity:0; }

@@ -39,3 +39,9 @@ URL 是集合与选中项的唯一来源；History 订阅包含 pathname、searc
 执行 `npm run typecheck`、`npm run lint`、`npm test`、`npm run verify:frontend`、`npm run build`。渲染检查覆盖所有软件、分类、资产详情、独立作品样例与状态页，并验证字体哈希、图标、下载资源和 History 导航行为。它不验证浏览器布局、焦点陷阱、滚动溢出或动效观感。
 
 评审地址、覆盖矩阵与限制见 [前台评审](frontend-preview.md)。下一步先由用户评审真实页面，再根据反馈校准；随后明确 API 字段映射、真实媒体、作品与工程资产内容。真实 SFM 执行跟踪与 NBT / 3D 解析另行设计，不以顺序示意替代。
+
+## 集合之间的换场
+
+`CollectionShell` 保持标题与胶囊挂载，`CollectionTransition` 按集合而非完整 URL 管理主体交接；软件与作品使用共享选择器底板，涉及工程资产时使用轻微景深。主体退场层脱离布局并设为 inert / aria-hidden，集合 presence 跨越内部切换器通知原生 dialog 关闭，避免历史导航时旧弹窗挡住新页面。移动端关闭跨区共享，键盘与 reduced motion 取消空间动画。沿用 Motion，不增加 GSAP；集合内部切换继续由各 feature 负责。
+
+验证覆盖六个方向的空间姿态、反向关系与无动画状态，并保留全量渲染和构建检查；尚未进行浏览器视觉或连续点击验收。

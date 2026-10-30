@@ -368,3 +368,48 @@ document.querySelectorAll('[data-theme-step]').forEach(button => {
     document.querySelector(`[data-theme-media="${next}"]`).click();
   });
 });
+
+// 独立样张用 Web Animations 表达底板的前后几何；正式 React 使用 Motion layoutId。
+const collectionDemo = document.querySelector('#theme-collection-transition');
+const collectionSurface = collectionDemo.querySelector('.theme-collection-surface');
+const collectionContent = collectionDemo.querySelector('.theme-collection-content');
+const collectionMarks = collectionDemo.querySelector('.theme-collection-marks');
+let collectionSelection = 'prefer';
+let collectionAnimations = [];
+document.querySelectorAll('[data-theme-collection]').forEach(button => {
+  button.addEventListener('click', event => {
+    const next = button.dataset.themeCollection;
+    if (next === collectionSelection) return;
+    const previous = collectionSelection;
+    const before = collectionSurface.getBoundingClientRect();
+    const contentOpacity = getComputedStyle(collectionContent).opacity;
+    collectionAnimations.forEach(animation => animation.cancel());
+    collectionAnimations = [];
+    collectionDemo.dataset.collection = next;
+    collectionContent.textContent = { prefer:'A small detail, well made.',make:'A little room for making.',keep:'Fragments worth keeping.' }[next];
+    collectionMarks.textContent = next === 'prefer' ? 'M · R · P' : 'F\nR\nB';
+    collectionSelection = next;
+    document.querySelectorAll('[data-theme-collection]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    const reduced = motionReduced() || event.detail === 0;
+    if (reduced) return;
+    const spatial = previous === 'keep' || next === 'keep';
+    const timing = { duration:560,easing:'cubic-bezier(.22,1,.36,1)' };
+    collectionAnimations.push(collectionContent.animate([
+      { opacity:0,transform:`translateY(${next === 'keep' ? 16 : 8}px) scale(${spatial ? .94 : 1})` },
+      { opacity:1,transform:'translateY(0) scale(1)' },
+    ],timing));
+    if (!spatial) {
+      const after = collectionSurface.getBoundingClientRect();
+      collectionAnimations.push(collectionSurface.animate([
+        { transformOrigin:'top left',transform:`translate(${before.left - after.left}px,${before.top - after.top}px) scale(${before.width / after.width},${before.height / after.height})` },
+        { transformOrigin:'top left',transform:'translate(0,0) scale(1,1)' },
+      ],timing));
+    } else {
+      collectionAnimations.push(collectionSurface.animate([
+        { opacity:previous === 'keep' ? 0 : contentOpacity,transform:'scale(.94)' },
+        { opacity:next === 'keep' ? 0 : 1,transform:'scale(1)' },
+      ],timing));
+    }
+    collectionAnimations.push(collectionMarks.animate([{ opacity:0 },{ opacity:1 }],{ duration:140,delay:80 }));
+  });
+});
