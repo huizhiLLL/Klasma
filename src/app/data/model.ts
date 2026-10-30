@@ -1,4 +1,4 @@
-export type Media = { id:string; label:string; variant:'clean' | 'board' | 'terminal'; caption:string }
+export type Media = { id:string; label:string; variant:'clean' | 'board' | 'terminal' | 'mobile'; caption:string; width:number; height:number }
 export type Tool = {
  slug:string; name:string; monogram:string; tone:string; platform:string; tagline:string; article:string;
  media:Media[]; links:Array<{ label:string; url:string }>

@@ -1,7 +1,7 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { AnimatePresence, motion, useIsPresent } from 'motion/react'
 import { catalog } from '../../data/catalog'
-import { previewState, type Tool } from '../../data/model'
+import { previewState, type Media, type Tool } from '../../data/model'
 import { Link } from '../../components/Link'
 import { StatePanel } from '../../components/StatePanel'
 import { Dialog } from '../../components/Dialog'
@@ -9,7 +9,12 @@ import { Markdown } from '../../components/Markdown'
 import { Monogram, SoftwareVisual } from '../../components/Visual'
 import { Icon } from '../../components/Icon'
 import { useMotionPolicy } from '../../animations/useMotionPolicy'
+import { mediaColumnWidth } from './mediaLayout'
 import './tools.css'
+function MediaThumbnail({ media,title,frame }: { media:Media; title:string; frame:number }) {
+ const scale = Math.min(80 / media.width,50 / media.height)
+ return <span className="media-thumb-art" aria-hidden="true"><span className="media-thumb-source" style={{ width:media.width,height:media.height,transform:`scale(${scale})`,left:(80 - media.width * scale) / 2,top:(50 - media.height * scale) / 2 }}><SoftwareVisual variant={media.variant} title={title} frame={frame} /></span></span>
+}
 function ToolStage({ tool }: { tool:Tool }) {
  const { enabled } = useMotionPolicy()
  const headingId = useId()
@@ -17,6 +22,21 @@ function ToolStage({ tool }: { tool:Tool }) {
  const [reader, setReader] = useState(false)
  const [overflow, setOverflow] = useState(false)
  const preview = useRef<HTMLDivElement>(null)
+ const stage = useRef<HTMLDivElement>(null)
+ const thumbnails = useRef<HTMLDivElement>(null)
+ const [mediaWidth,setMediaWidth] = useState<number>()
+ useEffect(() => {
+  const node = stage.current!
+  const measure = () => {
+   if (window.matchMedia('(max-width:760px)').matches) { setMediaWidth(undefined); return }
+   setMediaWidth(mediaColumnWidth(tool.media,node.clientWidth,node.clientHeight,thumbnails.current?.offsetHeight ?? 0,parseFloat(getComputedStyle(node).columnGap)))
+  }
+  const observer = new ResizeObserver(measure)
+  observer.observe(node)
+  if (thumbnails.current) observer.observe(thumbnails.current)
+  measure()
+  return () => observer.disconnect()
+ },[tool.media])
  useEffect(() => {
   const node = preview.current!
   let alive = true
@@ -29,14 +49,14 @@ function ToolStage({ tool }: { tool:Tool }) {
   return () => { alive = false; observer.disconnect() }
  }, [tool.article])
  const media = tool.media[mediaIndex]
- return <><div className="tool-stage"><section className="tool-media" aria-label={`${tool.name} 媒体`}><div className="tool-screen">{media ? <AnimatePresence mode="sync" initial={false}><motion.div key={media.id} className="tool-media-frame" initial={enabled ? { opacity:0,x:20 } : false} animate={{ opacity:1,x:0 }} exit={{ opacity:0 }} transition={{ duration:enabled ? .28 : 0 }}><SoftwareVisual variant={media.variant} title={`${tool.name} · ${media.label}`} frame={mediaIndex} /></motion.div></AnimatePresence> : <div className="media-absent"><Monogram text={tool.monogram} tone={tool.tone} /><p>截图还在整理中</p></div>}</div>{tool.media.length > 1 && <div className="media-thumbs" role="group" aria-label="媒体缩略图轮播" onKeyDown={event => {
+ return <><div ref={stage} className="tool-stage" style={{ '--tool-media-width':mediaWidth === undefined ? undefined : `${mediaWidth}px` } as CSSProperties}><section className="tool-media" aria-label={`${tool.name} 媒体`}><div className="tool-screen">{media ? <AnimatePresence mode="sync" initial={false}><motion.div key={media.id} className="tool-media-frame" initial={enabled ? { opacity:0,x:20 } : false} animate={{ opacity:1,x:0 }} exit={{ opacity:0 }} transition={{ duration:enabled ? .28 : 0 }}><div className="tool-image-fit" style={{ '--media-ratio':media.width / media.height } as CSSProperties}><SoftwareVisual variant={media.variant} title={`${tool.name} · ${media.label}`} frame={mediaIndex} /></div></motion.div></AnimatePresence> : <div className="media-absent"><Monogram text={tool.monogram} tone={tool.tone} /><p>截图还在整理中</p></div>}</div>{tool.media.length > 1 && <div ref={thumbnails} className="media-thumbs" role="group" aria-label="媒体缩略图轮播" onKeyDown={event => {
  const key = event.key
  if (!['ArrowLeft','ArrowRight','Home','End'].includes(key)) return
  event.preventDefault()
  const next = key === 'Home' ? 0 : key === 'End' ? tool.media.length - 1 : (mediaIndex + (key === 'ArrowRight' ? 1 : -1) + tool.media.length) % tool.media.length
  setMediaIndex(next)
  event.currentTarget.querySelectorAll<HTMLButtonElement>('button')[next]?.focus()
-}}>{tool.media.map((item,index) => <button key={item.id} onClick={() => setMediaIndex(index)} aria-pressed={index === mediaIndex} title={item.label} aria-label={item.label}><span className="media-thumb-art" aria-hidden="true"><SoftwareVisual variant={item.variant} title={tool.name} frame={index} /></span></button>)}</div>}</section><section className="tool-story" aria-labelledby={headingId}><p className="eyebrow">{tool.platform}</p><h2 id={headingId}>{tool.name}</h2><p className="tool-tagline">{tool.tagline}</p><div ref={preview} className={`tool-copy-preview ${overflow ? 'has-overflow' : ''}`}><Markdown text={tool.article} /></div><div className="tool-actions">{overflow && <button className="text-action" onClick={() => setReader(true)}>阅读全文 <Icon name="arrow-up-right" /></button>}{tool.links.map(link => <a className="text-action" key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label}<Icon name="arrow-up-right" /></a>)}</div></section></div>{reader && <Dialog title={tool.name} reader onDismiss={() => setReader(false)}><Markdown text={tool.article} /></Dialog>}</>
+}}>{tool.media.map((item,index) => <button key={item.id} onClick={() => setMediaIndex(index)} aria-pressed={index === mediaIndex} title={item.label} aria-label={item.label}><MediaThumbnail media={item} title={tool.name} frame={index} /></button>)}</div>}</section><section className="tool-story" aria-labelledby={headingId}><p className="eyebrow">{tool.platform}</p><h2 id={headingId}>{tool.name}</h2><p className="tool-tagline">{tool.tagline}</p><div ref={preview} className={`tool-copy-preview ${overflow ? 'has-overflow' : ''}`}><Markdown text={tool.article} /></div><div className="tool-actions">{overflow && <button className="text-action" onClick={() => setReader(true)}>阅读全文 <Icon name="arrow-up-right" /></button>}{tool.links.map(link => <a className="text-action" key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label}<Icon name="arrow-up-right" /></a>)}</div></section></div>{reader && <Dialog title={tool.name} reader onDismiss={() => setReader(false)}><Markdown text={tool.article} /></Dialog>}</>
 }
 function ToolPanel({ children, origin, enabled }: { children:ReactNode; origin:string; enabled:boolean }) {
  const present = useIsPresent()

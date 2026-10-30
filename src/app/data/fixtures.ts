@@ -1,5 +1,5 @@
 import type { Asset, AssetCategory, Media, Tool } from './model.ts'
-const media = (variant:Media['variant'], labels:string[]):Media[] => labels.map((label,i) => ({ id:`${variant}-${i}`, label, variant, caption:['留白、层级与一次清楚的操作。','细节藏在每天都会经过的地方。','把不必要的东西留在界面之外。'][i % 3] }))
+const media = (variant:Media['variant'], labels:string[]):Media[] => labels.map((label,i) => ({ id:`${variant}-${i}`, label, variant, width:1280, height:800, caption:['留白、层级与一次清楚的操作。','细节藏在每天都会经过的地方。','把不必要的东西留在界面之外。'][i % 3] }))
 const longArticle = `有些工具值得留下，并不是因为它做得特别多，而是因为它知道什么时候应该停下来。一个明确的起点，一次及时的反馈，以及在任务结束时让人安心的结果，这些细小的选择，会慢慢变成使用习惯。
 
 ### 从一个小动作开始
@@ -31,6 +31,7 @@ export const tools:Tool[] = [
  { slug:'folio', name:'Folio', monogram:'F', tone:'peach', platform:'Desktop · 虚构样例', tagline:'先把想法摆出来。', article:'一块安静的画板，把颜色、形状和零散的想法放在一起。\n\n不用给每张图片起一个准确的名字，位置本身就能表达关系。这个样例只留两段文字，让画面多说一点。', media:media('board',['灵感画板','材料与色彩']), links:[] },
  { slug:'relay', name:'Relay', monogram:'R', tone:'green', platform:'Command line · 虚构样例', tagline:'让重复的步骤，安静地完成。', article:longArticle.replace('有些工具值得留下','一个命令行工具值得留下')+'\n\n```sh\nrelay collect ./notes --local\nrelay link ./workspace\n```', media:media('terminal',['本地工作区','执行过程','整理结果']), links:[] },
  { slug:'still', name:'Still · 专注的另一种方式', monogram:'S', tone:'violet', platform:'Cross-platform · 虚构样例', tagline:'每次只留一个窗口。', article:'偶尔也想让工具消失。\n\n界面没有很大的主张，只把正在做的事情摆在眼前。这份样文很短，展示一张图与几句话也足够成立的内容。', media:media('clean',['专注视图']), links:[] },
+ { slug:'pocket', name:'Pocket Notes', monogram:'P', tone:'green', platform:'iOS / Android · 虚构竖屏样例', tagline:'把随手记，留在口袋里。', article:longArticle, media:media('mobile',['今日笔记','收集灵感','一周回顾']).map((item,i) => ({ ...item,width:i === 1 ? 430 : 390,height:i === 1 ? 860 : 844 })), links:[] },
  { slug:'unfinished', name:'未完成的收藏', monogram:'…', tone:'gray', platform:'随手记 · 无媒体样例', tagline:'有些偏好，先记下一个名字。', article:'还没整理好截图，也没有一篇完整的介绍。\n\n先留在这里，等下一次使用时再补上。这也是收藏的一种状态。', media:[], links:[] },
 ]
 export const categories:AssetCategory[] = [

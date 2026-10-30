@@ -296,3 +296,15 @@ html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { an
 .theme-tool-workspace .theme-media-gallery > .theme-media-art { flex:1; min-height:0; height:auto; }
 .theme-tool-dock { display:flex; flex:none; gap:12px; margin:0 auto; padding:12px; border:1px solid var(--border); border-radius:var(--radius-reader); background:var(--surface-floating); }
 .theme-tool-dock a { display:grid; place-items:center; min-width:44px; min-height:44px; border-radius:var(--radius-control); background:var(--blue-soft); color:var(--ink); font-size:24px; text-decoration:none; }
+
+.theme-format-controls { display:flex; gap:12px; margin-bottom:24px; }
+.theme-format-controls button { border:1px solid var(--border); border-radius:var(--radius-control); padding:8px 16px; background:var(--surface); }
+.theme-format-controls [aria-pressed='true'] { color:var(--blue); border-color:var(--blue); }
+.theme-tool-body { flex:1; min-height:0; display:grid; grid-template-columns:minmax(0,var(--theme-media-width,1fr)) minmax(180px,1fr); gap:24px; }
+.theme-tool-story { min-width:0; overflow:hidden; }
+.theme-tool-story h3 { font-size:24px; margin-bottom:24px; }
+.theme-tool-story p { font-size:18px; line-height:1.8; }
+.theme-tool-workspace[data-format='portrait'] .theme-media-art { border-radius:16px; background:#f1f4ed; }
+.theme-tool-workspace[data-format='portrait'] .theme-media-art > i { width:76%; height:28%; border-radius:12px; left:12%; top:16%; }
+.theme-tool-workspace[data-format='portrait'] .theme-media-art > span { width:76%; height:28%; border-radius:12px; left:12%; top:50%; }
+@media(max-width:760px) { .theme-tool-workspace { height:auto; } .theme-tool-body { display:flex; flex-direction:column; } .theme-tool-body .theme-media-gallery { flex:none; height:320px; } .theme-tool-workspace[data-format='portrait'] .theme-media-gallery { max-width:160px; } }
