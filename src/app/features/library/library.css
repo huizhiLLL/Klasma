@@ -108,3 +108,18 @@
  .library-scene:has(.return-sw,.return-se) { padding-bottom:132px; }
  .library-scene .scene-heading { margin-inline:0; }
 }
+
+/* 只在资产开关快照期间命名，同一时刻来源和目标各占一帧。 */
+html[data-asset-detail-transition] .scene-item-link[data-shared-asset] .scene-item-art,
+html[data-asset-detail-transition] .asset-detail-visual { view-transition-name:asset-detail-media; }
+html[data-asset-detail-transition] .scene-item-link[data-shared-asset] > strong,
+html[data-asset-detail-transition] .asset-detail-title { view-transition-name:asset-detail-title; }
+html[data-asset-detail-transition]::view-transition { pointer-events:none; }
+html[data-asset-detail-transition]::view-transition-old(root) { display:none; }
+html[data-asset-detail-transition]::view-transition-new(root) { animation:none; }
+html[data-asset-detail-transition]::view-transition-group(asset-detail-media),
+html[data-asset-detail-transition]::view-transition-group(asset-detail-title),
+html[data-asset-detail-transition]::view-transition-old(asset-detail-media),
+html[data-asset-detail-transition]::view-transition-new(asset-detail-media),
+html[data-asset-detail-transition]::view-transition-old(asset-detail-title),
+html[data-asset-detail-transition]::view-transition-new(asset-detail-title) { animation-duration:var(--motion-spatial); animation-timing-function:var(--ease-settle); }

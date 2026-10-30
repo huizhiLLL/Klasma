@@ -1,9 +1,9 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react'
+import { useLayoutEffect, useId, useRef, type ReactNode } from 'react'
 import { Icon } from './Icon'
-export function Dialog({ title, children, onDismiss, returnFocus, reader = false }: { title:string; children:ReactNode; onDismiss:()=>void; returnFocus?:string; reader?:boolean }) {
+export function Dialog({ title, children, onDismiss, returnFocus, reader = false, titleClassName }: { title:string; children:ReactNode; onDismiss:()=>void; returnFocus?:string; reader?:boolean; titleClassName?:string }) {
  const dialog = useRef<HTMLDialogElement>(null)
  const id = useId()
- useEffect(() => {
+ useLayoutEffect(() => {
   const node = dialog.current!
   const previous = document.activeElement as HTMLElement | null
   node.showModal()
@@ -18,5 +18,5 @@ export function Dialog({ title, children, onDismiss, returnFocus, reader = false
   if (event.target !== event.currentTarget) return
   const box = event.currentTarget.getBoundingClientRect()
   if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) onDismiss()
- }}><header className="dialog-heading"><h2 id={id}>{title}</h2><button className="icon-button" onClick={onDismiss} aria-label="关闭" title="关闭（Escape）"><Icon name="x" /></button></header>{children}</dialog>
+ }}><header className="dialog-heading"><h2 id={id} className={titleClassName}>{title}</h2><button className="icon-button" onClick={onDismiss} aria-label="关闭" title="关闭（Escape）"><Icon name="x" /></button></header>{children}</dialog>
 }

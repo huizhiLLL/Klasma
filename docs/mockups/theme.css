@@ -265,3 +265,19 @@ dialog::backdrop { background: var(--overlay); }
 [data-return-to='se'] .theme-return-arc > span { transform:rotate(-180deg); }
 [data-return-to='sw'] .theme-return-arc > span { transform:rotate(-270deg); }
 [data-return-to='e'] .theme-return-arc > span { transform:rotate(-135deg); }
+
+.theme-asset-source { width:min(280px,100%); padding:0; border:0; background:transparent; text-align:left; }
+.theme-asset-source > strong { display:block; font-size:17px; font-weight:500; padding-top:12px; }
+.theme-asset-toolbar { display:flex; justify-content:space-between; align-items:center; gap:24px; margin-bottom:24px; }
+#theme-asset-detail { padding:32px; }
+#theme-asset-detail .theme-structure { height:260px; }
+.theme-asset-note { margin-top:24px; color:var(--muted); }
+html[data-theme-asset-transition] #theme-asset-source[data-shared] [data-theme-asset-media],
+html[data-theme-asset-transition] #theme-asset-detail [data-theme-asset-media] { view-transition-name:theme-asset-media; }
+html[data-theme-asset-transition] #theme-asset-source[data-shared] [data-theme-asset-title],
+html[data-theme-asset-transition] #theme-asset-detail [data-theme-asset-title] { view-transition-name:theme-asset-title; }
+html[data-theme-asset-transition]::view-transition { pointer-events:none; }
+html[data-theme-asset-transition]::view-transition-old(root) { display:none; }
+html[data-theme-asset-transition]::view-transition-new(root) { animation:none; }
+html[data-theme-asset-transition]::view-transition-group(theme-asset-media),
+html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { animation-duration:var(--motion-spatial); animation-timing-function:var(--ease-settle); }

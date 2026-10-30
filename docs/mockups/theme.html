@@ -44,6 +44,8 @@
 
 <section class="spec-section" aria-labelledby="return-shape-title"><div class="section-heading"><h2 id="return-shape-title">场景返回圆弧</h2><p>入口在一侧，返回在反侧。</p></div><div class="theme-return-controls"><button type="button" data-return-from="ne" aria-pressed="true">右上进入</button><button type="button" data-return-from="nw" aria-pressed="false">左上进入</button><button type="button" data-return-from="se" aria-pressed="false">右下进入</button><button type="button" data-return-from="sw" aria-pressed="false">左下进入</button><button type="button" data-return-from="w" aria-pressed="false">左侧进入</button></div><div class="theme-return-scene" data-return-to="sw"><span class="theme-return-entry">右上进入 → 左下返回</span><button type="button" class="theme-return-arc" aria-label="返回全局样张"><svg viewBox="0 0 144 144" aria-hidden="true"><path d="M0 0 H144 A144 144 0 0 1 0 144 Z"></path></svg><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide/sprite.svg#arrow-left"></use></svg><small>全局</small></span></button></div></section>
 
+<section class="spec-section" aria-labelledby="asset-expand-title"><div class="section-heading"><h2 id="asset-expand-title">资产名称与缩略图展开</h2><p>同一份标题和媒体跨越遮罩层，关闭时回到原位。</p></div><button type="button" class="theme-asset-source" id="theme-asset-source" aria-haspopup="dialog"><div class="theme-structure" data-theme-asset-media><i></i><i></i><i></i></div><strong data-theme-asset-title>转角处的装配线</strong></button></section>
+
 <section class="spec-section nav-morph-section" aria-labelledby="nav-morph-title">
       <div class="section-heading"><h2 id="nav-morph-title">首页说明 → 集合导航</h2><p>只让 prefer / make / keep 成为共享元素；个人头像不参与。</p></div>
       <div class="nav-morph-demo" id="nav-morph-demo" data-state="home">
@@ -95,6 +97,7 @@
     <footer><p id="font-status" role="status">正在检查首选字体…</p><p>已确认：字体组合、排版起点、表面方向、材质分工、动效性格、图标按钮原则、圆角性格与 4px 间距基准。待评审：具体色值、圆角数值、阴影参数和标题尺度。</p></footer>
   </main>
   <dialog id="reader" aria-labelledby="dialog-title"><div class="reader-toolbar"><span>阅读样张</span><button class="secondary icon-control" aria-label="关闭阅读层" id="close-reader"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="icons/lucide/sprite.svg#x"></use></svg><span class="icon-tip" aria-hidden="true">关闭阅读层</span></button></div><article class="reader-content"><p class="eyebrow">MiSans / Noto Serif SC / Source Serif 4</p><h2 id="dialog-title">把日常的细节做好</h2><div class="reading-copy" id="full-copy"></div></article></dialog>
+  <dialog id="theme-asset-detail" aria-labelledby="theme-asset-title"><header class="theme-asset-toolbar"><h2 id="theme-asset-title" data-theme-asset-title>转角处的装配线</h2><button type="button" id="theme-asset-close" class="secondary icon-control" aria-label="关闭详情"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide/sprite.svg#x"></use></svg></button></header><div class="theme-structure" data-theme-asset-media><i></i><i></i><i></i></div><p class="theme-asset-note">先看空间，再慢慢展开结构。</p></dialog>
   <script type="module" src="theme.js"></script>
 </body>
 </html>

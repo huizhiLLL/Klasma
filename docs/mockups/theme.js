@@ -258,3 +258,33 @@ document.querySelectorAll('[data-return-from]').forEach((button) => {
   });
 });
 document.querySelector('.theme-return-arc').addEventListener('click', () => document.querySelector('.theme-library-orbit').scrollIntoView({ block:'center', behavior:motionReduced() ? 'instant' : 'smooth' }));
+
+const themeAssetSource = document.querySelector('#theme-asset-source');
+const themeAssetDialog = document.querySelector('#theme-asset-detail');
+let themeAssetRevision = 0;
+let themeAssetTransition = null;
+function changeThemeAsset(open) {
+  const revision = ++themeAssetRevision;
+  themeAssetTransition?.skipTransition();
+  themeAssetSource.removeAttribute('data-shared');
+  const update = () => {
+    if (revision !== themeAssetRevision) return;
+    if (open) { themeAssetSource.removeAttribute('data-shared'); if (!themeAssetDialog.open) themeAssetDialog.showModal(); }
+    else { themeAssetDialog.close(); themeAssetSource.dataset.shared = 'true'; }
+  };
+  const finish = () => {
+    if (revision !== themeAssetRevision) return;
+    themeAssetSource.removeAttribute('data-shared');
+    delete document.documentElement.dataset.themeAssetTransition;
+    if (!open) themeAssetSource.focus({ preventScroll:true });
+    themeAssetTransition = null;
+  };
+  if (motionReduced() || typeof document.startViewTransition !== 'function') { update(); finish(); return; }
+  document.documentElement.dataset.themeAssetTransition = 'true';
+  if (open) themeAssetSource.dataset.shared = 'true';
+  themeAssetTransition = document.startViewTransition(update);
+  void themeAssetTransition.finished.finally(finish).catch(() => {});
+}
+themeAssetSource.addEventListener('click', () => changeThemeAsset(true));
+document.querySelector('#theme-asset-close').addEventListener('click', () => changeThemeAsset(false));
+themeAssetDialog.addEventListener('cancel', (event) => { event.preventDefault(); changeThemeAsset(false); });
