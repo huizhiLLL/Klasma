@@ -27,8 +27,20 @@ jobs:
       - name: Check types
         run: npm run typecheck
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Verify frontend
+        run: npm run verify:frontend
+
       - name: Build
         run: npm run build
+
+      - name: Verify API with local D1 and R2
+        run: npm run verify:api
 
       - name: Apply D1 migrations
         run: npx wrangler d1 migrations apply klasma-db --remote

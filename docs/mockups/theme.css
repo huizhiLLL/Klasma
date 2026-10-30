@@ -325,3 +325,14 @@ html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { an
 [data-collection="make"] :is(.theme-collection-surface,.theme-collection-marks) { left:auto; right:16px; bottom:calc(50% - 100px); width:64px; height:200px; }
 [data-collection="keep"] .theme-collection-content { inset:44px; width:240px; height:240px; max-width:calc(100% - 88px); margin:auto; border-radius:50%; background:conic-gradient(#e6ebf0 0 72deg,#dfe8e9 72deg 144deg,#e2e8f4 144deg 216deg,#e8e5ed 216deg 288deg,#e2e5e8 288deg); }
 [data-collection="keep"] :is(.theme-collection-surface,.theme-collection-marks) { opacity:0; }
+
+/* 后台录入样张：沿用共享尺度，使用较紧凑的分组与设置栏。 */
+.theme-admin { border:1px solid var(--border); border-radius:var(--radius-card); background:var(--surface); overflow:hidden; }
+.theme-admin-toolbar { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-4) var(--space-6); border-bottom:1px solid var(--border); }
+.theme-admin-toolbar strong { flex:1; font-size:18px; }
+.theme-admin-toolbar span,.theme-admin p { font-size:14px; color:var(--muted); }
+.theme-admin-columns { display:grid; grid-template-columns:minmax(0,1fr) 240px; gap:var(--space-6); padding:var(--space-6); }
+.theme-admin h3 { font-size:18px; margin-bottom:var(--space-4); }
+.theme-admin label { display:grid; gap:var(--space-2); font-size:14px; margin-bottom:var(--space-4); }
+.theme-admin input,.theme-admin textarea { width:100%; min-height:44px; padding:var(--space-3); border:1px solid var(--control-border); border-radius:var(--radius-control); color:var(--ink); background:var(--surface); font:inherit; }
+@media(max-width:760px) { .theme-admin-columns { grid-template-columns:1fr; } .theme-admin-toolbar { flex-wrap:wrap; } }

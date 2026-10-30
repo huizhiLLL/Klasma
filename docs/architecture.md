@@ -4,7 +4,7 @@
 
 已有的“管理录入 → D1 保存 → API 查询 → 前台展示”闭环继续服务软件与工程资产。根据三个集合的实际展示需求，首版采用**混合内容来源**：软件（Tools）与工程资产（Library）由 D1 / R2 + 后台管理；个人作品（Projects）由前端静态注册表、专属 React 组件与构建资源承载。项目继续采用单仓库、单应用、前后端同域部署，避免过早拆分服务。**数据存储方式不决定公开展示模板，三集合共享导航和视觉语言，但不强行共享 CMS。**
 
-本轮公开前台为 mock 评审模式：Tools / Library 通过本地 catalog 读取，Projects 使用静态样例。下文 D1 / R2 是真实内容接入后的目标来源；后台现有 API 保持独立可用。用户确认无需旧数据与旧路由兼容，本轮不进行远程清理。
+公开 Tools / Library 通过 `/api/resources?type=` 读取已发布资源，由 catalog 适配为展示模型，不读取 mock。Projects 仅使用真实作品静态注册表，当前为空。分类为共享常量，资产场景位置依据分类内排序生成。用户确认无需旧数据与旧路由兼容，本轮不清理远程旧记录。
 
 ## 2. 技术栈
 
@@ -21,22 +21,22 @@
 | API 框架 | Hono | 路由、中间件和请求处理 |
 | 数据库 | Cloudflare D1 + Drizzle ORM | 软件与工程资产元数据、标签、关系和迁移 |
 | 文件存储 | Cloudflare R2 | 蓝图、脚本附件、图片和其他二进制文件 |
-| 后台鉴权 | 当前支持 ADMIN_KEY；Cloudflare Access 为目标 | 保护 `/admin` 与管理 API，Access 尚待配置和完整验证 |
+| 后台鉴权 | ADMIN_KEY 登录 + 固定 30 天签名会话 | `/admin` 内输入密钥；管理 API 与草稿文件校验 HttpOnly 会话 |
 | 外部分发 | GitHub Releases、OpenList、官方网站 | 保留已有文件分发渠道 |
 
 React + Vite 首版按 SPA 实现。公开资源详情页的 SEO 和社交分享需求明确后，再评估 SSR 或服务端生成元信息，不为尚未验证的需求提前引入 Next.js 等复杂框架。
 
 ## 3. 部署形态
 
-前端静态资源和 API 放在同一个 Cloudflare 项目中，通过 Workers Static Assets 与 Worker 路由统一部署。公开读取接口保持开放，当前管理界面支持密钥输入，Worker 支持 `ADMIN_KEY` 校验；密钥仅由环境 Secret 提供，不写入仓库。Cloudflare Access 仍为目标方案，需落实配置与可信身份验证，不能将请求中身份头的存在直接视为已验证身份。以下示意图描述 Access 落地后的目标边界。
+前端静态资源和 API 放在同一个 Cloudflare 项目中，通过 Workers Static Assets 与 Worker 路由统一部署。公开读取接口保持开放，管理界面仅在 `/admin` 内检查会话、显示密钥输入。密钥由环境 Secret 提供，登录成功签发 HttpOnly、SameSite=Strict、HTTPS 下 Secure 的 Cookie，固定 30 天后过期，不滑动续期，不将密钥存入 localStorage。退出删除当前浏览器 Cookie，轮换 ADMIN_KEY 可使所有已签发会话失效；退出不撤销已泄漏的独立 Cookie 副本。管理 API 不再信任未验证的 Access 身份头，也不接受旧 X-Admin-Key 直传。所有写请求限制同源；未配置密钥时拒绝登录。以下为当前边界。
 
 ```text
 Browser
   ├─ public pages ───────────────┐
-  └─ /admin ── Cloudflare Access ─┤
+  └─ /admin ── 30-day session ─┤
                                   ↓
                          Cloudflare Worker + Hono
-                           ├─ public API
+                           ├─ public API (published only)
                            ├─ admin API
                            ├─ D1 metadata
                            └─ R2 assets
@@ -116,20 +116,20 @@ src/
 │   ├── routing.ts           History 导航与订阅
 │   ├── pages/HomePage.tsx   身份与收藏牌
 │   ├── components/          集合导航、原生 Dialog、Markdown、反馈与示意图
-│   ├── data/                内容模型、完整 mock 与 catalog 读取边界
+│   ├── data/                内容模型、真实 API hook 与 catalog 适配边界
 │   ├── features/tools/      媒体、预览、阅读层与 Dock
 │   ├── features/library/    分类几何、空间场景、URL 详情与顺序示意
 │   ├── features/projects/   静态注册表、切换外壳和 pages/ 专属组件
 │   ├── animations/          动效与输入方式降级
 │   └── styles/              token、公开布局、示意素材
-├── admin/                   现有 API 管理页与独立样式
+├── admin/                   列表、类型编辑器、会话入口与独立样式
 ├── server/                  Hono 入口与 db/
 └── shared/resource.ts       现有 API 资源类型
 ```
 
 `public/fonts/` 存正式完整 unicode 字体分片与许可，`public/icons/lucide/` 存统一图标，`public/samples/` 提供真实可下载的示例文本。`scripts/prepare-app-fonts.py` 从官方来源准备字体；不依赖原型字体缓存。作品内部模块独立延迟加载，后台单独分包。
 
-公开路由、mock 边界、实现顺序见 `frontend-implementation.md`；覆盖矩阵与验证限制见 `frontend-preview.md`。服务端渲染检查不代表浏览器视觉、焦点、滚动与动效已验收。
+公开路由与最初实施范围见 `frontend-implementation.md`；当前真实 API 入口与验证限制见 `frontend-preview.md`。服务端渲染检查不代表浏览器视觉、焦点、滚动与动效已验收。
 
 公开前台的首页卡片、集合页、资源详情与导航自行设计；后台优先复用成熟组件以降低维护成本。动态资源使用稳定 ID / slug，静态作品也使用稳定 slug；共享元素标识由视觉对象和页面身份决定，不强迫所有展示项来自 D1。作品外壳与具体作品的组件职责分开，避免作品的独立样式或动画影响全局导航。
 
@@ -143,3 +143,9 @@ Motion 负责页面共享元素与内容进出；资产条目到原生 dialog �
 - 外部链接和 R2 文件都通过统一的资源附件模型展示。
 - 管理 API 不能只依赖前端隐藏页面，必须在 Worker 层校验身份。
 - 初期不引入微服务、独立搜索服务或复杂事件系统。
+
+## 7. 后台与公开 API 契约
+
+详见 [后台管理](admin.md)。数据库列和关联表不变，类型字段写入现有 resources.metadata，媒体说明、尺寸、顺序写入 resource_assets.metadata。API 出口将 metadata JSON 解码为对象；列表与详情均包含 links、tags、assets，附件入口统一返回 url。关联数据批量读取，并分批控制绑定参数数目；资源、链接与标签以 D1 batch 原子写入。
+
+草稿的上传文件需有效管理会话；公开附件每次检查所属资源发布状态，不使用长缓存。仅受支持的位图以内联图片响应，HTML、SVG 等文件强制下载。外部素材保持原始存储渠道，其源地址的访问权限由来源站点决定。单文件上限 25 MB。删除资源一并删除 R2 对象，外部源文件不删除；R2 与 D1 不支持跨服务事务，若对象删除失败保留数据库记录以便重试。
