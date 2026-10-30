@@ -6,7 +6,7 @@
 .project-intro h2 { font-size:36px; font-weight:600; margin-block:var(--s2); }
 .project-intro p { font-size:var(--text-small); line-height:1.8; }
 .project-links { flex-shrink:0; }
-.project-rail { position:sticky; top:var(--s6); display:flex; flex-direction:column; gap:var(--s3); padding:var(--s3); background:var(--floating); border:1px solid var(--border); border-radius:var(--radius-reader); box-shadow:var(--shadow-card); }
+.project-rail { align-self:center; position:sticky; top:var(--s6); display:flex; flex-direction:column; gap:var(--s3); padding:var(--s3); background:var(--floating); border:1px solid var(--border); border-radius:var(--radius-reader); box-shadow:var(--shadow-card); }
 .project-rail a { position:relative; padding:var(--s1); display:grid; justify-items:center; gap:var(--s2); }
 .project-rail .monogram { width:44px; height:44px; font-size:24px; border-radius:10px; }
 .project-rail a > span:last-child { font-size:12px; position:absolute; right:calc(100% + 20px); top:12px; padding:var(--s2) var(--s3); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-control); white-space:nowrap; opacity:0; pointer-events:none; }

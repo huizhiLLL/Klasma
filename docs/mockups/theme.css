@@ -283,3 +283,10 @@ html[data-theme-asset-transition]::view-transition-group(theme-asset-media),
 html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { animation-duration:var(--motion-spatial); animation-timing-function:var(--ease-settle); }
 
 .theme-wheel-measure { visibility:hidden; }
+
+.theme-project-layout { display:grid; grid-template-columns:minmax(0,1fr) 72px; gap:var(--space-6); }
+.theme-project-main h3 { margin-bottom:var(--space-6); font-size:28px; }
+.theme-project-art { display:grid; place-items:center; min-height:320px; background:#e2e7dd; border-radius:var(--radius-card); color:#4e634c; font-size:32px; }
+.theme-project-rail { align-self:center; display:flex; flex-direction:column; gap:12px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-reader); box-shadow:var(--shadow-soft); }
+.theme-project-rail a { display:grid; place-items:center; min-height:44px; border-radius:var(--radius-control); background:#e8eeee; color:var(--ink); text-decoration:none; font-size:24px; }
+@media(max-width:760px) { .theme-project-layout { grid-template-columns:1fr; } .theme-project-rail { flex-direction:row; justify-self:center; } .theme-project-rail a { min-width:44px; } }
