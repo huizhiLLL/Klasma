@@ -28,7 +28,13 @@ try {
  const { catalog } = await vite.ssrLoadModule('/src/app/data/catalog.ts')
  const { projects } = await vite.ssrLoadModule('/src/app/features/projects/registry.ts')
  render(HomePage,{},'Klasma')
- for (const tool of catalog.tools()) render(ToolsPage,{ slug:tool.slug,search:'' },tool.name)
+ for (const tool of catalog.tools()) {
+  const html = render(ToolsPage,{ slug:tool.slug,search:'' },tool.name)
+  if (tool.slug === 'pocket') {
+   assert.ok(html.includes('上一张截图') && html.includes('下一张截图'))
+   assert.ok(!html.includes('媒体缩略图轮播'))
+  }
+ }
  render(LibraryPage,{ search:'' },'工程资产分类')
  for (const category of catalog.categories()) {
   render(LibraryPage,{ category:category.slug,search:'' },category.name)

@@ -293,7 +293,8 @@ html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { an
 /* 缩尺视口：Dock 靠底，媒体区填满余量。 */
 .theme-tool-workspace { display:flex; flex-direction:column; gap:32px; height:520px; padding-bottom:16px; }
 .theme-tool-workspace .theme-media-gallery { flex:1; min-height:0; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
-.theme-tool-workspace .theme-media-gallery > .theme-media-art { flex:1; min-height:0; height:auto; }
+.theme-portrait-stage { flex:1; min-height:0; display:grid; grid-template-columns:minmax(0,1fr); }
+.theme-portrait-stage > .theme-media-art { min-height:0; width:100%; height:100%; }
 .theme-tool-dock { display:flex; flex:none; gap:12px; margin:0 auto; padding:12px; border:1px solid var(--border); border-radius:var(--radius-reader); background:var(--surface-floating); }
 .theme-tool-dock a { display:grid; place-items:center; min-width:44px; min-height:44px; border-radius:var(--radius-control); background:var(--blue-soft); color:var(--ink); font-size:24px; text-decoration:none; }
 
@@ -307,4 +308,11 @@ html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { an
 .theme-tool-workspace[data-format='portrait'] .theme-media-art { border-radius:16px; background:#f1f4ed; }
 .theme-tool-workspace[data-format='portrait'] .theme-media-art > i { width:76%; height:28%; border-radius:12px; left:12%; top:16%; }
 .theme-tool-workspace[data-format='portrait'] .theme-media-art > span { width:76%; height:28%; border-radius:12px; left:12%; top:50%; }
-@media(max-width:760px) { .theme-tool-workspace { height:auto; } .theme-tool-body { display:flex; flex-direction:column; } .theme-tool-body .theme-media-gallery { flex:none; height:320px; } .theme-tool-workspace[data-format='portrait'] .theme-media-gallery { max-width:160px; } }
+@media(max-width:760px) { .theme-tool-workspace { height:auto; } .theme-tool-body { display:flex; flex-direction:column; } .theme-tool-body .theme-media-gallery { flex:none; height:320px; } .theme-tool-workspace[data-format='portrait'] .theme-media-gallery { max-width:none; height:min(600px,70dvh); } }
+
+.theme-media-strip[hidden],.theme-media-arrow[hidden] { display:none; }
+.theme-tool-workspace[data-format='portrait'] .theme-portrait-stage { grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; gap:12px; }
+.theme-tool-workspace[data-format='portrait'] .theme-portrait-stage > .theme-media-art { width:min(100%,35dvh); height:auto; max-height:100%; aspect-ratio:.5; justify-self:center; }
+.theme-media-arrow { display:grid; place-items:center; width:44px; height:44px; padding:0; border:1px solid var(--border); border-radius:50%; background:var(--surface); color:var(--ink); }
+.theme-media-arrow.is-next .icon { transform:rotate(180deg); }
+.theme-media-arrow:hover { color:var(--blue); border-color:var(--blue); }

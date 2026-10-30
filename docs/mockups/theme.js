@@ -321,16 +321,28 @@ const themeToolWorkspace = document.querySelector('.theme-tool-workspace');
 const themeToolBody = themeToolWorkspace.querySelector('.theme-tool-body');
 const themeMediaStrip = themeToolWorkspace.querySelector('.theme-media-strip');
 function fitThemeMediaColumn() {
-  const ratio = themeToolWorkspace.dataset.format === 'portrait' ? .5 : 1.6;
-  const imageHeight = Math.max(0, themeToolBody.clientHeight - themeMediaStrip.offsetHeight - 16);
-  const width = Math.max(0, Math.min(imageHeight * ratio, themeToolBody.clientWidth - 24 - 180));
+  const portrait = themeToolWorkspace.dataset.format === 'portrait';
+  const ratio = portrait ? .5 : 1.6;
+  const imageHeight = Math.max(0, themeToolBody.clientHeight - (portrait ? 0 : themeMediaStrip.offsetHeight + 16));
+  const width = Math.max(0, Math.min(imageHeight * ratio + (portrait ? 112 : 0), themeToolBody.clientWidth - 24 - 180));
   themeToolBody.style.setProperty('--theme-media-width', `${width}px`);
 }
 new ResizeObserver(fitThemeMediaColumn).observe(themeToolBody);
 document.querySelectorAll('[data-theme-format]').forEach(button => {
   button.addEventListener('click', () => {
     themeToolWorkspace.dataset.format = button.dataset.themeFormat;
+    const portrait = button.dataset.themeFormat === 'portrait';
+    themeMediaStrip.hidden = portrait;
+    document.querySelectorAll('[data-theme-step]').forEach(arrow => { arrow.hidden = !portrait; });
     document.querySelectorAll('[data-theme-format]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
     fitThemeMediaColumn();
+  });
+});
+
+document.querySelectorAll('[data-theme-step]').forEach(button => {
+  button.addEventListener('click', () => {
+    const main = document.querySelector('#theme-media-main');
+    const next = (Number(main.dataset.frame) + Number(button.dataset.themeStep) + 3) % 3;
+    document.querySelector(`[data-theme-media="${next}"]`).click();
   });
 });
