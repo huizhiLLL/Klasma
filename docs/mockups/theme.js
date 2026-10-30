@@ -63,7 +63,7 @@ function paintThemeWheel() {
   themeWheelItems.forEach((item, index) => {
     const angle = (index - wheelPosition) * Math.PI * 2 / 3;
     const face = (Math.cos(angle) + 1) / 2;
-    item.style.transform = `translateY(${Math.sin(angle) * .8}em) scale(${Math.max(.18, Math.pow(face, 1.6))})`;
+    item.style.transform = `translateY(${Math.sin(angle) * .88}em) scale(${.28 + .72 * Math.pow(face, 1.6)})`;
     item.style.opacity = Math.min(1, face * 2.4);
   });
 }
@@ -84,6 +84,15 @@ function selectThemeWheel(word, instant) {
   wheelFrame = requestAnimationFrame(frame);
 }
 paintThemeWheel();
+void document.fonts.ready.then(() => {
+  const font = getComputedStyle(themeWheel);
+  const context = document.createElement('canvas').getContext('2d');
+  if (!context) return;
+  context.font = `${font.fontWeight} 100px ${font.fontFamily}`;
+  themeWheelItems.forEach((item, index) => {
+    item.style.textIndent = `${context.measureText(themeWheelNames[index]).actualBoundingBoxLeft / 100}em`;
+  });
+});
 
 const subtitles = { prefer: "软件 · 偏好与欣赏", make: "作品 · 创作与交互", keep: "工程资产 · 长期的沉淀" };
 document.querySelectorAll("[data-collection]").forEach((button) => {
