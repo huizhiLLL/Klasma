@@ -51,7 +51,6 @@ h1 { font-size: clamp(28px, 3.3vw, 44px); font-weight: 600; line-height: 1.5; }
 .capsule button[aria-pressed="true"] { color: var(--blue); background: var(--blue-soft); }
 .capsule button:hover { color: var(--blue-hover); }
 .collection-title { font-size: clamp(32px, 3.8vw, 48px); line-height: 1.15; letter-spacing: -.025em; font-weight: 700; overflow-wrap: anywhere; }
-.collection-subtitle { font-size: 16px; line-height: 1.8; margin-top: var(--space-3); color: var(--muted); }
 .reading-preview { margin-top: var(--space-8); padding: var(--space-8); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-reader); container-type: inline-size; }
 .reading-preview h3 { font-size: 24px; font-weight: 600; line-height: 1.5; margin-bottom: var(--space-4); }
 .reading-copy { font-family: "Source Serif 4", "Noto Serif SC", serif; font-size: 18px; line-height: 1.8; font-weight: 400; letter-spacing: 0; }
