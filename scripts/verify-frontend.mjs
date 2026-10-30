@@ -16,6 +16,11 @@ function render(Component,props,expected) {
  return html
 }
 try {
+ const { default:App } = await vite.ssrLoadModule('/src/App.tsx')
+ const { CollectionShell } = await vite.ssrLoadModule('/src/app/components/CollectionShell.tsx')
+ const app = render(App,{},'Klasma')
+ assert.ok(!app.includes('review-note'))
+ for (const collection of ['tools','projects','library']) render(CollectionShell,{ collection,children:'collection content' },'What I')
  const { HomePage } = await vite.ssrLoadModule('/src/app/pages/HomePage.tsx')
  const { ToolsPage } = await vite.ssrLoadModule('/src/app/features/tools/ToolsPage.tsx')
  const { LibraryPage } = await vite.ssrLoadModule('/src/app/features/library/LibraryPage.tsx')

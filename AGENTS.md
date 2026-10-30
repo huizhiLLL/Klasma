@@ -24,7 +24,7 @@
 | `src/app/routes.ts`、`src/app/routing.ts` | 新 URL 解析、导航与 History 订阅；不兼容旧路由 |
 | `src/app/components/` | 集合外壳、链接、原生 Dialog、Markdown、状态反馈与示意素材 |
 | `src/app/pages/HomePage.tsx` | 个人身份与三张收藏牌首页 |
-| `src/app/styles/`、`src/app/animations/` | 公开前台 token、布局、示意素材样式与动效降级 |
+| `src/app/styles/`、`src/app/animations/` | 公开前台 token、布局、示意素材样式与动效降级；`wordWheel.ts` 为连续滚轮，`assetTransition.ts` 为跨原生 dialog 的共享快照 |
 | `src/admin/AdminPage.tsx` | 管理后台；新建软件 / 工程资产，保留历史作品编辑 |
 | `src/shared/resource.ts` | 现有动态资源类型与兼容边界 |
 | `src/app/data/` | 公开前台内容模型、mock fixtures、catalog 数据边界与预览状态 |
@@ -34,7 +34,7 @@
 | `src/app/features/projects/` | 静态注册表、作品切换外壳与独立延迟加载的 `pages/` |
 | `public/fonts/`、`public/icons/lucide/` | 正式字体分片、图标与来源许可 |
 | `scripts/` | 正式字体准备与无浏览器前台渲染验证 |
-| `tests/` | 路由、内容、分类几何与作品下载的 Node 逻辑测试 |
+| `tests/` | 路由、内容、分类几何、作品下载、滚轮与快照生命周期的 Node 逻辑测试 |
 | `src/index.css` | 应用中性重置与全局基础 |
 | `src/assets/`、`public/` | 应用导入素材与静态公共资源 |
 | `src/server/index.ts`、`src/server/types.ts` | Hono Worker API 入口、环境绑定与服务端类型 |
