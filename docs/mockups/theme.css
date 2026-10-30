@@ -225,7 +225,7 @@ dialog::backdrop { background: var(--overlay); }
 .theme-media-strip .theme-media-art { width:80px; height:50px; }
 .theme-media-strip [aria-pressed='true'] { outline:2px solid var(--blue); outline-offset:2px; }
 
-.theme-library-orbit { --pizza-size:300px; --preview-width:180px; position:relative; display:grid; place-items:center; min-height:520px; }
+.theme-library-orbit { --pizza-size:340px; --preview-width:180px; position:relative; display:grid; place-items:center; min-height:560px; }
 .theme-pizza { width:var(--pizza-size); overflow:visible; }
 .theme-pizza g { transform-origin:250px 250px; transform-box:view-box; transition:transform var(--motion-switch) var(--ease-settle); cursor:pointer; }
 .theme-pizza path { fill:#e0e7ef; stroke:var(--canvas); stroke-width:7px; }
@@ -237,11 +237,11 @@ dialog::backdrop { background: var(--overlay); }
 .theme-pizza text { fill:var(--ink); font-size:21px; pointer-events:none; }
 .theme-library-preview { position:absolute; width:var(--preview-width); padding:8px; border:1px solid var(--border); background:var(--surface); border-radius:var(--radius-card); box-shadow:var(--shadow-soft); }
 .theme-library-preview[hidden] { display:none; }
-.theme-library-preview[data-direction='sw'] { right:calc(50% + 105px); bottom:16px; }
-.theme-library-preview[data-direction='se'] { left:calc(50% + 105px); bottom:16px; }
-.theme-library-preview[data-direction='ne'] { left:calc(50% + 105px); top:16px; }
-.theme-library-preview[data-direction='nw'] { right:calc(50% + 105px); top:16px; }
-.theme-library-preview[data-direction='w'] { right:calc(50% + 166px); top:calc(50% - 80px); }
+.theme-library-preview[data-direction='sw'] { right:calc(50% + var(--pizza-size) * .4); bottom:16px; }
+.theme-library-preview[data-direction='se'] { left:calc(50% + var(--pizza-size) * .4); bottom:16px; }
+.theme-library-preview[data-direction='ne'] { left:calc(50% + var(--pizza-size) * .4); top:16px; }
+.theme-library-preview[data-direction='nw'] { right:calc(50% + var(--pizza-size) * .4); top:16px; }
+.theme-library-preview[data-direction='w'] { right:calc(50% + var(--pizza-size) * .5 + 16px); top:calc(50% - 80px); }
 .theme-library-preview strong { display:block; padding:12px 4px; font-weight:500; font-size:14px; }
 .theme-structure { display:flex; align-items:center; justify-content:center; gap:4px; height:112px; background:#e8eeee; border-radius:var(--radius-control); }
 .theme-structure i { width:28px; height:44px; background:#a5c0b1; border:1px solid #789284; box-shadow:7px 7px #849e90; transform:skewY(-20deg); }
