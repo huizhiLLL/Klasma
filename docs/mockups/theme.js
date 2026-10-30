@@ -38,11 +38,54 @@ dialog.addEventListener("click", (event) => {
   if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
 });
 
+// 三词共享连续进度；中断时从当前帧继续。
+const themeWheel = document.querySelector('#collection-word');
+const themeWheelNames = ['prefer', 'make', 'keep'];
+const themeWheelLabel = document.createElement('span');
+themeWheelLabel.className = 'theme-wheel-semantic';
+themeWheelLabel.textContent = 'prefer';
+themeWheel.replaceChildren(themeWheelLabel);
+const themeWheelItems = themeWheelNames.map((word) => {
+  const item = document.createElement('span');
+  item.className = 'theme-wheel-word';
+  item.textContent = word;
+  item.setAttribute('aria-hidden', 'true');
+  themeWheel.append(item);
+  return item;
+});
+let wheelPosition = 0;
+let wheelFrame = 0;
+function paintThemeWheel() {
+  themeWheelItems.forEach((item, index) => {
+    const angle = (index - wheelPosition) * Math.PI * 2 / 3;
+    const face = (Math.cos(angle) + 1) / 2;
+    item.style.transform = `translateY(${Math.sin(angle) * .8}em) scale(${Math.max(.18, Math.pow(face, 1.6))})`;
+    item.style.opacity = Math.min(1, face * 2.4);
+  });
+}
+function selectThemeWheel(word, instant) {
+  cancelAnimationFrame(wheelFrame);
+  themeWheelLabel.textContent = word;
+  const index = themeWheelNames.indexOf(word);
+  const target = index + Math.round((wheelPosition - index) / 3) * 3;
+  if (instant || motionReduced()) { wheelPosition = target; paintThemeWheel(); return; }
+  const from = wheelPosition;
+  const start = performance.now();
+  function frame(now) {
+    const progress = Math.min(1, (now - start) / 560);
+    wheelPosition = from + (target - from) * (1 - (1 - progress) ** 4);
+    paintThemeWheel();
+    if (progress < 1) wheelFrame = requestAnimationFrame(frame);
+  }
+  wheelFrame = requestAnimationFrame(frame);
+}
+paintThemeWheel();
+
 const subtitles = { prefer: "软件 · 偏好与欣赏", make: "作品 · 创作与交互", keep: "工程资产 · 长期的沉淀" };
 document.querySelectorAll("[data-collection]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", (event) => {
     document.querySelectorAll("[data-collection]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
-    document.querySelector("#collection-word").textContent = button.dataset.collection;
+    selectThemeWheel(button.dataset.collection, event.detail === 0);
     document.querySelector("#collection-subtitle").textContent = subtitles[button.dataset.collection];
   });
 });

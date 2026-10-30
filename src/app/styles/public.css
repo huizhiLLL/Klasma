@@ -71,10 +71,6 @@
 .collection-page { min-height:100dvh; }
 .collection-header { display:flex; justify-content:space-between; align-items:center; gap:var(--s6); margin-bottom:var(--s12); }
 .collection-title { font-weight:700; font-size:clamp(40px,5.3vw,76px); letter-spacing:-.045em; line-height:1.15; display:flex; align-items:baseline; gap:.24em; white-space:nowrap; }
-.word-wheel { display:inline-block; position:relative; min-width:3.05em; }
-.word-wheel .ghost { font-size:.18em; letter-spacing:0; position:absolute; left:0; color:var(--muted); opacity:.6; }
-.word-wheel .ghost:first-child { top:-1.2em; }
-.word-wheel .ghost:last-child { bottom:-1.3em; }
 .collection-label { font-size:var(--text-small); color:var(--muted); margin-top:var(--s4) !important; line-height:1.7; }
 .collection-nav { display:flex; flex-shrink:0; align-items:center; gap:2px; padding:var(--s1); border:1px solid var(--border); background:var(--floating); border-radius:999px; }
 .collection-nav a { position:relative; min-height:44px; min-width:66px; padding:var(--s3) var(--s4); display:grid; place-items:center; font-size:var(--text-small); font-weight:500; }
@@ -133,3 +129,5 @@ html[data-keyboard='true'] .public-app * { transition-duration:0ms; animation-du
 
 .public-app [inert] { pointer-events:none; }
 .public-app :is(input,textarea,[tabindex='0']):focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+.word-wheel { display:inline-block; position:relative; flex-shrink:0; width:3.05em; height:1.15em; }
+.wheel-word { position:absolute; top:0; left:0; display:block; transform-origin:left center; will-change:transform,opacity; }

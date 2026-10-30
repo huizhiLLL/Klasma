@@ -208,3 +208,7 @@ dialog::backdrop { background: var(--overlay); }
 .theme-site-intro small { color:var(--muted); font-size:16px; font-weight:400; }
 .theme-site-intro p { color:var(--muted); font-size:14px; line-height:1.8; }
 @media(max-width:600px) { .theme-site-intro { align-items:flex-start; flex-direction:column; gap:var(--space-2); } }
+
+#collection-word { position:relative; display:inline-block; width:3.05em; height:1.15em; vertical-align:bottom; }
+.theme-wheel-word { position:absolute; left:0; top:0; transform-origin:left center; will-change:transform,opacity; }
+.theme-wheel-semantic { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
