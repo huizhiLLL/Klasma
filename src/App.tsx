@@ -11,6 +11,7 @@ import { useMotionPolicy } from './app/animations/useMotionPolicy'
 import './admin/admin.css'
 import './app/styles/public.css'
 import './app/styles/visuals.css'
+import './app/styles/content.css'
 const Admin = lazy(() => import('./admin/AdminPage').then(module => ({ default:module.AdminPage })))
 function App() {
  const route = useRoute()

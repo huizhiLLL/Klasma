@@ -1,20 +1,21 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { AnimatePresence, motion, useIsPresent } from 'motion/react'
-import { catalog } from '../../data/catalog'
-import { previewState, type Media, type Tool } from '../../data/model'
+import { useCatalog } from '../../data/useCatalog'
+import { ContentImage } from '../../components/ContentImage'
+import { type Media, type Tool } from '../../data/model'
 import { Link } from '../../components/Link'
 import { CollectionSelector } from '../../components/CollectionTransition'
 import { StatePanel } from '../../components/StatePanel'
 import { Dialog } from '../../components/Dialog'
 import { Markdown } from '../../components/Markdown'
-import { Monogram, SoftwareVisual } from '../../components/Visual'
+import { Monogram } from '../../components/Visual'
 import { Icon } from '../../components/Icon'
 import { useMotionPolicy } from '../../animations/useMotionPolicy'
 import { mediaColumnWidth, mediaThumbnailSize, usesPortraitMedia } from './mediaLayout'
 import './tools.css'
-function MediaThumbnail({ media,title,frame }: { media:Media; title:string; frame:number }) {
+function MediaThumbnail({ media,title }: { media:Media; title:string; frame:number }) {
  const { scale,width,height } = mediaThumbnailSize(media)
- return <span className="media-thumb-art" aria-hidden="true" style={{ width,height }}><span className="media-thumb-source" style={{ width:media.width,height:media.height,transform:`scale(${scale})` }}><SoftwareVisual variant={media.variant} title={title} frame={frame} /></span></span>
+ return <span className="media-thumb-art" aria-hidden="true" style={{ width,height }}><span className="media-thumb-source" style={{ width:media.width,height:media.height,transform:`scale(${scale})` }}><ContentImage src={media.src || ""} alt={`${title} · ${media.label}`} /></span></span>
 }
 function ToolStage({ tool }: { tool:Tool }) {
  const { enabled } = useMotionPolicy()
@@ -59,7 +60,7 @@ function ToolStage({ tool }: { tool:Tool }) {
  if (event.key === 'Home') setMediaIndex(0)
  else if (event.key === 'End') setMediaIndex(tool.media.length - 1)
  else stepMedia(event.key === 'ArrowLeft' ? -1 : 1)
-}}>{portrait && tool.media.length > 1 && <button className="tool-media-arrow" aria-label="上一张截图" title="上一张截图" onClick={() => stepMedia(-1)}><Icon name="arrow-left" /></button>}<div className="tool-screen">{media ? <AnimatePresence mode="sync" initial={false}><motion.div key={media.id} className="tool-media-frame" initial={enabled ? { opacity:0,x:20 } : false} animate={{ opacity:1,x:0 }} exit={{ opacity:0 }} transition={{ duration:enabled ? .28 : 0 }}><div className="tool-image-fit" style={{ '--media-ratio':media.width / media.height } as CSSProperties}><SoftwareVisual variant={media.variant} title={`${tool.name} · ${media.label}`} frame={mediaIndex} /></div></motion.div></AnimatePresence> : <div className="media-absent"><Monogram text={tool.monogram} tone={tool.tone} /><p>截图还在整理中</p></div>}</div>{portrait && tool.media.length > 1 && <><button className="tool-media-arrow is-next" aria-label="下一张截图" title="下一张截图" onClick={() => stepMedia(1)}><Icon name="arrow-left" /></button><span className="sr-only" role="status">第 {mediaIndex + 1} 张，共 {tool.media.length} 张：{media?.label}</span></>}{!portrait && tool.media.length > 1 && <div ref={thumbnails} className="media-thumbs" role="group" aria-label="媒体缩略图轮播" onKeyDown={event => {
+}}>{portrait && tool.media.length > 1 && <button className="tool-media-arrow" aria-label="上一张截图" title="上一张截图" onClick={() => stepMedia(-1)}><Icon name="arrow-left" /></button>}<div className="tool-screen">{media ? <AnimatePresence mode="sync" initial={false}><motion.div key={media.id} className="tool-media-frame" initial={enabled ? { opacity:0,x:20 } : false} animate={{ opacity:1,x:0 }} exit={{ opacity:0 }} transition={{ duration:enabled ? .28 : 0 }}><div className="tool-image-fit" style={{ '--media-ratio':media.width / media.height } as CSSProperties}><ContentImage src={media.src || ""} alt={`${tool.name} · ${media.label}`} /></div></motion.div></AnimatePresence> : <div className="media-absent"><ToolIcon tool={tool} /><p>截图还在整理中</p></div>}</div>{portrait && tool.media.length > 1 && <><button className="tool-media-arrow is-next" aria-label="下一张截图" title="下一张截图" onClick={() => stepMedia(1)}><Icon name="arrow-left" /></button><span className="sr-only" role="status">第 {mediaIndex + 1} 张，共 {tool.media.length} 张：{media?.label}</span></>}{!portrait && tool.media.length > 1 && <div ref={thumbnails} className="media-thumbs" role="group" aria-label="媒体缩略图轮播" onKeyDown={event => {
  const key = event.key
  if (!['ArrowLeft','ArrowRight','Home','End'].includes(key)) return
  event.preventDefault()
@@ -75,14 +76,17 @@ function ToolPanel({ children, origin, enabled }: { children:ReactNode; origin:s
  const present = useIsPresent()
  return <motion.div className="tool-transition-panel" inert={!present} aria-hidden={!present || undefined} style={{ transformOrigin:origin,position:present ? 'relative' : 'absolute',top:0,left:0 }} initial={enabled ? { opacity:0,scale:.2,y:100 } : false} animate={{ opacity:1,scale:1,y:0 }} exit={enabled ? { opacity:0,scale:.15,y:130 } : { opacity:0 }} transition={{ duration:enabled ? .28 : 0,ease:[.22,1,.36,1] }}>{children}</motion.div>
 }
-export function ToolsPage({ slug, search }: { slug?:string; search:string }) {
+function ToolIcon({ tool,small = false }: { tool:Tool;small?:boolean }) {
+ return tool.icon ? <ContentImage className={`tool-native-icon ${small ? 'small' : ''}`} src={tool.icon} alt={tool.name} /> : <Monogram text={tool.monogram} tone={tool.tone} small={small} />
+}
+export function ToolsPage({ slug }: { slug?:string; search:string }) {
+ const { catalog,state } = useCatalog('tools')
  const all = catalog.tools()
  const tool = slug ? catalog.tool(slug) : all[0]
- const state = previewState(search)
  const { enabled } = useMotionPolicy()
  if (state !== 'ready') return <StatePanel state={state} back="/tools" />
  if (!tool) return <StatePanel state={slug ? 'missing' : 'empty'} back="/tools" noun="软件" />
  const index = all.indexOf(tool)
  const origin = `calc(50% + ${(index - (all.length - 1) / 2) * 68}px) calc(100% + 80px)`
- return <div className="tools-page"><div className="tool-transition-stage"><AnimatePresence mode="sync" initial={false}><ToolPanel key={tool.slug} origin={origin} enabled={enabled}><ToolStage tool={tool} /></ToolPanel></AnimatePresence></div><CollectionSelector className="tool-dock" label="软件选择">{all.map(item => <Link key={item.slug} href={`/tools/${item.slug}`} aria-label={item.name} title={item.name} aria-current={item.slug === tool.slug ? 'page' : undefined}><Monogram text={item.monogram} tone={item.tone} small /><span className="dock-tooltip">{item.name}</span><i aria-hidden="true" /></Link>)}</CollectionSelector></div>
+ return <div className="tools-page"><div className="tool-transition-stage"><AnimatePresence mode="sync" initial={false}><ToolPanel key={tool.slug} origin={origin} enabled={enabled}><ToolStage tool={tool} /></ToolPanel></AnimatePresence></div><CollectionSelector className="tool-dock" label="软件选择">{all.map(item => <Link key={item.slug} href={`/tools/${item.slug}`} aria-label={item.name} title={item.name} aria-current={item.slug === tool.slug ? 'page' : undefined}><ToolIcon tool={item} small /><span className="dock-tooltip">{item.name}</span><i aria-hidden="true" /></Link>)}</CollectionSelector></div>
 }

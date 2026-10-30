@@ -3,8 +3,8 @@ import test from 'node:test'
 import { existsSync } from 'node:fs'
 import { projects } from '../src/app/features/projects/registry.ts'
 import { parseRoute } from '../src/app/routes.ts'
-test('static project samples have unique identities, stable routes and real local downloads', () => {
- assert.ok(projects.length >= 3)
+test('real project registry allows empty content and keeps stable identities and downloads', () => {
+ assert.ok(!projects.some(item => ['folio','relay','little-board'].includes(item.slug)))
  assert.equal(new Set(projects.map(item => item.slug)).size,projects.length)
  assert.equal(new Set(projects.map(item => item.order)).size,projects.length)
  projects.forEach(project => {

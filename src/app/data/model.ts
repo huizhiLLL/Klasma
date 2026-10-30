@@ -1,13 +1,13 @@
-export type Media = { id:string; label:string; variant:'clean' | 'board' | 'terminal' | 'mobile'; caption:string; width:number; height:number }
+export type Media = { id:string; label:string; variant:'clean' | 'board' | 'terminal' | 'mobile'; caption:string; src?:string; width:number; height:number }
 export type Tool = {
- slug:string; name:string; monogram:string; tone:string; platform:string; tagline:string; article:string;
+ slug:string; name:string; monogram:string; icon?:string; tone:string; platform:string; tagline:string; article:string;
  media:Media[]; links:Array<{ label:string; url:string }>
 }
 export type AssetCategory = { slug:string; name:string; english:string; description:string; direction:'sw' | 'se' | 'ne' | 'nw' | 'w' }
 export type Asset = {
  slug:string; category:string; title:string; subtitle:string; kind:'code' | 'line' | 'tower';
  description:string; notes:string; tags:string[]; code?:string; steps?:string[];
- footprint:string; version:string; position:{ x:number; y:number; rotate:number }; attachment?:{ filename:string; href:string }
+ footprint:string; version:string; position:{ x:number; y:number; rotate:number }; cover?:string; media?:Array<{ src:string; label:string }>; links?:Array<{ label:string; url:string }>; attachments?:Array<{ filename:string; href:string }>; attachment?:{ filename:string; href:string }
 }
 export type PreviewState = 'ready' | 'empty' | 'error' | 'loading'
 export function previewState(search:string):PreviewState {

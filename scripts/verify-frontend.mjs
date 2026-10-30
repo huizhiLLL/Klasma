@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFile, access } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { createServer } from 'vite'
 import React from 'react'
@@ -25,33 +25,32 @@ try {
  const { ToolsPage } = await vite.ssrLoadModule('/src/app/features/tools/ToolsPage.tsx')
  const { LibraryPage } = await vite.ssrLoadModule('/src/app/features/library/LibraryPage.tsx')
  const { ProjectsPage } = await vite.ssrLoadModule('/src/app/features/projects/ProjectsPage.tsx')
- const { catalog } = await vite.ssrLoadModule('/src/app/data/catalog.ts')
- const { projects } = await vite.ssrLoadModule('/src/app/features/projects/registry.ts')
+ const { CatalogContext } = await vite.ssrLoadModule('/src/app/data/useCatalog.ts')
+ const { categories } = await vite.ssrLoadModule('/src/shared/resource.ts')
+ const { AdminPage } = await vite.ssrLoadModule('/src/admin/AdminPage.tsx')
  render(HomePage,{},'Klasma')
- for (const tool of catalog.tools()) {
-  const html = render(ToolsPage,{ slug:tool.slug,search:'' },tool.name)
-  if (tool.slug === 'pocket') {
-   assert.ok(html.includes('上一张截图') && html.includes('下一张截图'))
-   assert.ok(!html.includes('媒体缩略图轮播'))
-  }
+ render(AdminPage,{ onBack() {} },'正在检查登录状态')
+ function renderCatalog(Component,props,resources,expected,state = 'ready') {
+  return render(() => React.createElement(CatalogContext.Provider,{ value:{ state,resources } },React.createElement(Component,props)),{},expected)
  }
- render(LibraryPage,{ search:'' },'工程资产分类')
- for (const category of catalog.categories()) {
-  render(LibraryPage,{ category:category.slug,search:'' },category.name)
-  for (const asset of catalog.assets(category.slug)) {
-   render(LibraryPage,{ category:category.slug,slug:asset.slug,search:'' },asset.title)
-   if (asset.attachment) await access(`public${asset.attachment.href}`)
-  }
+ const base = { id:'render-check',type:'tools',slug:'render-tool',title:'渲染检查软件',summary:'简短说明',content:'真实 API 正文',status:'published',metadata:{ platform:'Windows' },createdAt:'2026-10-30T00:00:00Z',updatedAt:'2026-10-30T00:00:00Z',links:[],tags:[],assets:[] }
+ const media = [0,1].map(index => ({ id:`image-${index}`,kind:'screenshot',filename:`image-${index}.png`,storageType:'r2',location:'test',mimeType:'image/png',size:10,metadata:{ width:390,height:844,order:index },url:`/api/assets/image-${index}` }))
+ const html = renderCatalog(ToolsPage,{ slug:base.slug,search:'' },[{ ...base,assets:media }],base.title)
+ assert.ok(html.includes('/api/assets/image-0'))
+ assert.ok(html.includes('上一张截图') && html.includes('下一张截图'))
+ assert.ok(!html.includes('媒体缩略图轮播'))
+ renderCatalog(LibraryPage,{ search:'' },[],'工程资产分类')
+ for (const category of categories) {
+  const asset = { ...base,type:'library',slug:'render-asset',title:'渲染检查资产',metadata:{ category:category.slug,code:'test code' },assets:[{ ...media[0],kind:'attachment',filename:'code.sfm' }] }
+  renderCatalog(LibraryPage,{ category:category.slug,slug:asset.slug,search:'' },[asset],asset.title)
  }
- for (const project of projects) {
-  render(ProjectsPage,{ slug:project.slug,search:'' },project.name)
-  const page = await project.load()
-  render(page.default,{},'示例')
+ render(ProjectsPage,{ search:'' },'这里还没有作品')
+ render(ProjectsPage,{ slug:'does-not-exist',search:'' },'没有找到')
+ for (const Component of [ToolsPage,LibraryPage]) {
+  for (const [state,text] of [['error','暂时没能读取'],['loading','正在打开']]) renderCatalog(Component,{ search:'' },[],text,state)
+  renderCatalog(Component,{ slug:'does-not-exist',category:'does-not-exist',search:'' },[],'没有找到')
  }
- for (const Component of [ToolsPage,LibraryPage,ProjectsPage]) {
-  for (const [state,text] of [['empty','这里还没有'],['error','暂时没能读取'],['loading','正在打开']]) render(Component,{ search:`?preview=${state}` },text)
-  render(Component,{ slug:'does-not-exist',category:'does-not-exist',search:'' },'没有找到')
- }
+ renderCatalog(ToolsPage,{ search:'' },[],'这里还没有软件')
  // 直接检查 History 导航的查询变更、去重、replace 与滚动保留。
  const { navigate } = await vite.ssrLoadModule('/src/app/routing.ts')
  let location = new URL('https://klasma.local/tools/mole')

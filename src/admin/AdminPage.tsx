@@ -125,7 +125,7 @@ function ResourceEditor({ active,resource,type,tags,onBack,onSaved,onFailure }: 
   function draftAsset(asset:ResourceAsset,changes:{ label:string;order:number }) {
     setAssetEdits(current => {
       const next = { ...current }
-      if (changes.label === (asset.metadata.label || asset.filename) && changes.order === (asset.metadata.order ?? 0)) delete next[asset.id]
+      if (changes.label === (asset.metadata.label ?? asset.filename) && changes.order === (asset.metadata.order ?? 0)) delete next[asset.id]
       else next[asset.id] = changes
       return next
     })

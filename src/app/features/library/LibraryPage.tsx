@@ -1,23 +1,26 @@
 import { useState, type CSSProperties } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { catalog } from '../../data/catalog'
-import { previewState, type Asset, type AssetCategory } from '../../data/model'
+import type { Catalog } from '../../data/catalog'
+import { useCatalog } from '../../data/useCatalog'
+import { ContentImage } from '../../components/ContentImage'
+import { Markdown } from '../../components/Markdown'
+import { type Asset, type AssetCategory } from '../../data/model'
 import { navigate } from '../../routing'
 import { routePath } from '../../routes'
 import { Link } from '../../components/Link'
 import { Dialog } from '../../components/Dialog'
 import { Icon } from '../../components/Icon'
 import { StatePanel } from '../../components/StatePanel'
-import { StructureVisual } from '../../components/Visual'
 import { transitionAsset } from '../../animations/assetTransition'
 import { useMotionPolicy } from '../../animations/useMotionPolicy'
 import { SceneReturn } from './SceneReturn'
 import { point, sectorPath, sectors } from './geometry'
 import './library.css'
 function AssetVisual({ asset }: { asset:Asset }) {
- return asset.kind === 'code' ? <pre className="asset-code-art" aria-label="代码片段">{asset.code?.split('\n').slice(0,7).join('\n')}</pre> : <StructureVisual compact kind={asset.kind} />
+ if (asset.cover) return <ContentImage src={asset.cover} alt={asset.title} />
+ return asset.kind === 'code' && asset.code ? <pre className="asset-code-art" aria-label="代码片段">{asset.code?.split('\n').slice(0,7).join('\n')}</pre> : <span className="asset-text-art">{asset.title}</span>
 }
-function LibraryOverview() {
+function LibraryOverview({ catalog }: { catalog:Catalog }) {
  const categories = catalog.categories()
  const [preview,setPreview] = useState<AssetCategory | null>(null)
  const { shared,transition } = useMotionPolicy()
@@ -39,23 +42,23 @@ function AssetDetail({ asset, onDismiss }: { asset:Asset; onDismiss:()=>void }) 
   try { await navigator.clipboard.writeText(asset.code ?? ''); setNotice('代码已复制') }
   catch { setNotice('未能复制，请选中下方代码手动复制。') }
  }
- return <Dialog title={asset.title} titleClassName="asset-detail-title" onDismiss={onDismiss} returnFocus={`[data-asset="${asset.slug}"]`}><div className="asset-detail-visual"><AssetVisual asset={asset} /></div><div className="asset-facts"><span>{asset.footprint}</span><span>{asset.version}</span></div><p className="asset-description">{asset.description}</p><p className="asset-notes">{asset.notes}</p><div className="asset-tags">{asset.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{asset.steps && <section className="trace-demo" aria-label="流程顺序示意"><header><h3>流程顺序</h3><span className="eyebrow">示意，不执行实际代码</span></header><ol>{asset.steps.map((label,index) => <li key={label}><button aria-current={index === step ? 'step' : undefined} onClick={() => setStep(index)}><span>{index + 1}</span>{label}</button></li>)}</ol><div className="trace-actions"><p role="status">{step + 1} / {asset.steps.length} · {asset.steps[step]}</p><button className="action" onClick={() => setStep(current => (current + 1) % asset.steps!.length)}>下一步</button></div></section>}{asset.code && <section className="code-section"><header><h3>代码与配置</h3><button className="text-action" onClick={() => void copy()}>复制代码</button></header><pre tabIndex={0}>{asset.code}</pre><p className="eyebrow" role="status">{notice}</p></section>}{asset.attachment && <a className="action primary" href={asset.attachment.href} download={asset.attachment.filename}>下载示例文件 <Icon name="arrow-up-right" /></a>}</Dialog>
+ return <Dialog title={asset.title} titleClassName="asset-detail-title" onDismiss={onDismiss} returnFocus={`[data-asset="${asset.slug}"]`}><div className="asset-detail-visual"><AssetVisual asset={asset} /></div><p className="asset-summary">{asset.subtitle}</p><div className="asset-facts"><span>{asset.footprint}</span><span>{asset.version}</span></div><div className="asset-description"><Markdown text={asset.description} /></div><p className="asset-notes">{asset.notes}</p><div className="asset-tags">{asset.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{asset.steps && <section className="trace-demo" aria-label="流程顺序示意"><header><h3>流程顺序</h3><span className="eyebrow">示意，不执行实际代码</span></header><ol>{asset.steps.map((label,index) => <li key={label}><button aria-current={index === step ? 'step' : undefined} onClick={() => setStep(index)}><span>{index + 1}</span>{label}</button></li>)}</ol><div className="trace-actions"><p role="status">{step + 1} / {asset.steps.length} · {asset.steps[step]}</p><button className="action" onClick={() => setStep(current => (current + 1) % asset.steps!.length)}>下一步</button></div></section>}{asset.code && <section className="code-section"><header><h3>代码与配置</h3><button className="text-action" onClick={() => void copy()}>复制代码</button></header><pre tabIndex={0}>{asset.code}</pre><p className="eyebrow" role="status">{notice}</p></section>}{asset.media?.slice(1).map(media => <figure key={media.src} className="asset-real-media"><ContentImage src={media.src} alt={media.label} /><figcaption>{media.label}</figcaption></figure>)}<div className="asset-real-links">{asset.attachments?.map(file => <a key={file.href} className="action primary" href={file.href} download={file.filename}>下载 {file.filename} <Icon name="arrow-up-right" /></a>)}{asset.links?.map(link => <a key={link.url} className="action" href={link.url} target="_blank" rel="noreferrer">{link.label} <Icon name="arrow-up-right" /></a>)}</div></Dialog>
 }
-function LibraryScene({ category, slug, search }: { category:AssetCategory; slug?:string; search:string }) {
+function LibraryScene({ catalog,category, slug, search }: { catalog:Catalog;category:AssetCategory; slug?:string; search:string }) {
  const assets = catalog.assets(category.slug)
  const selected = slug ? catalog.asset(category.slug,slug) : undefined
  const { shared,transition,enabled } = useMotionPolicy()
  const path = routePath({ kind:'library',category:category.slug,search })
- return <div className={`library-scene scene-${category.direction}`}><div className="scene-heading"><p className="eyebrow">{category.english}</p><h2>{category.name}</h2><p className="muted">{category.description}</p></div><motion.div className="scene-canvas" layoutId={shared ? `asset-scene-${category.slug}` : undefined} transition={transition}>{assets.length === 0 ? <StatePanel state="empty" noun="工程资产" back="/library" /> : assets.map(asset => <motion.div key={asset.slug} className="scene-item" style={{ '--item-x':`${asset.position.x}%`, '--item-y':`${asset.position.y}%`, '--item-rotate':`${enabled ? asset.position.rotate : 0}deg` } as CSSProperties} initial={enabled ? { opacity:0,y:16 } : false} animate={{ opacity:1,y:0 }} transition={{ duration:enabled ? .28 : 0 }}><Link href={routePath({ kind:'library',category:category.slug,slug:asset.slug,search })} preserveScroll data-asset={asset.slug} className="scene-item-link" onClick={event => {
+ return <div className={`library-scene scene-${category.direction}`}><div className="scene-heading"><p className="eyebrow">{category.english}</p><h2>{category.name}</h2><p className="muted">{category.description}</p></div><motion.div className="scene-canvas" style={{ minHeight:Math.max(540,Math.ceil(assets.length / 2) * 280 + 100) }} layoutId={shared ? `asset-scene-${category.slug}` : undefined} transition={transition}>{assets.length === 0 ? <StatePanel state="empty" noun="工程资产" back="/library" /> : assets.map(asset => <motion.div key={asset.slug} className="scene-item" style={{ '--item-x':`${asset.position.x}%`, '--item-y':`${asset.position.y}px`, '--item-rotate':`${enabled ? asset.position.rotate : 0}deg` } as CSSProperties} initial={enabled ? { opacity:0,y:16 } : false} animate={{ opacity:1,y:0 }} transition={{ duration:enabled ? .28 : 0 }}><Link href={routePath({ kind:'library',category:category.slug,slug:asset.slug,search })} preserveScroll data-asset={asset.slug} className="scene-item-link" onClick={event => {
  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
  event.preventDefault()
  transitionAsset(event.currentTarget,() => navigate(routePath({ kind:'library',category:category.slug,slug:asset.slug,search }),{ preserveScroll:true }),shared,true)
-}} aria-label={`展开${asset.title}`}><div className="scene-item-art"><AssetVisual asset={asset} /></div><strong>{asset.title}</strong><span>{asset.subtitle}<Icon name="arrow-up-right" /></span></Link></motion.div>)}</motion.div><SceneReturn direction={category.direction} />{slug && (selected ? <AssetDetail key={selected.slug} asset={selected} onDismiss={() => transitionAsset(document.querySelector<HTMLElement>(`[data-asset="${selected.slug}"]`),() => navigate(path,{ preserveScroll:true }),shared,false)} /> : <Dialog title="未找到这份资产" onDismiss={() => navigate(path,{ preserveScroll:true })}><StatePanel state="missing" back={path} /></Dialog>)}</div>
+}} aria-label={`展开${asset.title}`}><div className="scene-item-art"><AssetVisual asset={asset} /></div><strong>{asset.title}</strong><span><span>{asset.subtitle}</span><Icon name="arrow-up-right" /></span></Link></motion.div>)}</motion.div><SceneReturn direction={category.direction} />{slug && (selected ? <AssetDetail key={selected.slug} asset={selected} onDismiss={() => transitionAsset(document.querySelector<HTMLElement>(`[data-asset="${selected.slug}"]`),() => navigate(path,{ preserveScroll:true }),shared,false)} /> : <Dialog title="未找到这份资产" onDismiss={() => navigate(path,{ preserveScroll:true })}><StatePanel state="missing" back={path} /></Dialog>)}</div>
 }
 export function LibraryPage({ category:categorySlug, slug, search }: { category?:string; slug?:string; search:string }) {
- const state = previewState(search)
+ const { catalog,state } = useCatalog('library')
  const category = categorySlug ? catalog.category(categorySlug) : undefined
  if (state !== 'ready') return <StatePanel state={state} back="/library" />
  if (categorySlug && !category) return <StatePanel state="missing" back="/library" />
- return category ? <LibraryScene key={category.slug} category={category} slug={slug} search={search} /> : <LibraryOverview />
+ return category ? <LibraryScene key={category.slug} catalog={catalog} category={category} slug={slug} search={search} /> : <LibraryOverview catalog={catalog} />
 }
