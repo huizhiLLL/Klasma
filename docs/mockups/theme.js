@@ -230,3 +230,18 @@ document.querySelectorAll('[data-theme-media]').forEach((button) => {
     document.querySelectorAll('[data-theme-media]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
   });
 });
+
+const themeOrbit = document.querySelector('.theme-library-orbit');
+const themeOrbitPreview = themeOrbit.querySelector('.theme-library-preview');
+themeOrbit.querySelectorAll('[data-theme-sector]').forEach((sector) => {
+  const preview = () => {
+    themeOrbitPreview.hidden = false;
+    themeOrbitPreview.dataset.direction = sector.dataset.themeSector;
+    themeOrbitPreview.querySelector('strong').textContent = sector.dataset.name;
+    themeOrbit.querySelectorAll('[data-theme-sector]').forEach((item) => item.dataset.active = String(item === sector));
+  };
+  sector.addEventListener('pointerenter', preview);
+  sector.addEventListener('focus', preview);
+  sector.addEventListener('click', preview);
+  sector.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); preview(); } });
+});
