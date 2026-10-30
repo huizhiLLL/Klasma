@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useIsPresent } from 'motion/react'
 import { projects } from './registry'
 import { previewState } from '../../data/model'
 import { Link } from '../../components/Link'
+import { CollectionSelector } from '../../components/CollectionTransition'
 import { Icon } from '../../components/Icon'
 import { Monogram } from '../../components/Visual'
 import { StatePanel } from '../../components/StatePanel'
@@ -26,5 +27,5 @@ export function ProjectsPage({ slug,search }: { slug?:string; search:string }) {
  if (state !== 'ready') return <StatePanel state={state} back="/projects" />
  if (!current) return <StatePanel state={slug ? 'missing' : 'empty'} noun="作品" back="/projects" />
  const content = components.get(current.slug)!
- return <div className="projects-page"><div className="project-stage"><AnimatePresence initial={false} mode="sync"><ProjectPanel key={current.slug} enabled={enabled}><header className="project-intro"><div><p className="eyebrow">交互展示 · 虚构作品样例</p><h2>{current.name}</h2><p className="muted">{current.description}</p></div><div className="project-links">{current.links.map(link => <a key={link.url} href={link.url} className="action" download={link.download}>{link.label}<Icon name="arrow-up-right" /></a>)}</div></header><ProjectBoundary><Suspense fallback={<StatePanel state="loading" back="/projects" />}>{content}</Suspense></ProjectBoundary></ProjectPanel></AnimatePresence></div><nav className="project-rail" aria-label="作品选择">{all.map(item => <Link key={item.slug} href={`/projects/${item.slug}`} aria-label={item.name} title={item.name} aria-current={item.slug === current.slug ? 'page' : undefined}><Monogram text={item.logo} tone={item.tone} small /><span>{item.name}</span></Link>)}</nav></div>
+ return <div className="projects-page"><div className="project-stage"><AnimatePresence initial={false} mode="sync"><ProjectPanel key={current.slug} enabled={enabled}><header className="project-intro"><div><p className="eyebrow">交互展示 · 虚构作品样例</p><h2>{current.name}</h2><p className="muted">{current.description}</p></div><div className="project-links">{current.links.map(link => <a key={link.url} href={link.url} className="action" download={link.download}>{link.label}<Icon name="arrow-up-right" /></a>)}</div></header><ProjectBoundary><Suspense fallback={<StatePanel state="loading" back="/projects" />}>{content}</Suspense></ProjectBoundary></ProjectPanel></AnimatePresence></div><CollectionSelector className="project-rail" label="作品选择">{all.map(item => <Link key={item.slug} href={`/projects/${item.slug}`} aria-label={item.name} title={item.name} aria-current={item.slug === current.slug ? 'page' : undefined}><Monogram text={item.logo} tone={item.tone} small /><span>{item.name}</span></Link>)}</CollectionSelector></div>
 }

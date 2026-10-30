@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useIsPresent } from 'motion/react'
 import { catalog } from '../../data/catalog'
 import { previewState, type Media, type Tool } from '../../data/model'
 import { Link } from '../../components/Link'
+import { CollectionSelector } from '../../components/CollectionTransition'
 import { StatePanel } from '../../components/StatePanel'
 import { Dialog } from '../../components/Dialog'
 import { Markdown } from '../../components/Markdown'
@@ -83,5 +84,5 @@ export function ToolsPage({ slug, search }: { slug?:string; search:string }) {
  if (!tool) return <StatePanel state={slug ? 'missing' : 'empty'} back="/tools" noun="软件" />
  const index = all.indexOf(tool)
  const origin = `calc(50% + ${(index - (all.length - 1) / 2) * 68}px) calc(100% + 80px)`
- return <div className="tools-page"><div className="tool-transition-stage"><AnimatePresence mode="sync" initial={false}><ToolPanel key={tool.slug} origin={origin} enabled={enabled}><ToolStage tool={tool} /></ToolPanel></AnimatePresence></div><nav className="tool-dock" aria-label="软件选择">{all.map(item => <Link key={item.slug} href={`/tools/${item.slug}`} aria-label={item.name} title={item.name} aria-current={item.slug === tool.slug ? 'page' : undefined}><Monogram text={item.monogram} tone={item.tone} small /><span className="dock-tooltip">{item.name}</span><i aria-hidden="true" /></Link>)}</nav></div>
+ return <div className="tools-page"><div className="tool-transition-stage"><AnimatePresence mode="sync" initial={false}><ToolPanel key={tool.slug} origin={origin} enabled={enabled}><ToolStage tool={tool} /></ToolPanel></AnimatePresence></div><CollectionSelector className="tool-dock" label="软件选择">{all.map(item => <Link key={item.slug} href={`/tools/${item.slug}`} aria-label={item.name} title={item.name} aria-current={item.slug === tool.slug ? 'page' : undefined}><Monogram text={item.monogram} tone={item.tone} small /><span className="dock-tooltip">{item.name}</span><i aria-hidden="true" /></Link>)}</CollectionSelector></div>
 }

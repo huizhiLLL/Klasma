@@ -1,19 +1,22 @@
-import { useLayoutEffect, useId, useRef, type ReactNode } from 'react'
+import { useContext, useLayoutEffect, useId, useRef, type ReactNode } from 'react'
 import { Icon } from './Icon'
+import { CollectionPresence } from '../animations/collectionPresence'
 export function Dialog({ title, children, onDismiss, returnFocus, reader = false, titleClassName }: { title:string; children:ReactNode; onDismiss:()=>void; returnFocus?:string; reader?:boolean; titleClassName?:string }) {
  const dialog = useRef<HTMLDialogElement>(null)
  const id = useId()
+ const present = useContext(CollectionPresence)
  useLayoutEffect(() => {
   const node = dialog.current!
+  if (!present) return
   const previous = document.activeElement as HTMLElement | null
   node.showModal()
   node.querySelector<HTMLButtonElement>('button')?.focus()
   return () => {
    node.close()
    const target = previous?.isConnected && previous !== document.body ? previous : returnFocus ? document.querySelector<HTMLElement>(returnFocus) : null
-   target?.focus({ preventScroll:true })
+   if (!target?.closest('[inert]')) target?.focus({ preventScroll:true })
   }
- }, [returnFocus])
+ }, [returnFocus,present])
  return <dialog ref={dialog} className={reader ? 'reader-dialog' : 'asset-dialog'} aria-labelledby={id} onCancel={event => { event.preventDefault(); onDismiss() }} onClick={event => {
   if (event.target !== event.currentTarget) return
   const box = event.currentTarget.getBoundingClientRect()

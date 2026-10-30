@@ -1,0 +1,15 @@
+/* 主体同层交接，标题与胶囊保持挂载；退场层不参与布局与操作。 */
+.collection-page .collection-body { position:relative; isolation:isolate; display:grid; }
+.collection-panel { grid-area:1 / 1; flex:1; min-width:0; min-height:0; display:flex; flex-direction:column; transform-origin:center; }
+.collection-panel[data-present='false'] { position:absolute; inset:0; pointer-events:none; }
+.collection-panel[data-present='true'] { position:relative; z-index:1; }
+.collection-panel > .state-panel { flex:1; }
+.collection-page .collection-selector { background:none; border-color:transparent; box-shadow:none; isolation:isolate; }
+.collection-selector-surface { position:absolute; inset:-1px; z-index:-1; border:1px solid var(--border); border-radius:var(--radius-reader); background:var(--floating); box-shadow:var(--shadow-card); pointer-events:none; }
+.collection-selector-items { display:flex; gap:inherit; align-items:inherit; justify-content:inherit; min-width:0; }
+.tool-dock.collection-selector { position:relative; }
+.project-rail .collection-selector-items { flex-direction:column; }
+@media(max-width:760px) {
+ .tool-dock.collection-selector { position:sticky; }
+ .project-rail .collection-selector-items { flex-direction:row; }
+}
