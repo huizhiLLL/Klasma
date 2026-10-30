@@ -72,7 +72,7 @@ function paintThemeWheel() {
       const center = themeWheelInk.reduce((sum, ink, i) => sum + weights[i] * (ink.descent - ink.ascent) / 2, 0) / total;
       const halfHeight = themeWheelInk.reduce((sum, ink, i) => sum + weights[i] * (ink.descent + ink.ascent) / 2, 0) / total;
       const ink = themeWheelInk[index];
-      y = center - scale * (ink.descent - ink.ascent) / 2 + Math.sin(angle) / Math.sin(Math.PI * 2 / 3) * (halfHeight + .14 + scale * (ink.descent + ink.ascent) / 2);
+      y = center - scale * (ink.descent - ink.ascent) / 2 + Math.sin(angle) / Math.sin(Math.PI * 2 / 3) * (halfHeight + .36 + scale * (ink.descent + ink.ascent) / 2);
     }
     item.style.transform = `translateY(${y}em) scale(${scale})`;
     item.style.opacity = Math.min(1, face * 2.4);
@@ -97,14 +97,36 @@ function selectThemeWheel(word, instant) {
 paintThemeWheel();
 void document.fonts.ready.then(() => {
   const font = getComputedStyle(themeWheel);
-  const context = document.createElement('canvas').getContext('2d');
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d', { willReadFrequently: true });
   if (!context) return;
-  context.font = `${font.fontWeight} 100px ${font.fontFamily}`;
+  const fontSpec = `${font.fontWeight} 100px ${font.fontFamily}`;
+  context.font = fontSpec;
   const measured = themeWheelNames.map(word => context.measureText(word));
   const lineHeight = parseFloat(font.lineHeight) / parseFloat(font.fontSize);
   const baseline = (lineHeight + (measured[0].fontBoundingBoxAscent - measured[0].fontBoundingBoxDescent) / 100) / 2;
   if (!Number.isFinite(baseline)) return;
-  themeWheelInk = measured.map(ink => ({ ascent: ink.actualBoundingBoxAscent / 100, descent: ink.actualBoundingBoxDescent / 100 }));
+  themeWheelInk = measured.map((ink, index) => {
+    canvas.width = Math.ceil(ink.width + 32);
+    canvas.height = 200;
+    context.font = fontSpec;
+    context.fillText(themeWheelNames[index], 16, 128);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const rows = Array.from({ length: canvas.height }, (_, row) => {
+      let mass = 0;
+      for (let x = 0; x < canvas.width; x++) mass += pixels[(row * canvas.width + x) * 4 + 3];
+      return mass;
+    });
+    const total = rows.reduce((sum, value) => sum + value, 0);
+    if (!total) return { ascent: ink.actualBoundingBoxAscent / 100, descent: ink.actualBoundingBoxDescent / 100 };
+    let accumulated = 0, top = -1, bottom = rows.length - 1;
+    for (let row = 0; row < rows.length; row++) {
+      accumulated += rows[row];
+      if (top < 0 && accumulated >= total * .05) top = row;
+      if (accumulated >= total * .95) { bottom = row; break; }
+    }
+    return { ascent: (128 - top) / 100, descent: (bottom + 1 - 128) / 100 };
+  });
   themeWheelItems.forEach((item, index) => {
     item.style.textIndent = `${measured[index].actualBoundingBoxLeft / 100}em`;
     item.style.transformOrigin = `left ${baseline}em`;
