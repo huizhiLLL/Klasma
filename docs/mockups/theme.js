@@ -223,3 +223,10 @@ if (morphDemo) {
   });
   selectMorphCollection(activeMorphCollection);
 }
+
+document.querySelectorAll('[data-theme-media]').forEach((button) => {
+  button.addEventListener('click', () => {
+    document.querySelector('#theme-media-main').dataset.frame = button.dataset.themeMedia;
+    document.querySelectorAll('[data-theme-media]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+  });
+});
