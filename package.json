@@ -12,11 +12,12 @@
     "cf:dev": "npx wrangler dev",
     "cf:deploy": "npm run build && npx wrangler deploy",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "verify:frontend": "node scripts/verify-frontend.mjs"
+    "verify:frontend": "node scripts/verify-frontend.mjs",
+    "verify:api": "node scripts/verify-api.mjs"
   },
   "dependencies": {
     "dompurify": "^3.4.17",
-    "drizzle-orm": "^0.44.7",
+    "drizzle-orm": "^0.45.4",
     "hono": "^4.9.7",
     "marked": "^18.1.1",
     "motion": "^14.7.1",
@@ -24,7 +25,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250917.0",
+    "@cloudflare/workers-types": "^5.20261030.1",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
@@ -33,6 +34,7 @@
     "drizzle-kit": "^0.31.4",
     "oxlint": "^1.88.0",
     "typescript": "~6.0.3",
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "wrangler": "^4.156.0"
   }
 }
