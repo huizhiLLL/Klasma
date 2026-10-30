@@ -94,12 +94,13 @@ void document.fonts.ready.then(() => {
   });
 });
 
-const subtitles = { prefer: "软件 · 偏好与欣赏", make: "作品 · 创作与交互", keep: "工程资产 · 长期的沉淀" };
+const subtitles = { prefer: "", make: "作品 · 创作与交互", keep: "工程资产 · 长期的沉淀" };
 document.querySelectorAll("[data-collection]").forEach((button) => {
   button.addEventListener("click", (event) => {
     document.querySelectorAll("[data-collection]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
     selectThemeWheel(button.dataset.collection, event.detail === 0);
     document.querySelector("#collection-subtitle").textContent = subtitles[button.dataset.collection];
+    document.querySelector("#collection-subtitle").hidden = !subtitles[button.dataset.collection];
   });
 });
 document.querySelector("#state-button").addEventListener("click", () => {
@@ -177,7 +178,7 @@ if (morphDemo) {
   const status = document.querySelector("#nav-morph-status");
   const enterPrefer = document.querySelector("#nav-morph-enter-prefer");
   const morphNames = {
-    prefer: { label: "Prefer", title: "prefer", subtitle: "软件 · 偏好与欣赏" },
+    prefer: { label: "Prefer", title: "prefer", subtitle: "" },
     make: { label: "Make", title: "make", subtitle: "作品 · 创作与交互" },
     keep: { label: "Keep", title: "keep", subtitle: "工程资产 · 长期的沉淀" },
   };
@@ -189,6 +190,7 @@ if (morphDemo) {
     const selected = morphNames[name];
     titleWord.textContent = selected.title;
     subtitle.textContent = selected.subtitle;
+    subtitle.hidden = !selected.subtitle;
     collectionView.querySelectorAll("[data-morph-collection]").forEach((button) => {
       button.setAttribute("aria-pressed", String(button.dataset.morphCollection === name));
     });
