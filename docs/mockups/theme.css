@@ -289,3 +289,10 @@ html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { an
 .theme-project-rail { align-self:center; display:flex; flex-direction:column; gap:12px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-reader); box-shadow:var(--shadow-soft); }
 .theme-project-rail a { display:grid; place-items:center; min-height:44px; border-radius:var(--radius-control); background:#e8eeee; color:var(--ink); text-decoration:none; font-size:24px; }
 @media(max-width:760px) { .theme-project-layout { grid-template-columns:1fr; } .theme-project-rail { flex-direction:row; justify-self:center; } .theme-project-rail a { min-width:44px; } }
+
+/* 缩尺视口：Dock 靠底，媒体区填满余量。 */
+.theme-tool-workspace { display:flex; flex-direction:column; gap:32px; height:520px; padding-bottom:16px; }
+.theme-tool-workspace .theme-media-gallery { flex:1; min-height:0; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+.theme-tool-workspace .theme-media-gallery > .theme-media-art { flex:1; min-height:0; height:auto; }
+.theme-tool-dock { display:flex; flex:none; gap:12px; margin:0 auto; padding:12px; border:1px solid var(--border); border-radius:var(--radius-reader); background:var(--surface-floating); }
+.theme-tool-dock a { display:grid; place-items:center; min-width:44px; min-height:44px; border-radius:var(--radius-control); background:var(--blue-soft); color:var(--ink); font-size:24px; text-decoration:none; }
