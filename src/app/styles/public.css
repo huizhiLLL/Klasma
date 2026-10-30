@@ -26,14 +26,19 @@
 .home-page { min-height:100dvh; }
 .home-top { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s8); }
 .identity { display:flex; gap:var(--s4); align-items:center; }
-.avatar { width:52px; height:52px; display:grid; place-items:center; border:1px solid var(--border); background:var(--surface); border-radius:50%; font-size:22px; }
+.avatar { width:52px; height:52px; flex-shrink:0; object-fit:cover; border:1px solid var(--border); background:var(--surface); border-radius:50%; }
 .identity strong { display:block; font-weight:600; line-height:1.6; }
 .identity strong span { font-size:var(--text-small); color:var(--muted); font-weight:400; margin-left:var(--s2); }
 .identity p { font-size:var(--text-small); line-height:1.8; color:var(--muted); }
-.personal-links { display:flex; gap:var(--s6); margin-left:68px; align-items:center; font-size:var(--text-small); }
-.personal-links :is(a,span) { display:inline-flex; align-items:center; gap:var(--s1); min-height:44px; }
-.personal-links [aria-disabled] { color:var(--muted); }
-.personal-links .ui-icon { width:15px; height:15px; }
+.personal-links { display:flex; flex-wrap:wrap; gap:var(--s3); margin-left:68px; align-items:center; font-size:var(--text-small); }
+.personal-links a { display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; border-radius:var(--radius-control); }
+.personal-links a:hover { color:var(--accent); }
+/* 抵消 44px 点击区域中 20px 图标左侧的留白，使图形与身份文字对齐。 */
+.personal-links .social-link:first-child { margin-inline-start:calc(-1 * var(--s3)); }
+.brand-icon { width:20px; height:20px; fill:currentColor; flex-shrink:0; }
+.social-link { position:relative; }
+.social-tooltip { display:none; position:absolute; z-index:10; top:calc(100% + var(--s2)); left:50%; transform:translateX(-50%); padding:var(--s2) var(--s3); border-radius:var(--radius-control); background:var(--ink); color:var(--surface); font-size:var(--text-small); white-space:nowrap; pointer-events:none; }
+.social-link:is(:hover,:focus-visible) .social-tooltip { display:block; }
 .space-note { text-align:right; padding-top:var(--s1); }
 .space-note p { color:var(--muted); font-size:var(--text-small); }
 .space-words { display:flex; align-items:baseline; justify-content:flex-end; gap:.3em; margin-top:var(--s3); font-size:clamp(18px,1.8vw,24px); white-space:nowrap; }

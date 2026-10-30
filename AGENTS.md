@@ -34,7 +34,8 @@
 | `src/app/features/tools/` | 固定媒体、文案预览、全文阅读层与 Dock |
 | `src/app/features/library/` | 披萨分类、预览、空间场景、详情与分类几何 |
 | `src/app/features/projects/` | 静态注册表、作品切换外壳与独立延迟加载的 `pages/` |
-| `public/fonts/`、`public/icons/lucide/` | 正式字体分片、图标与来源许可 |
+| `public/fonts/`、`public/icons/lucide/`、`public/icons/simple-icons/` | 正式字体分片、控件与品牌图标、来源许可 |
+| `public/profile/` | 首页真实头像等个人身份素材 |
 | `scripts/` | 正式字体准备与无浏览器前台渲染验证 |
 | `tests/` | 路由、内容、分类几何、作品下载、滚轮与快照生命周期的 Node 逻辑测试 |
 | `src/index.css` | 应用中性重置与全局基础 |

@@ -12,6 +12,8 @@
 - React / TypeScript / Vite、原生 CSS、History API、原生 `dialog` 与 Motion for React。未引入路由框架、Tailwind、组件框架或 GSAP。
 - 独立原型继续留在 `docs/mockups/`，不直接导入其脚本、样式或固定字集字体缓存。
 
+2026-10-30 内容接入：主页已换为用户提供的头像，接入 GitHub / Bilibili 品牌图标与真实 Blog / Weekly 链接。软件与工程资产集合读取已发布的真实 API 数据，不回退到 mock；作品使用静态注册表。
+
 ## 已落地批次
 
 1. 文档执行边界、路由和管理页拆分。

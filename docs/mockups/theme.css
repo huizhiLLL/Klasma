@@ -290,6 +290,15 @@ html[data-theme-asset-transition]::view-transition-group(theme-asset-title) { an
 .theme-project-rail a { display:grid; place-items:center; min-height:44px; border-radius:var(--radius-control); background:#e8eeee; color:var(--ink); text-decoration:none; font-size:24px; }
 @media(max-width:760px) { .theme-project-layout { grid-template-columns:1fr; } .theme-project-rail { flex-direction:row; justify-self:center; } .theme-project-rail a { min-width:44px; } }
 
+/* 首页个人资料与真实站点入口。 */
+.nav-morph-avatar { object-fit: cover; flex-shrink: 0; }
+.theme-personal-links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); font-size: 14px; }
+.theme-personal-links a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; text-decoration: none; border-radius: var(--radius-control); }
+.theme-personal-links a:hover { color: var(--blue); }
+.theme-personal-links .icon-control:first-child { margin-inline-start: calc(-1 * var(--space-3)); }
+.theme-personal-links a:active { scale: .97; }
+.brand-icon { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+
 /* 缩尺视口：Dock 靠底，媒体区填满余量。 */
 .theme-tool-workspace { display:flex; flex-direction:column; gap:32px; height:520px; padding-bottom:16px; }
 .theme-tool-workspace .theme-media-gallery { flex:1; min-height:0; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
