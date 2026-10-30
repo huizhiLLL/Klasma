@@ -57,13 +57,24 @@ const themeWheelItems = themeWheelNames.map((word) => {
   themeWheel.append(item);
   return item;
 });
+let themeWheelInk = [];
 let wheelPosition = 0;
 let wheelFrame = 0;
 function paintThemeWheel() {
   themeWheelItems.forEach((item, index) => {
     const angle = (index - wheelPosition) * Math.PI * 2 / 3;
     const face = (Math.cos(angle) + 1) / 2;
-    item.style.transform = `translateY(${Math.sin(angle) * .88}em) scale(${.28 + .72 * Math.pow(face, 1.6)})`;
+    const scale = .28 + .72 * Math.pow(face, 1.6);
+    let y = Math.sin(angle) * .88;
+    if (themeWheelInk.length === 3) {
+      const weights = themeWheelInk.map((_, i) => Math.max(0, Math.cos((i - wheelPosition) * Math.PI * 2 / 3)) ** 2);
+      const total = weights.reduce((sum, weight) => sum + weight, 0);
+      const center = themeWheelInk.reduce((sum, ink, i) => sum + weights[i] * (ink.descent - ink.ascent) / 2, 0) / total;
+      const halfHeight = themeWheelInk.reduce((sum, ink, i) => sum + weights[i] * (ink.descent + ink.ascent) / 2, 0) / total;
+      const ink = themeWheelInk[index];
+      y = center - scale * (ink.descent - ink.ascent) / 2 + Math.sin(angle) / Math.sin(Math.PI * 2 / 3) * (halfHeight + .14 + scale * (ink.descent + ink.ascent) / 2);
+    }
+    item.style.transform = `translateY(${y}em) scale(${scale})`;
     item.style.opacity = Math.min(1, face * 2.4);
   });
 }
@@ -89,9 +100,16 @@ void document.fonts.ready.then(() => {
   const context = document.createElement('canvas').getContext('2d');
   if (!context) return;
   context.font = `${font.fontWeight} 100px ${font.fontFamily}`;
+  const measured = themeWheelNames.map(word => context.measureText(word));
+  const lineHeight = parseFloat(font.lineHeight) / parseFloat(font.fontSize);
+  const baseline = (lineHeight + (measured[0].fontBoundingBoxAscent - measured[0].fontBoundingBoxDescent) / 100) / 2;
+  if (!Number.isFinite(baseline)) return;
+  themeWheelInk = measured.map(ink => ({ ascent: ink.actualBoundingBoxAscent / 100, descent: ink.actualBoundingBoxDescent / 100 }));
   themeWheelItems.forEach((item, index) => {
-    item.style.textIndent = `${context.measureText(themeWheelNames[index]).actualBoundingBoxLeft / 100}em`;
+    item.style.textIndent = `${measured[index].actualBoundingBoxLeft / 100}em`;
+    item.style.transformOrigin = `left ${baseline}em`;
   });
+  paintThemeWheel();
 });
 
 document.querySelectorAll("[data-collection]").forEach((button) => {

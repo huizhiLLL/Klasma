@@ -8,6 +8,22 @@ test('wheel retargets from fractional progress along the nearest cycle without a
   assert.equal(((next % 3) + 3) % 3,selected)
  }
 })
+
+test('visible ink gaps stay equal with descenders and every settled word keeps its baseline', () => {
+ const ink = [{ left:-.05,ascent:.76,descent:.21 },{ left:-.06,ascent:.76,descent:0 },{ left:-.05,ascent:.76,descent:.21 }]
+ for (const selected of [0,1,2]) {
+  assert.ok(Math.abs(wheelPose(selected,selected,ink).y) < 1e-10)
+  const above = (selected + 2) % 3, below = (selected + 1) % 3
+  const upper = wheelPose(selected,above,ink), lower = wheelPose(selected,below,ink)
+  const topGap = -ink[selected].ascent - (upper.y + upper.scale * ink[above].descent)
+  const bottomGap = lower.y - lower.scale * ink[below].ascent - ink[selected].descent
+  assert.ok(topGap > 0)
+  assert.ok(Math.abs(topGap - bottomGap) < 1e-10)
+ }
+ for (let position = -3; position <= 3; position += .05) for (const index of [0,1,2]) {
+  assert.ok(Math.abs(wheelPose(position - 1e-6,index,ink).y - wheelPose(position + 1e-6,index,ink).y) < .0001)
+ }
+})
 test('the same three words continuously change position and scale with a single active face', () => {
  for (const selected of [0,1,2]) {
   assert.equal(wheelPose(selected,selected).scale,1)
