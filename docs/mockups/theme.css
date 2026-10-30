@@ -246,3 +246,22 @@ dialog::backdrop { background: var(--overlay); }
 .theme-structure { display:flex; align-items:center; justify-content:center; gap:4px; height:112px; background:#e8eeee; border-radius:var(--radius-control); }
 .theme-structure i { width:28px; height:44px; background:#a5c0b1; border:1px solid #789284; box-shadow:7px 7px #849e90; transform:skewY(-20deg); }
 @media(max-width:760px) { .theme-library-orbit { --pizza-size:min(78vw,280px); display:flex; flex-direction:column; gap:24px; } .theme-library-preview { position:relative; inset:auto !important; width:200px; } }
+
+.theme-return-controls { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+.theme-return-controls button { padding:8px 16px; border:1px solid var(--border); background:var(--surface); border-radius:var(--radius-control); }
+.theme-return-controls [aria-pressed='true'] { color:var(--blue); border-color:var(--blue); }
+.theme-return-scene { height:320px; position:relative; border:1px solid var(--border); border-radius:var(--radius-card); }
+.theme-return-entry { position:absolute; inset:0; display:grid; place-items:center; color:var(--muted); }
+.theme-return-arc { position:absolute; width:112px; height:112px; padding:0; border:0; background:transparent; }
+.theme-return-arc > svg { width:100%; height:100%; fill:#e3eaf3; stroke:#a3b2c4; }
+.theme-return-arc > span { position:absolute; left:24px; top:24px; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--blue); }
+.theme-return-arc small { font-size:12px; }
+[data-return-to='nw'] .theme-return-arc { top:0; left:0; }
+[data-return-to='ne'] .theme-return-arc { top:0; right:0; transform:rotate(90deg); }
+[data-return-to='se'] .theme-return-arc { bottom:0; right:0; transform:rotate(180deg); }
+[data-return-to='sw'] .theme-return-arc { bottom:0; left:0; transform:rotate(270deg); }
+[data-return-to='e'] .theme-return-arc { right:0; top:calc(50% - 56px); transform:rotate(135deg); }
+[data-return-to='ne'] .theme-return-arc > span { transform:rotate(-90deg); }
+[data-return-to='se'] .theme-return-arc > span { transform:rotate(-180deg); }
+[data-return-to='sw'] .theme-return-arc > span { transform:rotate(-270deg); }
+[data-return-to='e'] .theme-return-arc > span { transform:rotate(-135deg); }

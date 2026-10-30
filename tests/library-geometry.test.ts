@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { point, sectors, sectorPath } from '../src/app/features/library/geometry.ts'
+import { point, sectors, sectorPath, returnDirection } from '../src/app/features/library/geometry.ts'
 import { categories } from '../src/app/data/fixtures.ts'
 test('category sectors cover the full circle exactly once and match their scene direction', () => {
  const ordered = [...sectors].sort((a,b) => a[0] - b[0])
@@ -16,4 +16,12 @@ test('category sectors cover the full circle exactly once and match their scene 
   if (category.direction.includes('s')) assert.ok(center.y > 250)
   assert.ok(!sectorPath(start,end).includes('NaN'))
  })
+})
+
+test('scene return direction reverses the entry sector across the global center', () => {
+ assert.equal(returnDirection('ne'),'sw')
+ assert.equal(returnDirection('nw'),'se')
+ assert.equal(returnDirection('se'),'nw')
+ assert.equal(returnDirection('sw'),'ne')
+ assert.equal(returnDirection('w'),'e')
 })

@@ -245,3 +245,16 @@ themeOrbit.querySelectorAll('[data-theme-sector]').forEach((sector) => {
   sector.addEventListener('click', preview);
   sector.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); preview(); } });
 });
+
+const themeReturnDirections = { ne:'sw', nw:'se', se:'nw', sw:'ne', w:'e' };
+const themeDirectionNames = { ne:'右上', nw:'左上', se:'右下', sw:'左下', w:'左侧', e:'右侧' };
+document.querySelectorAll('[data-return-from]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const to = themeReturnDirections[button.dataset.returnFrom];
+    const scene = document.querySelector('.theme-return-scene');
+    scene.dataset.returnTo = to;
+    scene.querySelector('.theme-return-entry').textContent = `${themeDirectionNames[button.dataset.returnFrom]}进入 → ${themeDirectionNames[to]}返回`;
+    document.querySelectorAll('[data-return-from]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+  });
+});
+document.querySelector('.theme-return-arc').addEventListener('click', () => document.querySelector('.theme-library-orbit').scrollIntoView({ block:'center', behavior:motionReduced() ? 'instant' : 'smooth' }));
