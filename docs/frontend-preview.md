@@ -25,7 +25,7 @@
 | `/library/fragments` | 空分类 |
 | `/tools/not-found`、`/projects/not-found`、`/library/not-found` | 选项不存在 |
 
-集合页底部“查看其他状态”可切换 `?preview=empty`、`?preview=error`、`?preview=loading`，返回完整内容时删除参数。这些是确定性的评审状态，不伪造网络请求和等待时间。首页仍保持完整牌阵。
+正式页面不显示预览页脚。评审时可在集合 URL 手动添加 `?preview=empty`、`?preview=error`、`?preview=loading`；返回完整内容时删除参数。这些是确定性的评审状态，不伪造网络请求和等待时间。首页仍保持完整牌阵。
 
 ## 评审边界
 
