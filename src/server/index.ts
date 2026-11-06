@@ -12,6 +12,20 @@ const app = new Hono<{ Bindings:Bindings }>()
 const parseObject = (value:string):Record<string, unknown> => { try { const data = JSON.parse(value); return data && typeof data === 'object' && !Array.isArray(data) ? data : {} } catch { return {} } }
 const authorized = (c:{ req:{ raw:Request }; env:Bindings }) => validSession(getCookieFromRequest(c.req.raw),c.env.ADMIN_KEY)
 function getCookieFromRequest(request:Request) { return request.headers.get('cookie')?.split(';').map(part => part.trim()).find(part => part.startsWith(`${SESSION_COOKIE}=`))?.slice(SESSION_COOKIE.length + 1) }
+function allowedMutationOrigin(origin:string | undefined, requestUrl:string) {
+ if (!origin) return true
+ const request = new URL(requestUrl)
+ try {
+  const source = new URL(origin)
+  if (source.origin === request.origin) return true
+  const local = ['localhost','127.0.0.1','[::1]']
+  return request.protocol === 'http:' && source.protocol === 'http:' && local.includes(request.hostname) && local.includes(source.hostname)
+ } catch { return false }
+}
+function isLocalOrigin(origin:string | undefined) {
+ if (!origin) return false
+ try { const source = new URL(origin); return source.protocol === 'http:' && ['localhost','127.0.0.1','::1'].includes(source.hostname) } catch { return false }
+}
 app.onError((error,c) => {
   console.error(error)
   return c.json({ error:'服务暂时不可用，请稍后重试。' },500)
@@ -22,7 +36,9 @@ app.use('/api/*',async (c,next) => {
   c.header('X-Content-Type-Options','nosniff')
   if (!['GET','HEAD','OPTIONS'].includes(c.req.method)) {
     const origin = c.req.header('Origin')
-    if (c.req.header('Sec-Fetch-Site') === 'cross-site' || (origin && origin !== new URL(c.req.url).origin)) return c.json({ error:'不允许跨站操作。' },403)
+    const localOrigin = isLocalOrigin(origin)
+    const localProxyOrigin = !!origin && /^http:\/\/(localhost|127\.0\.0\.1|\[?::1\]?)(:\d+)?$/.test(origin)
+    if (!localProxyOrigin && ((!localOrigin && c.req.header('Sec-Fetch-Site') === 'cross-site') || !allowedMutationOrigin(origin,new URL(c.req.url).toString()))) return c.json({ error:'不允许跨站操作。' },403)
     if (c.req.path !== '/api/admin/assets' && !c.req.header('Content-Type')?.includes('application/json')) return c.json({ error:'请使用 JSON 请求。' },415)
   }
   await next()
