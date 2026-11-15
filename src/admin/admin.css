@@ -73,7 +73,7 @@
 .admin-disclosure[open]>summary::after { display:none; }
 .admin-disclosure>summary h2 { margin:0; }
 .admin-disclosure>summary .ui-icon { order:2; margin-left:auto; }
-.admin-disclosure>summary span { margin-left:0; color:var(--muted); font-size:13px; }
+.admin-disclosure>summary span { order:3; margin-left:0; color:var(--muted); font-size:13px; }
 .admin-disclosure>*:not(summary) { margin-inline:var(--s5); }
 .admin-disclosure>.admin-assets { margin-inline:0; padding-inline:var(--s5); }
 .admin-subdisclosure { margin-top:var(--s4); border-top:1px solid var(--border); }
