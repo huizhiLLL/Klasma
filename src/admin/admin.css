@@ -80,7 +80,9 @@
 .admin-notice.notice-success { color:#155c3b; border-color:#9acbb3; background:#eef9f2; }
 .admin-notice.notice-error { color:#8d2825; border-color:#e0aaa6; background:#fff2f1; }
 .admin-path { font-size:12px; color:var(--muted); overflow-wrap:anywhere; }
-.admin-editor-settings .admin-section { padding:var(--s3); }
+.admin-editor-settings .admin-section { padding:var(--s3) 0; margin:0; border:0; border-bottom:1px solid var(--border); border-radius:0; background:transparent; }
+.admin-editor-settings .admin-section:first-child { padding-top:var(--s2); }
+.admin-editor-settings .admin-section:last-child { border-bottom:0; }
 .admin-editor-settings .admin-section>a { display:inline-block; margin:var(--s2) 0; }
 .admin-tags { display:flex; gap:var(--s2); flex-wrap:wrap; }
 .admin-tags button { min-height:32px; padding:4px 10px; font-size:13px; }
