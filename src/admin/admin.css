@@ -64,7 +64,7 @@
 .admin-section-heading h2 { margin:0; }
 .admin-icon-button { min-width:44px; padding-inline:10px !important; }
 .admin-icon-button .ui-icon { width:16px; height:16px; }
-.admin-help-icon { margin:0 0 var(--s2) !important; cursor:help; }
+.admin-help-icon { margin:var(--s1) 0 !important; line-height:1; cursor:help; }
 .admin-disclosure { padding:0; overflow:hidden; background:var(--card-surface); }
 .admin-disclosure>summary { display:flex; align-items:center; justify-content:space-between; gap:var(--s3); min-height:52px; padding:var(--s2) 16px; cursor:pointer; list-style:none; }
 .admin-disclosure>summary::-webkit-details-marker { display:none; }
@@ -74,8 +74,9 @@
 .admin-disclosure>summary h2 { margin:0; }
 .admin-disclosure>summary .ui-icon { order:2; margin-left:auto; }
 .admin-disclosure>summary span { order:3; margin-left:0; color:var(--muted); font-size:13px; }
-.admin-disclosure>*:not(summary) { margin-inline:var(--s5); }
-.admin-disclosure>.admin-assets { margin-inline:0; padding-inline:var(--s5); }
+.admin-disclosure>*:not(summary) { margin-inline:var(--s4); }
+.admin-disclosure>.admin-assets { margin-inline:0; padding-inline:var(--s4); }
+.admin-disclosure>details { padding-block:var(--s2); }
 .admin-subdisclosure { margin-top:var(--s4); border-top:1px solid var(--border); }
 .admin-subdisclosure>summary { cursor:pointer; min-height:44px; padding:var(--s3) 0; color:var(--muted); }
 .admin-field { display:grid; gap:4px; margin:var(--s3) 0; }
