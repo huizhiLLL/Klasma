@@ -43,7 +43,12 @@
 .admin-login form { display:grid; gap:var(--s4); margin-top:var(--s8); }
 .admin-eyebrow { color:var(--muted); }
 .admin-editor-bar { position:sticky; top:0; z-index:10; display:flex; align-items:center; gap:var(--s2); padding:6px 0; background:var(--canvas); border-bottom:1px solid var(--border); margin-bottom:var(--s3); }
-.admin-editor-bar h1 { font-size:20px; flex:1; }
+.admin-editor-bar h1 { font-size:18px; font-weight:600; letter-spacing:-.01em; flex:1; }
+.admin-editor-bar .admin-icon-button { border-color:transparent; background:transparent; }
+.admin-editor-bar .admin-icon-button:hover { background:var(--accent-soft); }
+.admin-editor-bar .admin-primary { padding-inline:14px !important; }
+.admin-editor-bar>span { font-size:12px; }
+.admin-editor-bar + .admin-notice { margin-top:0 !important; }
 .admin-editor-grid { display:grid; grid-template-columns:minmax(0,1fr) var(--admin-settings-width); gap:var(--s4); align-items:start; }
 .admin-editor-settings { position:sticky; top:var(--s2); }
 .admin-section { padding:var(--s4); margin-bottom:var(--s3); border:1px solid var(--border); border-radius:var(--radius-card); background:var(--surface); }
