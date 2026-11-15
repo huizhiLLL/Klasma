@@ -5,7 +5,9 @@
 .admin-app button { cursor:pointer; border:1px solid var(--border); border-radius:var(--radius-control); padding:6px 10px; background:var(--surface); color:var(--ink); transition:background-color var(--motion-feedback),border-color var(--motion-feedback); }
 .admin-app button:hover { background:var(--accent-soft); border-color:var(--control-border); }
 .admin-app button:disabled { opacity:.55; cursor:wait; }
-.admin-app :is(input,select,textarea) { width:100%; min-width:0; border:1px solid var(--control-border); border-radius:var(--radius-control); padding:7px 9px; color:var(--ink); background:var(--surface); }
+.admin-app :is(input,select,textarea) { width:100%; min-width:0; border:1px solid transparent; border-radius:6px; padding:7px 9px; color:var(--ink); background:color-mix(in srgb,var(--canvas) 72%,var(--surface)); transition:border-color var(--motion-feedback),background-color var(--motion-feedback),box-shadow var(--motion-feedback); }
+.admin-app :is(input,select,textarea):hover { border-color:var(--border); }
+.admin-app :is(input,select,textarea):focus { border-color:var(--accent); background:var(--surface); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent); outline:0; }
 .admin-app textarea { resize:vertical; line-height:1.55; }
 .admin-app :is(button,input,select,textarea,a,summary):focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
 .admin-app a { color:var(--accent); text-underline-offset:3px; overflow-wrap:anywhere; }
@@ -51,7 +53,7 @@
 .admin-editor-bar + .admin-notice { margin-top:0 !important; }
 .admin-editor-grid { display:grid; grid-template-columns:minmax(0,1fr) var(--admin-settings-width); gap:var(--s4); align-items:start; }
 .admin-editor-settings { position:sticky; top:var(--s2); }
-.admin-section { padding:var(--s4); margin-bottom:var(--s3); border:1px solid var(--border); border-radius:var(--radius-card); background:var(--surface); }
+.admin-section { padding:var(--s4); margin-bottom:var(--s3); border:1px solid var(--border); border-radius:var(--radius-card); background:transparent; }
 .admin-section-compact { padding:var(--s3) var(--s4); }
 .admin-main-editor { padding:var(--s2) 0; }
 .admin-basic-grid { display:grid; grid-template-columns:minmax(180px,.8fr) minmax(0,1.6fr); gap:var(--s3); }
@@ -65,7 +67,7 @@
 .admin-disclosure>summary { display:flex; align-items:center; justify-content:space-between; gap:var(--s3); min-height:42px; padding:var(--s2) var(--s4); cursor:pointer; list-style:none; }
 .admin-disclosure>summary::-webkit-details-marker { display:none; }
 .admin-disclosure>summary::after { content:'＋'; color:var(--muted); font-size:18px; }
-.admin-disclosure[open]>summary { border-bottom:1px solid var(--border); background:var(--canvas); }
+.admin-disclosure[open]>summary { border-bottom:1px solid var(--border); background:transparent; }
 .admin-disclosure[open]>summary::after { content:'−'; }
 .admin-disclosure>summary h2 { margin:0; }
 .admin-disclosure>summary span { margin-left:auto; color:var(--muted); font-size:13px; }
