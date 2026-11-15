@@ -1,5 +1,4 @@
-export type IconName = 'house' | 'arrow-left' | 'x' | 'arrow-up-right' | 'rotate-ccw' | 'plus' | 'pencil' | 'log-out' | 'save' | 'trash-2' | 'upload' | 'external-link' | 'eye'
-const paths: Partial<Record<IconName,string>> = { plus:'M12 5v14M5 12h14', pencil:'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z', 'log-out':'M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9', save:'M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2ZM17 21v-8H7v8M7 3v5h8', 'trash-2':'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v5M14 11v5', upload:'M12 3v12M7 8l5-5 5 5M5 21h14', 'external-link':'M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6', eye:'M2 12s3-6 10-6 10 6 10 6-3 6-10 6-10-6-10-6ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6' }
+export type IconName = 'house' | 'arrow-left' | 'x' | 'arrow-up-right' | 'rotate-ccw' | 'pencil' | 'eye' | 'plus'
 export function Icon({ name, className = '' }: { name: IconName; className?: string }) {
- return <svg className={`ui-icon ${className}`} viewBox="0 0 24 24" aria-hidden="true" focusable="false">{paths[name] ? <path d={paths[name]} /> : <use href={`/icons/lucide/sprite.svg#${name}`} />}</svg>
+ return <svg className={`ui-icon ${className}`} viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href={`/icons/lucide/sprite.svg#${name}`} /></svg>
 }
