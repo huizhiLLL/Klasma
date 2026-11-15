@@ -48,7 +48,10 @@
 .admin-editor-settings { position:sticky; top:var(--s2); }
 .admin-section { padding:var(--s4); margin-bottom:var(--s3); border:1px solid var(--border); border-radius:var(--radius-card); background:var(--surface); }
 .admin-section-compact { padding:var(--s3) var(--s4); }
+.admin-main-editor { padding:var(--s2) 0; }
 .admin-basic-grid { display:grid; grid-template-columns:minmax(180px,.8fr) minmax(0,1.6fr); gap:var(--s3); }
+.admin-basic-grid .admin-field { margin-block:var(--s2); }
+.admin-title-input { font-size:18px !important; font-weight:600; }
 .admin-section-heading { display:flex; align-items:center; justify-content:space-between; gap:var(--s3); }
 .admin-section-heading h2 { margin:0; }
 .admin-icon-button { min-width:36px; padding-inline:8px !important; }
