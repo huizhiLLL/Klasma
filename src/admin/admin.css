@@ -15,6 +15,7 @@
 .admin-app h2 { font-size:18px; line-height:1.5; margin:0 0 var(--s4); font-weight:650; }
 .admin-app p { margin:0 0 var(--s3); }
 .admin-shell { width:min(var(--admin-content-width),calc(100% - 40px)); margin:auto; padding-bottom:var(--s8); }
+.admin-editor-content { min-width:0; padding-inline:8px; }
 .admin-header { display:flex; justify-content:space-between; align-items:center; gap:var(--s4); min-height:64px; border-bottom:1px solid var(--border); margin-bottom:var(--s4); }
 .admin-header strong { font-size:18px; }
 .admin-header strong span { font-size:14px; font-weight:400; color:var(--muted); }
@@ -62,17 +63,18 @@
 .admin-section-heading { display:flex; align-items:center; justify-content:space-between; gap:var(--s3); }
 .admin-section-heading h2 { margin:0; }
 .admin-icon-button { min-width:36px; padding-inline:8px !important; }
+.admin-icon-button .ui-icon { width:16px; height:16px; }
 .admin-help-icon { margin:0 0 var(--s2) !important; cursor:help; }
 .admin-disclosure { padding:0; overflow:hidden; }
-.admin-disclosure>summary { display:flex; align-items:center; justify-content:space-between; gap:var(--s3); min-height:42px; padding:var(--s2) var(--s4); cursor:pointer; list-style:none; }
+.admin-disclosure>summary { display:flex; align-items:center; justify-content:space-between; gap:var(--s3); min-height:42px; padding:var(--s2) var(--s5); cursor:pointer; list-style:none; }
 .admin-disclosure>summary::-webkit-details-marker { display:none; }
 .admin-disclosure>summary::after { content:'＋'; color:var(--muted); font-size:18px; }
 .admin-disclosure[open]>summary { border-bottom:1px solid var(--border); background:transparent; }
 .admin-disclosure[open]>summary::after { content:'−'; }
 .admin-disclosure>summary h2 { margin:0; }
 .admin-disclosure>summary span { margin-left:auto; color:var(--muted); font-size:13px; }
-.admin-disclosure>*:not(summary) { margin-inline:var(--s4); }
-.admin-disclosure>.admin-assets { margin-inline:0; padding-inline:var(--s4); }
+.admin-disclosure>*:not(summary) { margin-inline:var(--s5); }
+.admin-disclosure>.admin-assets { margin-inline:0; padding-inline:var(--s5); }
 .admin-subdisclosure { margin-top:var(--s4); border-top:1px solid var(--border); }
 .admin-subdisclosure>summary { cursor:pointer; min-height:44px; padding:var(--s3) 0; color:var(--muted); }
 .admin-field { display:grid; gap:4px; margin:var(--s3) 0; }
