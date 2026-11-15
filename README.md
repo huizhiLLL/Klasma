@@ -24,13 +24,14 @@ npm run dev
 
 软件与工程资产读取真实 API，只显示已发布内容；没有真实内容时显示空状态，不回退到样例。作品由静态注册表维护，目前没有登记真实作品。页面入口与验证边界见 [前台验证](docs/frontend-preview.md)。后台录入方式见 [后台管理](docs/admin.md)。
 
-前端由 Vite 提供，`/api` 代理到本地 Worker。前台和管理页开发均需要先构建静态资源、初始化本地数据库，再启动 Worker API：
+前端由 Vite 提供，`/api` 代理到本地 Worker。默认的 `cf:dev` 使用 Wrangler 远程模式，因此本地页面会通过本地 Worker 访问线上 D1 / R2；需要本地隔离数据时再使用 `cf:dev:local`。开发时开两个终端：
 
 ```powershell
-npm run build
-npx wrangler d1 migrations apply klasma-db --local
+npm run dev
 npm run cf:dev
 ```
+
+本地 Worker 使用 `.dev.vars` 中的 `ADMIN_KEY` 登录；远程模式下的新增、修改、发布和删除会直接作用于线上数据。若只需要本地数据库，请运行 `npm run cf:dev:local`，并按需执行 `npx wrangler d1 migrations apply klasma-db --local`。
 
 验证命令：
 
