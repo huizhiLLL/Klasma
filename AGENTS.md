@@ -26,7 +26,7 @@
 | `src/app/components/` | 集合外壳、链接、原生 Dialog、Markdown、状态反馈与示意素材 |
 | `src/app/pages/HomePage.tsx` | 个人身份与三张收藏牌首页 |
 | `src/app/styles/`、`src/app/animations/` | 公开前台 token、布局、示意素材样式与动效降级；`wordWheel.ts` 为连续滚轮，`assetTransition.ts` 为跨原生 dialog 的共享快照 |
-| `src/admin/` | 内容列表、类型编辑器、登录与导航保护；独立后台样式 |
+| `src/admin/` | 内容列表、类型编辑器、登录与导航保护；后台视图组件与独立后台样式 |
 | `src/shared/` | API 内容契约、分类与发布校验、客户端请求 |
 | `src/app/components/CollectionTransition.tsx`、`src/app/animations/collectionTransition.ts`、`collectionPresence.ts`、`src/app/styles/collection-transition.css` | 集合主体交接、选择器底板共享、退场弹窗隔离与换场姿态 |
 | `src/app/data/` | 公开内容模型、真实 API 请求与 catalog 适配；fixtures 仅供逻辑测试 |
