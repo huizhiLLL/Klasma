@@ -5,7 +5,7 @@ export function createCatalog(resources:Resource[]) {
  const sorted = resources.filter(item => item.status === 'published').sort((a,b) => (a.metadata.order ?? 0) - (b.metadata.order ?? 0) || a.title.localeCompare(b.title,'zh-CN'))
  const tools:Tool[] = sorted.filter(item => item.type === 'tools').map(item => ({
   slug:item.slug,name:item.title,monogram:Array.from(item.title)[0] || '?',tone:'gray',icon:item.assets.find(asset => asset.kind === 'icon')?.url,
-  platform:[item.metadata.platform,item.metadata.version].filter(Boolean).join(' · '),tagline:item.summary,article:item.content,
+  platform:item.metadata.platform || '',tagline:item.summary,article:item.content,
   media:item.assets.filter(asset => asset.kind === 'screenshot' || asset.kind === 'cover').sort((a,b) => (a.metadata.order ?? 0) - (b.metadata.order ?? 0)).map(asset => ({ id:asset.id,label:asset.metadata.label || asset.filename,caption:asset.metadata.label || '',src:asset.url,variant:'clean',width:asset.metadata.width || 1280,height:asset.metadata.height || 800 })),
   links:item.links.map(link => ({ label:link.label || ({ website:'官网',github:'仓库',download:'下载',article:'文章',other:'访问链接' }[link.kind] ?? '访问链接'),url:link.url })).concat(item.assets.filter(asset => asset.kind === 'attachment').map(asset => ({ label:asset.metadata.label || asset.filename,url:asset.url }))),
  }))

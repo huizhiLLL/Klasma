@@ -111,7 +111,8 @@ function validate(body:unknown):ResourceInput | string {
   if (data.metadata.order !== undefined && (!Number.isSafeInteger(data.metadata.order) || Math.abs(data.metadata.order) > 100000)) return '展示顺序需为有效整数。'
   if (!Array.isArray(data.links) || data.links.length > 30 || data.links.some(link => !link || typeof link.url !== 'string' || link.url.length > 4000 || !safeUrl(link.url) || !['website','github','download','article','other'].includes(link.kind) || typeof link.label !== 'string' || link.label.length > 200)) return '链接需包含有效的 http 或 https 地址。'
   if (!Array.isArray(data.tagSlugs) || data.tagSlugs.length > 50 || data.tagSlugs.some(tag => typeof tag !== 'string' || !tag.trim() || tag.length > 80)) return '标签格式无效。'
-  return { ...data,title:data.title.trim(),tagSlugs:[...new Set(data.tagSlugs.map(tag => tag.trim().toLowerCase()))] }
+  const metadata = data.type === 'tools' ? (() => { const { version: _version, ...rest } = data.metadata; return rest })() : data.metadata
+  return { ...data,metadata,title:data.title.trim(),tagSlugs:[...new Set(data.tagSlugs.map(tag => tag.trim().toLowerCase()))] }
 }
 async function save(c:Context<{ Bindings:Bindings }>, id?:string) {
   const input = validate(await c.req.json().catch(() => null))
