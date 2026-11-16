@@ -62,7 +62,7 @@
 .admin-panel-tabs button:hover{background:transparent;color:var(--ink)}
 .admin-panel-tabs button[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent)}
 .admin-main-editor>.admin-panel-tabs~.admin-section>summary{display:none}
-.admin-main-editor>.admin-panel-tabs~.admin-section{padding:var(--admin-space-4) 0;background:transparent}
+.admin-main-editor>.admin-panel-tabs~.admin-section{margin-inline:var(--admin-space-5);padding:var(--admin-space-4) 0;background:transparent}
 .admin-main-editor>.admin-panel-tabs~.admin-section>*:not(summary){margin-inline:0}
 .admin-main-editor>.admin-panel-tabs~.admin-section.admin-content-disclosure{padding:var(--admin-space-4) 0}
 .admin-main-editor>.admin-panel-tabs~.admin-section[hidden]{display:none!important}
