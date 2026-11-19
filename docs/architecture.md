@@ -1,151 +1,28 @@
 # Klasma 技术架构
 
-## 1. 架构目标
+## 构建与部署
 
-已有的“管理录入 → D1 保存 → API 查询 → 前台展示”闭环继续服务软件与工程资产。根据三个集合的实际展示需求，首版采用**混合内容来源**：软件（Tools）与工程资产（Library）由 D1 / R2 + 后台管理；个人作品（Projects）由前端静态注册表、专属 React 组件与构建资源承载。项目继续采用单仓库、单应用、前后端同域部署，避免过早拆分服务。**数据存储方式不决定公开展示模板，三集合共享导航和视觉语言，但不强行共享 CMS。**
+Klasma 是 React / TypeScript 单页应用，由 Vite 构建为 `dist`。页面使用原生 CSS、原生 `dialog`、History API 和 Motion for React。Markdown 由 Marked 解析、DOMPurify 净化。
 
-公开 Tools / Library 通过 `/api/resources?type=` 读取已发布资源，由 catalog 适配为展示模型，不读取 mock。Projects 仅使用真实作品静态注册表，当前为空。分类为共享常量，资产场景位置依据分类内排序生成。用户确认无需旧数据与旧路由兼容，本轮不清理远程旧记录。
+`wrangler.jsonc` 将 `dist` 发布到 Cloudflare Workers Static Assets，沿用 `klasma` 项目和 `klasma.huizhi.ink`。`single-page-application` 回退让集合与详情 URL 能直接访问和刷新，再由客户端解析分类和 slug。GitHub Actions 在 `master` 上完成检查、构建和发布。
 
-## 2. 技术栈
+## 内容来源
 
-| 层级 | 选择 | 用途 |
+| 集合 | 数据来源 | 顺序与媒体 |
 | --- | --- | --- |
-| 前端 | React + TypeScript | 公开前台、作品定制组件、资源详情、管理后台 |
-| 构建与本地开发 | Vite | 快速开发反馈与前端构建 |
-| 路由 | History / URL + useSyncExternalStore | 选中项、查询参数与浏览器历史同步 |
-| 样式 | 原生 CSS + 有限语义 token | 公开浅色主题与独立后台作用域 |
-| 基础交互组件 | 原生控件与 dialog | 表单、模态背景隔离、Escape 与焦点恢复 |
-| 常规动效 | Motion for React | 布局变化、卡片展开、页面内状态转场 |
-| 复杂时间轴 | 暂不引入 | 现有转场由 Motion 与 CSS 负责 |
-| 后端运行时 | Cloudflare Workers | API、鉴权边界和文件操作 |
-| API 框架 | Hono | 路由、中间件和请求处理 |
-| 数据库 | Cloudflare D1 + Drizzle ORM | 软件与工程资产元数据、标签、关系和迁移 |
-| 文件存储 | Cloudflare R2 | 蓝图、脚本附件、图片和其他二进制文件 |
-| 后台鉴权 | ADMIN_KEY 登录 + 固定 30 天签名会话 | `/admin` 内输入密钥；管理 API 与草稿文件校验 HttpOnly 会话 |
-| 外部分发 | GitHub Releases、OpenList、官方网站 | 保留已有文件分发渠道 |
+| Tools | `src/app/data/tools.ts` | 数组顺序决定 Dock 顺序，每项维护图标、截图尺寸与顺序、正文和链接 |
+| Library | `src/app/data/library.ts`、`categories.ts` | 分类固定，内容按数组顺序进入分类场景，每项可包含正文、代码、图片、链接及附件 |
+| Projects | `src/app/features/projects/registry.ts` | 注册表决定顺序，专属 React 展示组件按作品延迟加载 |
 
-React + Vite 首版按 SPA 实现。公开资源详情页的 SEO 和社交分享需求明确后，再评估 SSR 或服务端生成元信息，不为尚未验证的需求提前引入 Next.js 等复杂框架。
+`src/app/data/catalog.ts` 在前端同步构建目录和分类场景位置。样例数据供测试使用。正式站点的图片和小附件随 `public/content/` 一起构建，大附件可使用外部分发链接。分享 URL 依赖稳定的 slug。确认可以公开的素材后再提交到仓库。
 
-## 3. 部署形态
+## 前端边界
 
-前端静态资源和 API 放在同一个 Cloudflare 项目中，通过 Workers Static Assets 与 Worker 路由统一部署。公开读取接口保持开放，管理界面仅在 `/admin` 内检查会话、显示密钥输入。密钥由环境 Secret 提供，登录成功签发 HttpOnly、SameSite=Strict、HTTPS 下 Secure 的 Cookie，固定 30 天后过期，不滑动续期，不将密钥存入 localStorage。退出删除当前浏览器 Cookie，轮换 ADMIN_KEY 可使所有已签发会话失效；退出不撤销已泄漏的独立 Cookie 副本。管理 API 不再信任未验证的 Access 身份头，也不接受旧 X-Admin-Key 直传。所有写请求限制同源；未配置密钥时拒绝登录。以下为当前边界。
+- `src/App.tsx` 负责应用壳与路由分发，`src/app/routes.ts` 与 `routing.ts` 负责 URL 和 History 导航。
+- `src/app/components/` 提供共享导航、对话框、Markdown 和状态组件，`src/app/features/` 管理各集合的展示与交互。
+- 收藏牌、集合标题和导航的共享元素标识由视觉对象和页面身份决定。作品外壳与专属展示组件分开，方便作品各自演进。
+- 视觉和可用性约束见 [设计规范](design.md)，实际入口与检查覆盖见 [前台验证](frontend-preview.md)。
 
-```text
-Browser
-  ├─ public pages ───────────────┐
-  └─ /admin ── 30-day session ─┤
-                                  ↓
-                         Cloudflare Worker + Hono
-                           ├─ public API (published only)
-                           ├─ admin API
-                           ├─ D1 metadata
-                           └─ R2 assets
-                                  ↓
-                    GitHub Releases / OpenList / external sites
-```
+## 静态迁移
 
-## 4. 按内容类型确定数据来源
-
-| 公开集合 | 首版内容来源 | 管理方式 | 展示自由度 |
-| --- | --- | --- | --- |
-| Tools / What I prefer | D1 元数据 + R2 或外部媒体 | 后台 GUI 录入、编辑、发布 | 统一 Dock 展台框架，内容可差异化编排 |
-| Projects / What I make | 前端静态注册表 + 项目专属 React 组件及静态资源 | 通过代码、Git 与部署维护，不要求后台录入 | 共同作品切换外壳，内部充分定制 |
-| Library / What I keep | D1 元数据 + R2 或外部资源 | 后台 GUI 录入、编辑、发布 | 场景与运镜逻辑在前端，资源内容从 API 获取 |
-
-**已确认的边界：** 作品数量较少、内部体验高度异构，不开发通用作品内容编辑器；软件与工程资产具有较高的重复字段和后续录入需求，继续使用轻量后端。
-
-**当前 Projects 实现：**
-- 维护一个类型化作品注册表，存储稳定 `slug`、名称、Logo / 封面、排序以及必要的官网、下载、仓库链接；这些少量信息可以直接保存在前端。
-- 每件作品对应独立 React 页面或可延迟加载的组件（`src/app/features/projects/pages/`）。项目内部可按需使用独立样式、媒体与交互技术，不增加通用 CMS 的配置字段来复刻定制体验。
-- 作品区的**外层 Logo 切换器、页面容器、上下换场、全局胶囊及 Design Tokens**共用；各作品内容与演示方式独立。下载 / 体验 / GitHub 入口按作品需要呈现。
-- 所有作品保留稳定的公开 URL（例如 `/projects/:slug`），支持直接打开、刷新、浏览器前进后退与回到原集合。旧 `/resource/:slug` 与 `?type=` 导航已移除，不提供兼容重定向。
-
-### 4.1 动态内容模型
-
-软件与工程资产继续使用现有的通用资源表和关联表，并依需要补充类型字段；展示不因此被统一成列表或固定详情模板。
-
-```text
-resources
-├── id
-├── type             tools | projects | library  # 当前 schema；后续新录入以 tools / library 为主
-├── slug
-├── title
-├── summary
-├── content
-├── cover_asset_id
-├── metadata         JSON，类型专属字段
-├── status           draft | published
-├── featured
-├── created_at
-└── updated_at
-
-tags
-resource_tags
-
-resource_links
-├── resource_id
-├── kind             website | github | download | article | other
-└── url
-
-resource_assets
-├── resource_id
-├── filename
-├── storage_type     r2 | external
-├── location
-├── mime_type
-└── metadata         JSON
-```
-
-类型专属信息先放入 `metadata`，等筛选和查询需求稳定后，再将高频字段提升为正式列或独立关系表。小型文本内容（例如 SFM 代码或 Mermaid 源码）可以直接保存以便搜索、编辑和复制；较大的二进制文件放到 R2 或继续使用外部渠道。
-
-### 4.2 后端范围
-
-当前数据库 schema 和 API 仍支持 `projects` 资源枚举；公开作品区只读静态注册表，后台新建只提供软件与工程资产。用户已明确早期开发不需要兼容旧数据 / URL，不为动态作品构建迁移或公开回读层。本轮不修改 schema、不删除远程记录和对象；后续确需调整持久化结构时独立审查。
-
-作品专属动态能力按实际需求建立专用 API，不反向要求所有作品接入通用 CMS。
-
-## 5. 前端边界
-
-当前已经实现的前端职责如下，完整索引见 `AGENTS.md`。独立原型保留在 `docs/mockups/`，不参与正式构建。
-
-```text
-src/
-├── App.tsx                  路由分发与应用级 MotionConfig
-├── app/
-│   ├── routes.ts            路径解析与稳定 URL
-│   ├── routing.ts           History 导航与订阅
-│   ├── pages/HomePage.tsx   身份与收藏牌
-│   ├── components/          集合导航、原生 Dialog、Markdown、反馈与示意图
-│   ├── data/                内容模型、真实 API hook 与 catalog 适配边界
-│   ├── features/tools/      媒体、预览、阅读层与 Dock
-│   ├── features/library/    分类几何、空间场景、URL 详情与顺序示意
-│   ├── features/projects/   静态注册表、切换外壳和 pages/ 专属组件
-│   ├── animations/          动效与输入方式降级
-│   └── styles/              token、公开布局、示意素材
-├── admin/                   列表、类型编辑器、会话入口与独立样式
-├── server/                  Hono 入口与 db/
-└── shared/resource.ts       现有 API 资源类型
-```
-
-`public/fonts/` 存正式完整 unicode 字体分片与许可，`public/icons/lucide/` 存统一图标，`public/samples/` 提供真实可下载的示例文本。`scripts/prepare-app-fonts.py` 从官方来源准备字体；不依赖原型字体缓存。作品内部模块独立延迟加载，后台单独分包。
-
-公开路由与最初实施范围见 `frontend-implementation.md`；当前真实 API 入口与验证限制见 `frontend-preview.md`。服务端渲染检查不代表浏览器视觉、焦点、滚动与动效已验收。
-
-公开前台的首页卡片、集合页、资源详情与导航自行设计；后台优先复用成熟组件以降低维护成本。动态资源使用稳定 ID / slug，静态作品也使用稳定 slug；共享元素标识由视觉对象和页面身份决定，不强迫所有展示项来自 D1。作品外壳与具体作品的组件职责分开，避免作品的独立样式或动画影响全局导航。
-
-Motion 负责页面共享元素与内容进出；资产条目到原生 dialog 的标题、媒体使用 View Transition 分时快照与 flushSync，避免跨顶层的投影裁剪，快速改选使旧回调失效。不支持原生快照时静态导航。CSS 负责普通 hover、focus 和颜色过渡。键盘输入与 reduced motion 关闭大位移动效，小屏不播放长距离共享元素；退场内容立即 inert，避免快速选择产生多套可操作控件。原生 dialog 提供背景隔离，组件负责 Escape 关闭与焦点恢复。
-
-## 6. 关键约束
-
-- API 与存储逻辑不依赖具体前台视觉组件，便于之后重做 UI。
-- 作品页静态内容可随代码部署；软件和工程资产可通过后台独立更新。区分「部署时构建」与「运行时读取」，不要用一个通用录入模型覆盖所有内容。
-- 所有资源使用稳定 `slug` 或资源 ID，避免分享链接随布局调整失效。
-- 外部链接和 R2 文件都通过统一的资源附件模型展示。
-- 管理 API 不能只依赖前端隐藏页面，必须在 Worker 层校验身份。
-- 初期不引入微服务、独立搜索服务或复杂事件系统。
-
-## 7. 后台与公开 API 契约
-
-详见 [后台管理](admin.md)。数据库列和关联表不变，类型字段写入现有 resources.metadata，媒体说明、尺寸、顺序写入 resource_assets.metadata。API 出口将 metadata JSON 解码为对象；列表与详情均包含 links、tags、assets，附件入口统一返回 url。关联数据批量读取，并分批控制绑定参数数目；资源、链接与标签以 D1 batch 原子写入。
-
-草稿的上传文件需有效管理会话；公开附件每次检查所属资源发布状态，不使用长缓存。仅受支持的位图以内联图片响应，HTML、SVG 等文件强制下载。外部素材保持原始存储渠道，其源地址的访问权限由来源站点决定。单文件上限 25 MB。删除资源一并删除 R2 对象，外部源文件不删除；R2 与 D1 不支持跨服务事务，若对象删除失败保留数据库记录以便重试。
+旧后台、API、数据库迁移及部署绑定已从仓库移除。线上公开数据迁入 Mole 条目及四个原始图片。旧 D1 / R2 资源在 Cloudflare 保留供回滚，操作说明见 [项目入口](../README.md#发布)。

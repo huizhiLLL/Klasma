@@ -14,8 +14,7 @@
 | `docs/architecture.md` | 技术栈、架构边界、数据与部署约束；技术实现前按需读取 |
 | `docs/roadmap.md` | 阶段计划、进展与工程决策；推进阶段任务时读取 |
 | `docs/frontend-implementation.md` | 正式前端实施边界、当前路由、文件职责与验收；开始前台落地时读取 |
-| `docs/admin.md` | 后台录入、接口契约、30 天会话与验收 |
-| `docs/frontend-preview.md` | 正式前台真实 API 验证入口、覆盖矩阵与验证边界 |
+| `docs/frontend-preview.md` | 正式前台路由、静态内容、覆盖矩阵与验证边界 |
 | `docs/design.md` | 仅记录已确认的设计点与约束；UI 工作默认依据 |
 | `docs/design-process.md` | 设计时间线、参考、候选、未决问题和历史方案；仅追溯或继续相关讨论时读取，不默认载入全文 |
 | `docs/design-assets/` | 用户设计草图：软件 Dock、作品切换、工程资产全局与分类场景；对应布局评审时查看 |
@@ -26,11 +25,10 @@
 | `src/app/components/` | 集合外壳、链接、原生 Dialog、Markdown、状态反馈与示意素材 |
 | `src/app/pages/HomePage.tsx` | 个人身份与三张收藏牌首页 |
 | `src/app/styles/`、`src/app/animations/` | 公开前台 token、布局、示意素材样式与动效降级；`wordWheel.ts` 为连续滚轮，`assetTransition.ts` 为跨原生 dialog 的共享快照 |
-| `src/admin/` | 内容列表、类型编辑器、登录与导航保护；后台视图组件与独立后台样式 |
-| `src/shared/` | API 内容契约、分类与发布校验、客户端请求 |
 | `src/app/components/CollectionTransition.tsx`、`src/app/animations/collectionTransition.ts`、`collectionPresence.ts`、`src/app/styles/collection-transition.css` | 集合主体交接、选择器底板共享、退场弹窗隔离与换场姿态 |
-| `src/app/data/` | 公开内容模型、真实 API 请求与 catalog 适配；fixtures 仅供逻辑测试 |
-| `public/samples/` | 明确标记为示例的文本下载附件，不写入 D1 / R2 |
+| `src/app/data/` | 前台静态软件与工程资产内容、分类、目录与测试样例 |
+| `public/content/` | 已公开的条目图片与小附件，按集合和 slug 分目录 |
+| `public/samples/` | 明确标记为示例的静态下载附件 |
 | `src/app/features/tools/` | 固定媒体、文案预览、全文阅读层与 Dock |
 | `src/app/features/library/` | 披萨分类、预览、空间场景、详情与分类几何 |
 | `src/app/features/projects/` | 静态注册表、作品切换外壳与独立延迟加载的 `pages/` |
@@ -40,15 +38,12 @@
 | `tests/` | 路由、内容、分类几何、作品下载、滚轮与快照生命周期的 Node 逻辑测试 |
 | `src/index.css` | 应用中性重置与全局基础 |
 | `src/assets/`、`public/` | 应用导入素材与静态公共资源 |
-| `src/server/index.ts`、`src/server/types.ts`、`src/server/auth.ts` | Worker API、环境绑定、30 天签名会话与鉴权 |
-| `src/server/db/client.ts`、`src/server/db/schema.ts` | D1 / Drizzle 数据库客户端与表结构 |
-| `drizzle/migrations/` | SQL 迁移；持久化结构变更前检查 |
 | `package.json`、`package-lock.json` | npm 脚本、依赖声明与锁定 |
 | `index.html`、`vite.config.ts` | 正式前端 HTML 入口与构建配置 |
 | `tsconfig.json`、`tsconfig.app.json`、`tsconfig.node.json` | TypeScript 项目、前端与工具配置 |
 | `.oxlintrc.json` | 静态检查配置 |
-| `drizzle.config.ts`、`wrangler.jsonc` | 数据库迁移工具、Worker / D1 / R2 / 静态资源配置 |
-| `.github/workflows/deploy.yml` | GitHub 推送后的检查与 Cloudflare 部署流程 |
+| `wrangler.jsonc` | Cloudflare Workers Static Assets 与域名配置 |
+| `.github/workflows/deploy.yml` | GitHub 推送后的检查、构建与静态资源发布 |
 | `.gitignore` | 本地产物与缓存的版本控制边界 |
 
 ### 独立设计产物

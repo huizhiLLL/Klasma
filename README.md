@@ -1,6 +1,6 @@
 # Klasma
 
-Klasma 是一个个人精选资源库和作品展示站，首期包含 Tools、Projects、Library 三类内容。
+Klasma 是一个个人精选资源库和作品展示站，包含 Tools、Projects、Library 三类内容。
 
 ## 项目文档
 
@@ -8,31 +8,28 @@ Klasma 是一个个人精选资源库和作品展示站，首期包含 Tools、P
 - [架构与技术边界](docs/architecture.md)
 - [路线与决策](docs/roadmap.md)
 - [UI/UX 设计约束](docs/design.md)
-- [前台评审入口与覆盖](docs/frontend-preview.md)
-- [正式前端实施准备](docs/frontend-implementation.md)：路由、内容边界、首批落地范围与验证方式。
-- [设计过程与评审记录](docs/design-process.md)：追溯讨论、候选与历史方案时按需查阅。
-- [布局与交互原型](docs/mockups/README.md)：独立运行，不连接 API，也不参与正式应用构建。
-
-项目内的 [Refactoring UI skill](.agents/skills/refactoring-ui/SKILL.md) 用于约束排版、间距、层级等设计质量，适用解释见设计文档。
+- [前台入口与验证](docs/frontend-preview.md)
+- [正式前端实施记录](docs/frontend-implementation.md)
+- [设计过程与评审记录](docs/design-process.md)
+- [独立布局与交互原型](docs/mockups/README.md)
 
 ## 本地开发
 
 ```powershell
-npm install
+npm ci
 npm run dev
 ```
 
-软件与工程资产读取真实 API，只显示已发布内容；没有真实内容时显示空状态，不回退到样例。作品由静态注册表维护，目前没有登记真实作品。页面入口与验证边界见 [前台验证](docs/frontend-preview.md)。后台录入方式见 [后台管理](docs/admin.md)。
+开发入口由 Vite 提供。用 `npm run build` 构建，再用 `npm run preview` 预览 `dist`。
 
-前端由 Vite 提供，`/api` 代理到本地 Worker。`npm run dev` 会同时启动 Vite 和 Wrangler 远程模式，因此本地页面会通过同源本地 Worker 访问线上 D1 / R2；需要本地隔离数据时再使用 `cf:dev:local`。
+## 录入内容
 
-```powershell
-npm run dev
-```
+- 软件维护在 `src/app/data/tools.ts`，工程资产维护在 `src/app/data/library.ts`，按数组顺序展示。正文支持 Markdown，更新时可以先整理 Markdown 和原始素材，再把内容编排进对应文件。
+- 图片和小附件放在 `public/content/`，按集合和 slug 分目录，例如 `public/content/tools/mole/`。页面使用 `/content/tools/mole/icon.png` 这样的路径。大附件可继续使用可信的外部分发链接。
+- 作品通过 `src/app/features/projects/registry.ts` 登记，并在同目录下的 `pages/` 中维护专属展示。
+- 提交的内容会随构建发布。草稿留在本地，已分享的 slug 应保持稳定。
 
-本地 Worker 使用 `.dev.vars` 中的 `ADMIN_KEY` 登录；远程模式下的新增、修改、发布和删除会直接作用于线上数据。若只需要本地数据库，请运行 `npm run cf:dev:local`，并按需执行 `npx wrangler d1 migrations apply klasma-db --local`。
-
-验证命令：
+## 验证
 
 ```powershell
 npm run typecheck
@@ -40,38 +37,14 @@ npm run lint
 npm test
 npm run verify:frontend
 npm run build
-npm run verify:api
 ```
 
-`verify:api` 会使用临时本地 D1 / R2 验证真实 Worker 请求并清理，不写入远程存储。`verify:frontend` 在 Node 中渲染组件并检查本地资源，不运行浏览器。
+`verify:frontend` 在 Node 中渲染组件并检查资源。路由、渲染和浏览器验证的覆盖边界见 [前台验证](docs/frontend-preview.md)。
 
-本地请在已忽略的 `.dev.vars` 中配置 `ADMIN_KEY`；生产使用 `npx wrangler secret put ADMIN_KEY`。登录 `/admin/` 后会话固定有效 30 天，密钥不保存到浏览器存储。
+## 发布
 
-## Cloudflare 资源
+推送 `master` 后，GitHub Actions 执行上述检查并用 Wrangler 把 `dist` 发布到 Cloudflare Workers Static Assets。站点项目为 `klasma`，正式域名为 `klasma.huizhi.ink`。GitHub Actions 使用 `CLOUDFLARE_ACCOUNT_ID` 和 `CLOUDFLARE_API_TOKEN`。
 
-- Worker：`klasma`
-- D1：`klasma-db`
-- R2：`klasma-assets`
+已登录目标 Cloudflare 账号时，也可通过 `npm run cf:deploy` 手动构建并发布。部署前可用 `npx wrangler deploy --dry-run` 检查配置和资源目录。
 
-首次初始化或更新 D1 schema：
-
-```powershell
-npx wrangler d1 migrations apply klasma-db --remote
-```
-
-构建和部署前端与 Worker：
-
-```powershell
-npm run cf:deploy
-```
-
-部署前请确认当前 Wrangler 登录到了目标 Cloudflare 账号。
-
-## GitHub Actions 自动部署
-
-推送到 `master` 会自动执行类型检查、静态检查、逻辑测试、前台渲染与本地 API 验证、构建、D1 迁移和 Worker 部署。仓库需要配置以下 Actions Secrets：
-
-- `CLOUDFLARE_API_TOKEN`：用于部署的 Cloudflare API Token
-- `CLOUDFLARE_ACCOUNT_ID`：`425afec50d33b391420f5a8652fcab50`
-
-本机 Wrangler 的 OAuth 登录凭据不会复制到 GitHub Actions。
+需要回滚时，在 Cloudflare 的 `klasma` 部署历史选择上一版。首次静态迁移前的源码为 `53264af`，对应部署版本为 `d3db2a1f-d5c2-4e37-8741-3fed83f9c6d1`。旧 D1 / R2 资源保留供历史版本回滚。若回滚后需要继续从 Git 发布旧版，同步还原对应源码与工作流。
