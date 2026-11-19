@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { AnimatePresence, motion, useIsPresent } from 'motion/react'
-import { useCatalog } from '../../data/useCatalog'
+import { staticCatalog, type Catalog } from '../../data/catalog'
 import { ContentImage } from '../../components/ContentImage'
 import { type Media, type Tool } from '../../data/model'
 import { Link } from '../../components/Link'
@@ -79,12 +79,10 @@ function ToolPanel({ children, origin, enabled }: { children:ReactNode; origin:s
 function ToolIcon({ tool,small = false }: { tool:Tool;small?:boolean }) {
  return tool.icon ? <ContentImage className={`tool-native-icon ${small ? 'small' : ''}`} src={tool.icon} alt={tool.name} /> : <Monogram text={tool.monogram} tone={tool.tone} small={small} />
 }
-export function ToolsPage({ slug }: { slug?:string; search:string }) {
- const { catalog,state } = useCatalog('tools')
+export function ToolsPage({ slug, catalog = staticCatalog }: { slug?:string; search:string; catalog?:Catalog }) {
  const all = catalog.tools()
  const tool = slug ? catalog.tool(slug) : all[0]
  const { enabled } = useMotionPolicy()
- if (state !== 'ready') return <StatePanel state={state} back="/tools" />
  if (!tool) return <StatePanel state={slug ? 'missing' : 'empty'} back="/tools" noun="软件" />
  const index = all.indexOf(tool)
  const origin = `calc(50% + ${(index - (all.length - 1) / 2) * 68}px) calc(100% + 80px)`

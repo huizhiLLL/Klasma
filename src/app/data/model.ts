@@ -9,6 +9,8 @@ export type Asset = {
  description:string; notes:string; tags:string[]; code?:string; steps?:string[];
  footprint:string; version:string; position:{ x:number; y:number; rotate:number }; cover?:string; media?:Array<{ src:string; label:string }>; links?:Array<{ label:string; url:string }>; attachments?:Array<{ filename:string; href:string }>; attachment?:{ filename:string; href:string }
 }
+export type LibraryEntry = Omit<Asset,'position'> & { category:(typeof import('./categories.ts').categories)[number]['slug'] }
+
 export type PreviewState = 'ready' | 'empty' | 'error' | 'loading'
 export function previewState(search:string):PreviewState {
  const value = new URLSearchParams(search).get('preview')

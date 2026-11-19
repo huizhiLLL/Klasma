@@ -1,7 +1,6 @@
 import { useState, type CSSProperties } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import type { Catalog } from '../../data/catalog'
-import { useCatalog } from '../../data/useCatalog'
+import { staticCatalog, type Catalog } from '../../data/catalog'
 import { ContentImage } from '../../components/ContentImage'
 import { Markdown } from '../../components/Markdown'
 import { type Asset, type AssetCategory } from '../../data/model'
@@ -55,10 +54,8 @@ function LibraryScene({ catalog,category, slug, search }: { catalog:Catalog;cate
  transitionAsset(event.currentTarget,() => navigate(routePath({ kind:'library',category:category.slug,slug:asset.slug,search }),{ preserveScroll:true }),shared,true)
 }} aria-label={`展开${asset.title}`}><div className="scene-item-art"><AssetVisual asset={asset} /></div><strong>{asset.title}</strong><span><span>{asset.subtitle}</span><Icon name="arrow-up-right" /></span></Link></motion.div>)}</motion.div><SceneReturn direction={category.direction} />{slug && (selected ? <AssetDetail key={selected.slug} asset={selected} onDismiss={() => transitionAsset(document.querySelector<HTMLElement>(`[data-asset="${selected.slug}"]`),() => navigate(path,{ preserveScroll:true }),shared,false)} /> : <Dialog title="未找到这份资产" onDismiss={() => navigate(path,{ preserveScroll:true })}><StatePanel state="missing" back={path} /></Dialog>)}</div>
 }
-export function LibraryPage({ category:categorySlug, slug, search }: { category?:string; slug?:string; search:string }) {
- const { catalog,state } = useCatalog('library')
+export function LibraryPage({ category:categorySlug, slug, search, catalog = staticCatalog }: { category?:string; slug?:string; search:string; catalog?:Catalog }) {
  const category = categorySlug ? catalog.category(categorySlug) : undefined
- if (state !== 'ready') return <StatePanel state={state} back="/library" />
  if (categorySlug && !category) return <StatePanel state="missing" back="/library" />
  return category ? <LibraryScene key={category.slug} catalog={catalog} category={category} slug={slug} search={search} /> : <LibraryOverview catalog={catalog} />
 }
