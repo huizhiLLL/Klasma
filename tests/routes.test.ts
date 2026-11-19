@@ -9,8 +9,8 @@ test('new paths carry selection and query state without compatibility redirects'
  assert.equal(parseRoute('/tools?preview=error').search,'?preview=error')
 })
 test('unknown, malformed and extra paths never become a homepage', () => {
- for (const path of ['/unknown','/admin/other','/tools/a/b','/library/a/b/c','/tools/%E0%A4','/tools/a%2Fb','/tools//']) assert.equal(parseRoute(path).kind,'missing',path)
+ for (const path of ['/unknown','/admin','/admin/other','/tools/a/b','/library/a/b/c','/tools/%E0%A4','/tools/a%2Fb','/tools//']) assert.equal(parseRoute(path).kind,'missing',path)
 })
 test('valid selected routes have a stable shareable path', () => {
- for (const path of ['/tools/mole','/projects/folio','/library/sfm','/library/sfm/quiet-production','/admin','/']) assert.equal(routePath(parseRoute(path)),path)
+ for (const path of ['/tools/mole','/projects/folio','/library/sfm','/library/sfm/quiet-production','/']) assert.equal(routePath(parseRoute(path)),path)
 })

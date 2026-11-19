@@ -1,6 +1,6 @@
-import { useEffect, lazy, Suspense } from 'react'
+import { useEffect } from 'react'
 import { LayoutGroup, MotionConfig } from 'motion/react'
-import { navigate, useRoute } from './app/routing'
+import { useRoute } from './app/routing'
 import { CollectionShell } from './app/components/CollectionShell'
 import { HomePage } from './app/pages/HomePage'
 import { StatePanel } from './app/components/StatePanel'
@@ -8,19 +8,16 @@ import { LibraryPage } from './app/features/library/LibraryPage'
 import { ProjectsPage } from './app/features/projects/ProjectsPage'
 import { ToolsPage } from './app/features/tools/ToolsPage'
 import { useMotionPolicy } from './app/animations/useMotionPolicy'
-import './admin/admin.css'
 import './app/styles/public.css'
 import './app/styles/visuals.css'
 import './app/styles/content.css'
-const Admin = lazy(() => import('./admin/AdminPage').then(module => ({ default:module.AdminPage })))
 function App() {
  const route = useRoute()
  const { enabled } = useMotionPolicy()
  useEffect(() => {
-  document.title = `Klasma · ${{ home:'碎片',tools:'软件',projects:'作品',library:'工程资产',admin:'管理',missing:'未找到' }[route.kind]}`
+  document.title = `Klasma · ${{ home:'碎片',tools:'软件',projects:'作品',library:'工程资产',missing:'未找到' }[route.kind]}`
   document.querySelector<HTMLElement>('[data-page-heading]')?.focus({ preventScroll:true })
  },[route.kind])
- if (route.kind === 'admin') return <div className="admin-app"><Suspense fallback={<p>正在打开管理页…</p>}><Admin onBack={() => navigate('/')} /></Suspense></div>
  let page
  if (route.kind === 'home') page = <HomePage />
  else if (route.kind === 'tools') page = <CollectionShell collection="tools"><ToolsPage slug={route.slug} search={route.search} /></CollectionShell>

@@ -1,6 +1,6 @@
 export type Collection = 'tools' | 'projects' | 'library'
 export type Route =
- | { kind:'home' | 'admin' | 'missing'; search:string }
+ | { kind:'home' | 'missing'; search:string }
  | { kind:Collection; slug?:string; category?:string; search:string }
 export function parseRoute(href:string):Route {
  const url = new URL(href,'https://klasma.local')
@@ -10,7 +10,6 @@ export function parseRoute(href:string):Route {
  catch { return { kind:'missing',search } }
  if (parts.some(part => part.includes('/') || part === '.' || part === '..')) return { kind:'missing',search }
  if (url.pathname === '/') return { kind:'home',search }
- if (parts[0] === 'admin' && parts.length === 1) return { kind:'admin',search }
  if (parts[0] === 'tools' || parts[0] === 'projects') {
   if (parts.length <= 2 && parts.every(Boolean)) return { kind:parts[0],slug:parts[1],search }
  }
